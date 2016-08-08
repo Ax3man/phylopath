@@ -28,8 +28,3 @@ gls2 <- function(..., cor_fun, tree) {
   }
   return(m)
 }
-
-plot.DAG <- function(d) graphics::plot(igraph::graph_from_adjacency_matrix(d))
-
-
-

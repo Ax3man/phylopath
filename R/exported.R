@@ -57,3 +57,16 @@ DAG <- function(..., order = TRUE) {
   class(d) <- c(class(d), 'DAG')
   d
 }
+
+#' @export
+plot.DAG <- function(m) {
+  df <- igraph::as_data_frame(igraph::graph_from_adjacency_matrix(m),
+                              what = "both")
+  df$vertices <- cbind(nodes = rownames(df$vertices),
+                       df$vertices)
+  dg <- DiagrammeR::create_graph(
+    nodes_df = df$vertices,
+    edges_df = df$edges
+  )
+  DiagrammeR::render_graph(dg)
+}
