@@ -1,0 +1,19 @@
+Package: phylopath
+Type: Package
+Title: Perform Phylogenetic Path Analysis
+Version: 0.1.0
+Author: Wouter van der Bijl
+Maintainer: Wouter van der Bijl <wouter.van.der.bijl@zoologi.su.se>
+Description: This package provides a simple R implementation of phylogenetic
+    path analysis as desribed by Von Hardenberg and Gonzalez-Voyer (2012).
+URL: https://github.com/Ax3man/phylopath
+BugReports: https://github.com/Ax3man/phylopath/issues
+License: GPL-3
+LazyData: TRUE
+Imports:
+    ape,
+    dplyr,
+    ggm,
+    igraph,
+    nlme
+RoxygenNote: 5.0.1
