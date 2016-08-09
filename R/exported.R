@@ -12,7 +12,8 @@
 #'   statistic, the associated p-values, information criterions, and model
 #'   weigths.
 #' @export
-phylo_path <- function(models, data, tree, cor_fun = ape::corPagel) {
+phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
+                       cut_off = 2) {
   # Check if all models have the same number of nodes
   var_names <- lapply(models, colnames)
   if (stats::var(lengths(models)) != 0 |
@@ -40,7 +41,23 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel) {
   d$l <- l(d$delta_CICc)
   d$w <- w(d$l)
 
-  dplyr::mutate_if(d, is.numeric, round, digits = 3)
+  ps <- Map(function(x, y) {
+    data.frame(d_sep = unlist(as.character(x)), p = unlist(y))
+  }, formulas, p_vals)
+  tab <- dplyr::mutate_if(d, is.numeric, round, digits = 3)
+
+  best <- tab[tab$delta_CICc < 2, ]
+  best_models <- lapply(models[best$model], est_DAG, data, cor_fun, tree)
+  best_weigthed <- Map(`*`, best_models, best$w / sum(best$w))
+  average <- apply(simplify2array(best_weigthed), c(1,2), mean)
+  class(average) <- c('matrix', 'DAG')
+
+  out <- list(model_comp = tab,
+              p_vals = ps,
+              best_model = best_models[[1]],
+              average_model = average)
+  class(out) <- 'phylopath'
+  return(out)
 }
 
 #' Directed acyclic graphs (DAGs)
@@ -58,15 +75,62 @@ DAG <- function(..., order = TRUE) {
   d
 }
 
+#' Add PGLS estimates to a DAG.
+#'
+#' @param DAG A directed acyclic graph, typically created with \code{DAG}.
+#'
+#' @inheritParams phylo_path
+#' @return A matrix.
 #' @export
-plot.DAG <- function(m) {
-  df <- igraph::as_data_frame(igraph::graph_from_adjacency_matrix(m),
-                              what = "both")
+est_DAG <- function(DAG, data, cor_fun, tree) {
+  d <- mapply(function(x, y, n) {
+    if (all(y == 0)) {
+      return(y)
+    }
+    form <- formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
+    m <- phylopath:::gls2(form, data = data, cor_fun = cor_fun, tree = tree)
+    y[y != 0] <- summary(m)$tTable[-1, 'Value']
+    return(y)
+  }, colnames(DAG), as.data.frame(DAG), MoreArgs = list(n = rownames(DAG)))
+  class(d) <- c(class(d), 'DAG')
+  d
+}
+
+#' @export
+plot.DAG <- function(x, ...) {
+  df <- igraph::as_data_frame(
+    igraph::graph_from_adjacency_matrix(x, weighted = TRUE), what = "both")
   df$vertices <- cbind(nodes = rownames(df$vertices),
                        df$vertices)
+  df$edges$penwidth <- abs(df$edges$weight)
+  df$edges$color <- ifelse(sign(df$edges$weight) == -1, 'red4', 'green4')
+
   dg <- DiagrammeR::create_graph(
     nodes_df = df$vertices,
     edges_df = df$edges
   )
   DiagrammeR::render_graph(dg)
 }
+
+#' @export
+print.phylopath <- function(x, ...) {
+  plot(x$average_model)
+  print(x$model_comp)
+}
+
+# function(x, node_df = NULL, edge_df = NULL) {
+#   df <- igraph::as_data_frame(igraph::graph_from_adjacency_matrix(x, weighted = TRUE),
+#                               what = "edges")
+#   df$value <- df$weight
+#   df$arrows <- 'to'
+#   df$color <- 'black'
+#
+#   if (is.null(node_df)) {
+#     node_df <- data.frame(id = rownames(x), label = rownames(x),
+#                           shape = 'box', border = 'black', background = 'white')
+#   }
+#   if (!is.null(edge_df)) {
+#     df <- merge(df, edge_df)
+#   }
+#   visNetwork::visNetwork(node_df, df)
+# }

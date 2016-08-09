@@ -4,7 +4,7 @@
 \alias{phylo_path}
 \title{Compare causal models in a phylogenetic context.}
 \usage{
-phylo_path(models, data, tree, cor_fun = ape::corPagel)
+phylo_path(models, data, tree, cor_fun = ape::corPagel, cut_off = 2)
 }
 \arguments{
 \item{models}{A list of directed acyclic graphs. These are matrices,
