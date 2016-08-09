@@ -102,8 +102,11 @@ plot.DAG <- function(x, ...) {
     igraph::graph_from_adjacency_matrix(x, weighted = TRUE), what = "both")
   df$vertices <- cbind(nodes = rownames(df$vertices),
                        df$vertices)
-  df$edges$penwidth <- abs(df$edges$weight)
-  df$edges$color <- ifelse(sign(df$edges$weight) == -1, 'red4', 'green4')
+  if (!all(x == 0 | x == 1)) {
+    df$edges$label <- round(df$edges$weight, 3)
+    df$edges$penwidth <- abs(df$edges$weight)
+    df$edges$color <- ifelse(sign(df$edges$weight) == -1, 'red4', 'green4')
+  }
 
   dg <- DiagrammeR::create_graph(
     nodes_df = df$vertices,
