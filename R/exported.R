@@ -75,7 +75,7 @@ DAG <- function(..., order = TRUE) {
   d
 }
 
-#' Add PGLS estimates to a DAG.
+#' Add normalized path coefficients to a DAG.
 #'
 #' @param DAG A directed acyclic graph, typically created with \code{DAG}.
 #'
@@ -83,6 +83,7 @@ DAG <- function(..., order = TRUE) {
 #' @return A matrix.
 #' @export
 est_DAG <- function(DAG, data, cor_fun, tree) {
+  data <- dplyr::mutate_if(data, is.numeric, scale)
   d <- mapply(function(x, y, n) {
     if (all(y == 0)) {
       return(y)
