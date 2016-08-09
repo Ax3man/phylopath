@@ -13,7 +13,7 @@ C_p <- function(C, k) 1 - stats::pchisq(C, 2 * k)
 
 get_p <- function(m) summary(m)$tTable[2, 'p-value']
 
-CICc <- function(C, q, n) C + 2 * q * n / (n - 1 - q)
+CICc <- function(C, q, n) C + 2 * q * (n / (n - 1 - q))
 
 l <- function(dCICc) exp(-0.5 * dCICc)
 

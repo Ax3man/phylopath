@@ -2,7 +2,7 @@
 % Please edit documentation in R/exported.R
 \name{est_DAG}
 \alias{est_DAG}
-\title{Add PGLS estimates to a DAG.}
+\title{Add normalized path coefficients to a DAG.}
 \usage{
 est_DAG(DAG, data, cor_fun, tree)
 }
@@ -21,6 +21,6 @@ one of the cor function from the \code{ape}, such as \code{corBrownian},
 A matrix.
 }
 \description{
-Add PGLS estimates to a DAG.
+Add normalized path coefficients to a DAG.
 }
 

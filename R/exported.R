@@ -7,6 +7,8 @@
 #' @param cor_fun A function that creates a \code{corStruct} object, typically
 #'   one of the cor function from the \code{ape}, such as \code{corBrownian},
 #'   \code{corPagel} etc.
+#' @param cut_off The cut off value to decide which models to include in the
+#'   average model, in terms of delta CICc.
 #'
 #' @return A table with relevant statistics for each model, including the C
 #'   statistic, the associated p-values, information criterions, and model
@@ -35,7 +37,8 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
   p <- C_p(C, k)
   IC <- CICc(C, q, nrow(data))
 
-  d <- data.frame(model = names(models), k = k, q = q, C = C, p = p, CICc = IC)
+  d <- data.frame(model = names(models), k = k, q = q, C = C, p = p, CICc = IC,
+                  stringsAsFactors = FALSE)
   d <- d[order(d$CICc), ]
   d$delta_CICc <- d$CICc - d$CICc[1]
   d$l <- l(d$delta_CICc)
@@ -83,13 +86,15 @@ DAG <- function(..., order = TRUE) {
 #' @return A matrix.
 #' @export
 est_DAG <- function(DAG, data, cor_fun, tree) {
+  r <- rownames(data)
   data <- dplyr::mutate_if(data, is.numeric, scale)
+  rownames(data) <- r
   d <- mapply(function(x, y, n) {
     if (all(y == 0)) {
       return(y)
     }
-    form <- formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
-    m <- phylopath:::gls2(form, data = data, cor_fun = cor_fun, tree = tree)
+    f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
+    m <- gls2(f, data = data, cor_fun = cor_fun, tree = tree)
     y[y != 0] <- summary(m)$tTable[-1, 'Value']
     return(y)
   }, colnames(DAG), as.data.frame(DAG), MoreArgs = list(n = rownames(DAG)))
@@ -98,14 +103,14 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
 }
 
 #' @export
-plot.DAG <- function(x, ...) {
+plot.DAG <- function(x, width_const = 5, ...) {
   df <- igraph::as_data_frame(
     igraph::graph_from_adjacency_matrix(x, weighted = TRUE), what = "both")
   df$vertices <- cbind(nodes = rownames(df$vertices),
                        df$vertices)
   if (!all(x == 0 | x == 1)) {
     df$edges$label <- round(df$edges$weight, 3)
-    df$edges$penwidth <- abs(df$edges$weight)
+    df$edges$penwidth <- abs(df$edges$weight / max(df$edges$weight) * width_const)
     df$edges$color <- ifelse(sign(df$edges$weight) == -1, 'red4', 'green4')
   }
 
@@ -118,7 +123,7 @@ plot.DAG <- function(x, ...) {
 
 #' @export
 print.phylopath <- function(x, ...) {
-  plot(x$average_model)
+  plot.DAG(x$average_model)
   print(x$model_comp)
 }
 

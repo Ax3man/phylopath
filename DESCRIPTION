@@ -10,6 +10,8 @@ URL: https://github.com/Ax3man/phylopath
 BugReports: https://github.com/Ax3man/phylopath/issues
 License: GPL-3
 LazyData: TRUE
+Depends:
+  R (>= 2.10)
 Imports:
     ape,
     DiagrammeR,
@@ -18,3 +20,6 @@ Imports:
     igraph,
     nlme
 RoxygenNote: 5.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
