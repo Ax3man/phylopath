@@ -52,7 +52,7 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
   best <- tab[tab$delta_CICc < 2, ]
   best_models <- lapply(models[best$model], est_DAG, data, cor_fun, tree)
   best_weigthed <- Map(`*`, best_models, best$w / sum(best$w))
-  average <- apply(simplify2array(best_weigthed), c(1,2), mean)
+  average <- apply(simplify2array(best_weigthed), c(1, 2), sum)
   class(average) <- c('matrix', 'DAG')
 
   out <- list(model_comp = tab,
