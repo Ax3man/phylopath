@@ -1,5 +1,9 @@
 set_to_formula <- function(x) {
-  stats::formula(paste(x[1], paste(x[-1], collapse = '+'), sep = '~'))
+  dep <- x[2]
+  ind <- x[1]
+  cond <- x[c(-1, -2)]
+
+  stats::formula(paste(dep, paste(c(cond, ind), collapse = '+'), sep = '~'))
 }
 
 find_formulas <- function(d) {
@@ -11,7 +15,10 @@ C_stat <- function(ps) -2 * sum(log(ps))
 
 C_p <- function(C, k) 1 - stats::pchisq(C, 2 * k)
 
-get_p <- function(m) summary(m)$tTable[2, 'p-value']
+get_p <- function(m) {
+  x <- summary(m)$tTable
+  x[nrow(x), 'p-value']
+}
 
 CICc <- function(C, q, n) C + 2 * q * (n / (n - 1 - q))
 

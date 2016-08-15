@@ -13,7 +13,7 @@ This vignette gives a quick overview of the package by recreating the phylogenet
 
 > Gonzalez-Voyer A & von Hardenberg A. 2014. An Introduction to Phylogenetic Path Analysis. Chapter 8. In: Garamszegi LZ (ed.), Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. pp. 201-229. Springer-Verlag Berlin Heidelberg.
 
-You can find this book chapter [online](http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf), for free. For an introduction to the methodology, as well as the data, see the wonderful book chapter.
+You can find this book chapter [online](http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf). For an introduction to the methodology, as well as the data, see the wonderful book chapter.
 
 Specifically, we recreate the Rhinogrades example here. The data used has been included in this package.
 
