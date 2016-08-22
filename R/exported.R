@@ -7,6 +7,13 @@
 #' @param cor_fun A function that creates a \code{corStruct} object, typically
 #'   one of the cor function from the \code{ape}, such as \code{corBrownian},
 #'   \code{corPagel} etc.
+#' @param order Causal order of the included variable, given as a character
+#'   vector. This is used to determine which variable should be the dependent
+#'   in the dsep regression equations. If left unspecified, the order will be
+#'   automatically determined. If the combination of all included models is
+#'   itself a DAG, then the ordering of that full model is used. Otherwise,
+#'   the most common ordering between each pair of variables is used to create
+#'   a general ordering.
 #' @param cut_off The cut off value to decide which models to include in the
 #'   average model, in terms of delta CICc.
 #'
@@ -14,23 +21,26 @@
 #'   statistic, the associated p-values, information criterions, and model
 #'   weigths.
 #' @export
-phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
-                       cut_off = 2) {
+phylo_path <- function(models, data, tree, order = NULL,
+                       cor_fun = ape::corPagel, cut_off = 2) {
   # Check if all models have the same number of nodes
   var_names <- lapply(models, colnames)
   if (stats::var(lengths(models)) != 0 |
       any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0)) {
     stop('All causal models need to include the same variables.', call. = FALSE)
   }
-
   if (is.null(names(models))) {
     names(models) <- LETTERS[1:length(models)]
   }
-  formulas <- lapply(models, find_formulas)
-  p_vals <- lapply(formulas, function(x) sapply(x, function(y) {
-    m <- gls2(y, data = data, tree = tree, cor_fun = cor_fun)
-    get_p(m)
+  if (is.null(order)) {
+    order <- find_consensus_order(models)
+  }
+  formulas <- lapply(models, find_formulas, order)
+  dsep_models <- lapply(formulas, function(x) lapply(x, function(y) {
+    gls2(y, data = data, tree = tree, cor_fun = cor_fun)
   } ) )
+  p_vals <- lapply(dsep_models, function(x) sapply(x, get_p))
+  corStructs <- lapply(dsep_models, function(x) sapply(x, get_corStruct))
   k <- lengths(formulas)
   q <- sapply(models, function(m) nrow(m) + sum(m))
   C <- sapply(p_vals, C_stat)
@@ -44,9 +54,12 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
   d$l <- l(d$delta_CICc)
   d$w <- w(d$l)
 
-  ps <- Map(function(x, y) {
-    data.frame(d_sep = unlist(as.character(x)), p = unlist(y))
-  }, formulas, p_vals)
+  d_sep <- Map(function(a, b, c, d) {
+    dplyr::data_frame(d_sep = unlist(as.character(a)),
+                      p = unlist(b),
+                      corStruct = unlist(c),
+                      model = d)
+  }, formulas, p_vals, corStructs, dsep_models)
   tab <- dplyr::mutate_if(d, is.numeric, round, digits = 3)
 
   best <- tab[tab$delta_CICc < 2, ]
@@ -56,7 +69,7 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
   class(average) <- c('matrix', 'DAG')
 
   out <- list(model_comp = tab,
-              p_vals = ps,
+              d_sep = d_sep,
               best_model = best_models[[1]],
               average_model = average)
   class(out) <- 'phylopath'
@@ -95,7 +108,7 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
     }
     f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
     m <- gls2(f, data = data, cor_fun = cor_fun, tree = tree)
-    y[y != 0] <- summary(m)$tTable[-1, 'Value']
+    y[y != 0] <- get_est(m)
     return(y)
   }, colnames(DAG), as.data.frame(DAG), MoreArgs = list(n = rownames(DAG)))
   class(d) <- c(class(d), 'DAG')

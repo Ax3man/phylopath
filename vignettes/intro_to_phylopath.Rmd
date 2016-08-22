@@ -1,5 +1,5 @@
 ---
-title: "Introduction to `phylopath`"
+title: "Introduction to phylogenetic path analysis with phylopath"
 author: "Wouter van der Bijl"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -13,7 +13,7 @@ This vignette gives a quick overview of the package by recreating the phylogenet
 
 > Gonzalez-Voyer A & von Hardenberg A. 2014. An Introduction to Phylogenetic Path Analysis. Chapter 8. In: Garamszegi LZ (ed.), Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. pp. 201-229. Springer-Verlag Berlin Heidelberg.
 
-You can find this book chapter [online](http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf), for free. For an introduction to the methodology, as well as the data, see the wonderful book chapter.
+You can find this book chapter [online](http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf). For an introduction to the methodology, as well as the data, see the wonderful book chapter.
 
 Specifically, we recreate the Rhinogrades example here. The data used has been included in this package.
 
@@ -52,10 +52,13 @@ plot(models$one)
 
 Now that we have the models, we can perform the path analysis using the `phylo_path` function. For this we will need a data set, included in this package as `rhino`, as well as a phylogenetic tree, `rhino_tree`.
 
+Importantly, when using PGLS, we need to be consistent in which variables are used as independent and dependent variables in the analysis. If one has a specific idea about which variables are to be conscidered as up- and down-stream, then you can use the `order` argument to give the ordering (from up to down). In this case, we supply the ordering to mimic the choices made by the chapter authors.
+
 By default, `phylo_path` uses Pagel's “lambda” correlation structure (`ape::corPagel`), but if you want, for example, to use a simple Brownian motion model, you can supply `ape::corBrownian` instead.
 
 ```{r}
-result <- phylo_path(models, data = rhino, tree = rhino_tree)
+result <- phylo_path(models, data = rhino, tree = rhino_tree, 
+                     order = c('BM', 'NL', 'DD', 'LS', 'RS'))
 ```
 
 The result we end up with is a `phylo_path` object. Simply printing it gives us a table with statistics for all the models, and a plot will appear with the average model.
@@ -70,16 +73,18 @@ plot(result$average_model)
 
 The numbers and width of the arrow represent path coefficients. In this case, all paths are green since all relationships are positive.
 
+The ranking of the models obtained here is identical as the worked example in the book chapter. The estimates differ slightly however, since we are using `nlme::gls` whereas the chapter was using `caper::pgls`.
+
 You can access the DAG for the average model with `result$average_model`. You can also plot the best model instead:
 
 ```{r}
 plot(result$best_model)
 ```
 
-Finally, you can access the conditional independencies and their associated p-values as well. This can be useful if you want to know _why_ a certain model was rejected.
+Finally, you can access the conditional independencies and their associated p-values as well. This can be useful if you want to know _why_ a certain model was rejected. The `corStruct` column gives us the estimates for the correlation structure, in this case _lambda_. Finally, all models are stored in the `model` list as well, in case other statistics need to be extracted.
 
 ```{r}
-result$p_vals$one
+result$d_sep$one
 ```
 
 For model 1 it seems that the third conditional independence statement was violated.

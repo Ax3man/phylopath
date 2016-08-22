@@ -1,5 +1,5 @@
 ---
-title: "Introduction to `phylopath`"
+title: "Introduction to phylogenetic path analysis with phylopath"
 author: "Wouter van der Bijl"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -17,9 +17,14 @@ You can find this book chapter [online](http://www.consevol.org/pdf/Books/Chapte
 
 Specifically, we recreate the Rhinogrades example here. The data used has been included in this package.
 
-Following figure 8.7, we first create all 9 causal models using the `DAG` function. This function uses regression equation (or `formula`s) to express the hypothesized relationships in the models. The easiest way to create this is by taking each node (a variable), putting it on the left-hand side of a tilde (`~`), and putting its causal parents on the right-hand side.
+Following figure 8.7, we first create all 9 causal models using the `DAG` function. This function uses regression equations (or `formula`s) to express the hypothesized relationships in the models. The easiest way to create this is by taking each node (a variable), putting it on the left-hand side of a tilde (`~`), and putting its causal parents on the right-hand side.
 
-Note: any unconnected nodes can be added using `var ~ var`, but we won't need this for this example.
+Note: any unconnected nodes can be added using `var ~ var`, but we won't be needing that for this example.
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(dev = "png", out.width = "400px", out.height = "400px")
+```
+
 
 ```{r}
 library(phylopath)
@@ -42,7 +47,7 @@ The `DAG` function simply produces a matrix that summarizes the connections betw
 ```{r}
 models$one
 ```
-Note that the models are of class `matrix` as well as of class `DAG`. This means we can have special DAG methods.
+Note that the models are of class `matrix` as well as of class `DAG`. This means we can have special DAG `methods`.
 
 For example, it is good to check if the DAG looks like you were expecting. Simply `plot` one of the models to inspect it visually.
 
@@ -52,23 +57,28 @@ plot(models$one)
 
 Now that we have the models, we can perform the path analysis using the `phylo_path` function. For this we will need a data set, included in this package as `rhino`, as well as a phylogenetic tree, `rhino_tree`.
 
+Importantly, when using PGLS, we need to be consistent in which variables are used as independent and dependent variables in the analysis. If one has a specific idea about which variables are to be conscidered as up- and down-stream, then you can use the `order` argument to give the ordering (from up to down). In this case, we supply the ordering to mimic the choices made by the chapter authors. Alternatively, you can choose to not supply an order, and the function will try to make a sensible order by itself. If the combination of all causal models is itself a DAG, the ordering of that model will be used, otherwise the ordering will be constructed by consensus (i.e. the most common ordering is chosen).
+
 By default, `phylo_path` uses Pagel's “lambda” correlation structure (`ape::corPagel`), but if you want, for example, to use a simple Brownian motion model, you can supply `ape::corBrownian` instead.
 
 ```{r}
-result <- phylo_path(models, data = rhino, tree = rhino_tree)
+result <- phylo_path(models, data = rhino, tree = rhino_tree, 
+                     order = c('BM', 'NL', 'DD', 'LS', 'RS'))
 ```
 
-The result we end up with is a `phylo_path` object. Simply printing it gives us a table with statistics for all the models, and a plot will appear with the average model.
+The result we end up with is a `phylo_path` object. Simply printing it gives us a table with statistics for all the models, and a plot will appear with the _average_ model.
 
 ```{r}
 result
 ```
 
-```{r, echo=FALSE}
+```{r}
 plot(result$average_model)
 ```
 
 The numbers and width of the arrow represent path coefficients. In this case, all paths are green since all relationships are positive.
+
+The ranking of the models obtained here is identical as the worked example in the book chapter. The estimates differ slightly however, since we are using `nlme::gls` whereas the chapter was using `caper::pgls`.
 
 You can access the DAG for the average model with `result$average_model`. You can also plot the best model instead:
 
@@ -76,10 +86,10 @@ You can access the DAG for the average model with `result$average_model`. You ca
 plot(result$best_model)
 ```
 
-Finally, you can access the conditional independencies and their associated p-values as well. This can be useful if you want to know _why_ a certain model was rejected.
+Finally, you can access the conditional independencies and their associated p-values as well. This can be useful if you want to know _why_ a certain model was rejected. The `corStruct` column gives us the estimates for the correlation structure, in this case _lambda_. Finally, all models are stored in the `model` list as well, in case other statistics need to be extracted.
 
 ```{r}
-result$p_vals$one
+result$d_sep$one
 ```
 
 For model 1 it seems that the third conditional independence statement was violated.

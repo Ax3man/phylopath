@@ -4,7 +4,8 @@
 \alias{phylo_path}
 \title{Compare causal models in a phylogenetic context.}
 \usage{
-phylo_path(models, data, tree, cor_fun = ape::corPagel, cut_off = 2)
+phylo_path(models, data, tree, order = NULL, cor_fun = ape::corPagel,
+  cut_off = 2)
 }
 \arguments{
 \item{models}{A list of directed acyclic graphs. These are matrices,
@@ -13,6 +14,14 @@ typically created with \code{DAG}.}
 \item{data}{A \code{data.frame} with data.}
 
 \item{tree}{A phylogenetic tree of class \code{pylo}.}
+
+\item{order}{Causal order of the included variable, given as a character
+vector. This is used to determine which variable should be the dependent
+in the dsep regression equations. If left unspecified, the order will be
+automatically determined. If the combination of all included models is
+itself a DAG, then the ordering of that full model is used. Otherwise,
+the most common ordering between each pair of variables is used to create
+a general ordering.}
 
 \item{cor_fun}{A function that creates a \code{corStruct} object, typically
 one of the cor function from the \code{ape}, such as \code{corBrownian},

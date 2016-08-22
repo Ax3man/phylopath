@@ -20,7 +20,8 @@ models$one
 plot(models$one)
 
 ## ------------------------------------------------------------------------
-result <- phylo_path(models, data = rhino, tree = rhino_tree)
+result <- phylo_path(models, data = rhino, tree = rhino_tree, 
+                     order = c('BM', 'NL', 'DD', 'LS', 'RS'))
 
 ## ------------------------------------------------------------------------
 result
@@ -32,5 +33,5 @@ plot(result$average_model)
 plot(result$best_model)
 
 ## ------------------------------------------------------------------------
-result$p_vals$one
+result$d_sep$one
 
