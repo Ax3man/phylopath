@@ -32,6 +32,9 @@ phylo_path <- function(models, data, tree, order = NULL,
   if (is.null(names(models))) {
     names(models) <- LETTERS[1:length(models)]
   }
+  if ('tbl_df' %in% class(data)) {
+    data <- as.data.frame(data)
+  }
   if (is.null(order)) {
     order <- find_consensus_order(models)
   }
