@@ -60,15 +60,14 @@ phylo_path <- function(models, data, tree, order = NULL,
                       corStruct = unlist(c),
                       model = d)
   }, formulas, p_vals, corStructs, dsep_models)
-  tab <- dplyr::mutate_if(d, is.numeric, round, digits = 3)
 
-  best <- tab[tab$delta_CICc < 2, ]
+  best <- d[d$delta_CICc < 2, ]
   best_models <- lapply(models[best$model], est_DAG, data, cor_fun, tree)
   best_weigthed <- Map(`*`, best_models, best$w / sum(best$w))
   average <- apply(simplify2array(best_weigthed), c(1, 2), sum)
   class(average) <- c('matrix', 'DAG')
 
-  out <- list(model_comp = tab,
+  out <- list(model_comp = d,
               d_sep = d_sep,
               best_model = best_models[[1]],
               average_model = average)
@@ -137,7 +136,8 @@ plot.DAG <- function(x, width_const = 5, ...) {
 #' @export
 print.phylopath <- function(x, ...) {
   plot.DAG(x$average_model)
-  print(x$model_comp)
+  tab <- dplyr::mutate_if(x$model_comp, is.numeric, round, digits = 3)
+  print(tab)
 }
 
 # function(x, node_df = NULL, edge_df = NULL) {
