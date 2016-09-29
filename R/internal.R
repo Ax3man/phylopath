@@ -72,4 +72,6 @@ get_p <- function(m) {
 
 get_est <- function(m) summary(m)$tTable[-1, 'Value']
 
+get_se <- function(m) summary(m)$tTable[-1, 'Std.Error']
+
 get_corStruct <- function(m) attr(m$apVar, "Pars")["corStruct"]

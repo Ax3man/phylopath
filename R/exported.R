@@ -96,25 +96,37 @@ DAG <- function(..., order = TRUE) {
 #' Add normalized path coefficients to a DAG.
 #'
 #' @param DAG A directed acyclic graph, typically created with \code{DAG}.
+#' @param return What to return, either \code{"coef"}fiecients, standard errors
+#'   (\code{"se"}), or \code{"both"}. When both, a list of matrices is
+#'   returned.
 #'
 #' @inheritParams phylo_path
-#' @return A matrix.
+#' @return Either a matrix of coefficients, a matrix of standard errors, or
+#'   a list of both, depending on \code{return}.
 #' @export
-est_DAG <- function(DAG, data, cor_fun, tree) {
+est_DAG <- function(DAG, data, cor_fun, tree, return = 'coef') {
   r <- rownames(data)
   data <- dplyr::mutate_if(data, is.numeric, scale)
   rownames(data) <- r
-  d <- mapply(function(x, y, n) {
+  d <- Map(function(x, y, n) {
     if (all(y == 0)) {
-      return(y)
+      return(cbind(y, y))
     }
     f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
     m <- gls2(f, data = data, cor_fun = cor_fun, tree = tree)
-    y[y != 0] <- get_est(m)
-    return(y)
+    Coef <- se <- y
+    Coef[Coef != 0] <- get_est(m)
+    se[se != 0] <- get_se(m)
+    return(cbind(coef = Coef, se = se))
   }, colnames(DAG), as.data.frame(DAG), MoreArgs = list(n = rownames(DAG)))
-  class(d) <- c(class(d), 'DAG')
-  d
+  coefs <- sapply(d, `[`, 1:nrow(DAG), 1)
+  ses   <- sapply(d, `[`, 1:nrow(DAG), 2)
+  rownames(coefs) <- rownames(ses) <- rownames(DAG)
+  class(coefs) <- class(ses) <- c('matrix', 'DAG')
+  switch(return,
+         coef = coefs,
+         se   = ses,
+         both = list(coef = coefs, se = ses))
 }
 
 #' @export
