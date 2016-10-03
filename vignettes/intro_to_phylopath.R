@@ -1,3 +1,6 @@
+## ---- include = FALSE----------------------------------------------------
+knitr::opts_chunk$set(dev = "png")
+
 ## ------------------------------------------------------------------------
 library(phylopath)
 
@@ -20,17 +23,37 @@ models$one
 plot(models$one)
 
 ## ------------------------------------------------------------------------
-result <- phylo_path(models, data = rhino, tree = rhino_tree)
+result <- phylo_path(models, data = rhino, tree = rhino_tree, 
+                     order = c('BM', 'NL', 'DD', 'LS', 'RS'))
 
 ## ------------------------------------------------------------------------
 result
 
-## ---- echo=FALSE---------------------------------------------------------
-plot(result$average_model)
+## ------------------------------------------------------------------------
+summary(result)
 
 ## ------------------------------------------------------------------------
-plot(result$best_model)
+(best_model <- best(result))
 
 ## ------------------------------------------------------------------------
-result$p_vals$one
+plot(best_model)
+
+## ------------------------------------------------------------------------
+average_model <- average(result)
+plot(average_model)
+
+## ------------------------------------------------------------------------
+average_model_full <- average(result, method = "full")
+plot(average_model_full)
+
+## ---- fig.height=6-------------------------------------------------------
+coef_plot(best_model)
+
+## ---- fig.width=6--------------------------------------------------------
+coef_plot(average_model_full, reverse_order = TRUE) + 
+  ggplot2::coord_flip() + 
+  ggplot2::theme_bw()
+
+## ------------------------------------------------------------------------
+result$d_sep$one
 
