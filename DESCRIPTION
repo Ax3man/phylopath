@@ -1,7 +1,7 @@
 Package: phylopath
 Type: Package
 Title: Perform Phylogenetic Path Analysis
-Version: 0.1.0
+Version: 0.2.0
 Author: Wouter van der Bijl
 Maintainer: Wouter van der Bijl <wouter.van.der.bijl@zoologi.su.se>
 Description: This package provides a simple R implementation of phylogenetic
@@ -17,8 +17,13 @@ Imports:
     DiagrammeR,
     dplyr,
     ggm,
+    ggplot2,
     igraph,
-    nlme
+    MuMIn,
+    nlme,
+    purrr,
+    tibble,
+    tidyr
 RoxygenNote: 5.0.1
 Suggests: knitr,
     rmarkdown

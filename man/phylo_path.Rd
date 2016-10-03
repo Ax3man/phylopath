@@ -4,8 +4,7 @@
 \alias{phylo_path}
 \title{Compare causal models in a phylogenetic context.}
 \usage{
-phylo_path(models, data, tree, order = NULL, cor_fun = ape::corPagel,
-  cut_off = 2)
+phylo_path(models, data, tree, order = NULL, cor_fun = ape::corPagel)
 }
 \arguments{
 \item{models}{A list of directed acyclic graphs. These are matrices,
@@ -26,9 +25,6 @@ a general ordering.}
 \item{cor_fun}{A function that creates a \code{corStruct} object, typically
 one of the cor function from the \code{ape}, such as \code{corBrownian},
 \code{corPagel} etc.}
-
-\item{cut_off}{The cut off value to decide which models to include in the
-average model, in terms of delta CICc.}
 }
 \value{
 A table with relevant statistics for each model, including the C

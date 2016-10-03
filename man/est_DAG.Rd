@@ -2,7 +2,7 @@
 % Please edit documentation in R/exported.R
 \name{est_DAG}
 \alias{est_DAG}
-\title{Add normalized path coefficients to a DAG.}
+\title{Add standardized path coefficients to a DAG.}
 \usage{
 est_DAG(DAG, data, cor_fun, tree)
 }
@@ -18,9 +18,9 @@ one of the cor function from the \code{ape}, such as \code{corBrownian},
 \item{tree}{A phylogenetic tree of class \code{pylo}.}
 }
 \value{
-A matrix.
+An object of class \code{fitted_DAG}.
 }
 \description{
-Add normalized path coefficients to a DAG.
+Add standardized path coefficients to a DAG.
 }
 
