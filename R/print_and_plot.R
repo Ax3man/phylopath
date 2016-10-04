@@ -25,7 +25,7 @@ plot.DAG <- function(x, ...) {
     nodes_df = df$vertices,
     edges_df = df$edges
   )
-  DiagrammeR::render_graph(dg)
+  DiagrammeR::render_graph(dg, ...)
 }
 
 #' @export
@@ -44,7 +44,6 @@ plot.fitted_DAG <- function(x, width_const = 5, ...) {
   )
   DiagrammeR::render_graph(dg)
 }
-
 
 #' Plot path coefficients and their confidence intervals.
 #'

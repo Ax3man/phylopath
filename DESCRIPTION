@@ -4,8 +4,9 @@ Title: Perform Phylogenetic Path Analysis
 Version: 0.2.0
 Author: Wouter van der Bijl
 Maintainer: Wouter van der Bijl <wouter.van.der.bijl@zoologi.su.se>
-Description: This package provides a simple R implementation of phylogenetic
-    path analysis as desribed by Von Hardenberg and Gonzalez-Voyer (2012).
+Description: A comprehensive and easy to use R implementation of confirmatory 
+    phylogenetic path analysis as described by Von Hardenberg and Gonzalez-Voyer 
+    (2012).
 URL: https://github.com/Ax3man/phylopath
 BugReports: https://github.com/Ax3man/phylopath/issues
 License: GPL-3

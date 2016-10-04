@@ -1,2 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^NEWS\.md$
+^vignettes/intro_to_phylopath\.html$
+^cran-comments\.md$
