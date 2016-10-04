@@ -22,4 +22,12 @@ This function is a simple wrapper around the function from the \code{ggm}
 package. The only differences are that the \code{order} argument defaults
 to \code{TRUE} and that it adds a \code{DAG} class for easy plotting.
 }
+\examples{
+  # Use formula notation to create DAGs:
+  plot(DAG(A~B, B~C))
+  # Use + to easily add multiple parents to a node:
+  plot(DAG(A~B+C))
+  # Add a node as it's own parent to create an isolate:
+  plot(DAG(A~B+C, D~D))
+}
 

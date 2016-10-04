@@ -19,6 +19,17 @@
 #'   statistic, the associated p-values, information criterions, and model
 #'   weigths.
 #' @export
+#' @examples
+#'   #see vignette('intro_to_phylopath') for more details
+#'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
+#'                      B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+#'   p <- phylo_path(candidates, rhino, rhino_tree)
+#'
+#'   # Printing p gives some general information:
+#'   p
+#'   # And the summary gives statistics to compare the models:
+#'   summary(p)
+#'
 phylo_path <- function(models, data, tree, order = NULL,
                        cor_fun = ape::corPagel) {
   cor_fun <- match.fun(cor_fun)
@@ -83,6 +94,17 @@ summary.phylopath <- function(object, ...) {
 #'
 #' @return An object of class \code{fitted_DAG}.
 #' @export
+#'
+#' @examples
+#'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
+#'                      B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+#'   p <- phylo_path(candidates, rhino, rhino_tree)
+#'   best_model <- best(p)
+#'   # Print the best model to see coefficients, se and ci:
+#'   best_model
+#'   # Plot to show the weighted graph:
+#'   plot(best_model)
+#'
 best <- function(phylopath) {
   b <- summary(phylopath)[1, 'model']
   best_model <- phylopath$models[[b]]
@@ -100,6 +122,25 @@ best <- function(phylopath) {
 #'
 #' @return An object of class \code{fitted_DAG}.
 #' @export
+#'
+#' @examples
+#'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS),
+#'                      B = DAG(LS ~ BM, NL ~ LS, DD ~ NL),
+#'                      C = DAG(LS ~ BM, NL ~ LS + BM, DD ~ NL))
+#'   p <- phylo_path(candidates, rhino, rhino_tree)
+#'   summary(p)
+#'   # Models A and C have close to equal support, so we may decide to take
+#'   # their average.
+#'
+#'   avg_model <- average(p)
+#'   # Print the average model to see coefficients, se and ci:
+#'   avg_model
+#'   # Plot to show the weighted graph:
+#'   plot(avg_model)
+#'   # Note that coefficents that only occur in one of the models become much
+#'   # smaller when we use full averaging:
+#'   plot(average(p, method = 'full'))
+#'
 average <- function(phylopath, cut_off = 2, method = 'conditional', ...) {
   d <- summary(phylopath)
   b <- d[d$delta_CICc < cut_off, ]

@@ -20,4 +20,13 @@ A \code{ggplot} object.
 \description{
 Plot path coefficients and their confidence intervals.
 }
+\examples{
+  d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
+  plot(d)
+  d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
+  plot(d_fitted)
+  coef_plot(d_fitted)
+  # to create a horizontal version, use this:
+  coef_plot(d_fitted, reverse_order = TRUE) + ggplot2::coord_flip()
+}
 

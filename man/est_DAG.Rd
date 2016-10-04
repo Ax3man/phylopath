@@ -23,4 +23,10 @@ An object of class \code{fitted_DAG}.
 \description{
 Add standardized path coefficients to a DAG.
 }
+\examples{
+  d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
+  plot(d)
+  d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
+  plot(d_fitted)
+}
 

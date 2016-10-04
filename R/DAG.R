@@ -7,6 +7,14 @@
 #' @inheritParams ggm::DAG
 #' @return An object of classes \code{matrix} and \code{DAG}
 #' @export
+#'
+#' @examples
+#'   # Use formula notation to create DAGs:
+#'   plot(DAG(A~B, B~C))
+#'   # Use + to easily add multiple parents to a node:
+#'   plot(DAG(A~B+C))
+#'   # Add a node as it's own parent to create an isolate:
+#'   plot(DAG(A~B+C, D~D))
 DAG <- function(..., order = TRUE) {
   d <- ggm::DAG(..., order = order)
   class(d) <- c(class(d), 'DAG')
@@ -21,6 +29,12 @@ DAG <- function(..., order = TRUE) {
 #' @return An object of class \code{fitted_DAG}.
 #'
 #' @export
+#'
+#' @examples
+#'   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
+#'   plot(d)
+#'   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
+#'   plot(d_fitted)
 est_DAG <- function(DAG, data, cor_fun, tree) {
   r <- rownames(data)
   data <- dplyr::mutate_if(data, is.numeric, scale)
@@ -70,6 +84,7 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
 #' @return An object of class \code{fitted_DAG}, including standard errors and
 #'   confidence inverals if \code{std_error} was supplied.
 #' @export
+#'
 average_DAGs <- function(coef, std_error = NULL,
                          weights = rep(1, length(coef)), method = 'conditional',
                          ...) {

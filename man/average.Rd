@@ -34,4 +34,23 @@ An object of class \code{fitted_DAG}.
 Extract and average the best supported models for a phylogenetic path
 analysis.
 }
+\examples{
+  candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS),
+                     B = DAG(LS ~ BM, NL ~ LS, DD ~ NL),
+                     C = DAG(LS ~ BM, NL ~ LS + BM, DD ~ NL))
+  p <- phylo_path(candidates, rhino, rhino_tree)
+  summary(p)
+  # Models A and C have close to equal support, so we may decide to take
+  # their average.
+
+  avg_model <- average(p)
+  # Print the average model to see coefficients, se and ci:
+  avg_model
+  # Plot to show the weighted graph:
+  plot(avg_model)
+  # Note that coefficents that only occur in one of the models become much
+  # smaller when we use full averaging:
+  plot(average(p, method = 'full'))
+
+}
 
