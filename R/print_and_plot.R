@@ -79,7 +79,7 @@ coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
   } else {
     df$path <- factor(df$path, levels = df$path)
   }
-  df <- df[df$coef > .Machine$double.eps, ]
+  df <- df[abs(df$coef) > .Machine$double.eps, ]
   ggplot2::ggplot(df,
                   ggplot2::aes_(~path, ~coef, ymin = ~lower, ymax = ~upper)) +
     ggplot2::geom_hline(yintercept = 0, size = 1, lty = 2) +
