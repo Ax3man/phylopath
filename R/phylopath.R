@@ -139,7 +139,8 @@ best <- function(phylopath) {
 #'   plot(avg_model)
 #'   # Note that coefficents that only occur in one of the models become much
 #'   # smaller when we use full averaging:
-#'   plot(average(p, method = 'full'))
+#'   coef_plot(avg_model)
+#'   coef_plot(average(p, method = 'full'))
 #'
 average <- function(phylopath, cut_off = 2, method = 'conditional', ...) {
   d <- summary(phylopath)
