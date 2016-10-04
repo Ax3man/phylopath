@@ -4,14 +4,13 @@
 \alias{average_DAGs}
 \title{Perform model averaging on a list of DAGs.}
 \usage{
-average_DAGs(coef, std_error = NULL, weights = rep(1, length(coef)),
+average_DAGs(fitted_DAGs, weights = rep(1, length(coef)),
   method = "conditional", ...)
 }
 \arguments{
-\item{coef}{A list of estimated DAGs, usually created with \code{est_DAG}.}
-
-\item{std_error}{Optionally, a list of associated matrices standard errors,
-one matrix for each DAG. Can also be obtained from \code{est_DAG}.}
+\item{fitted_DAGs}{A list of \code{fitted_DAG} objects containing
+coefficents and standard errors, usually obtainted by using \code{est_DAG}
+on several DAGs.}
 
 \item{weights}{A vector of associated model weights.}
 
@@ -30,9 +29,20 @@ averaging is set as the default. Also see \link[MuMIn]{model.avg}.}
 }
 \value{
 An object of class \code{fitted_DAG}, including standard errors and
-  confidence inverals if \code{std_error} was supplied.
+  confidence inverals.
 }
 \description{
 Perform model averaging on a list of DAGs.
+}
+\examples{
+  # Normally, I would advocate the use of the phylo_path and average
+  # functions, but this code shows how to average any set of models. Note
+  # that not many checks are implemented, so you may want to be careful and
+  # make sure the DAGs make sense and contain the same variables!
+  candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
+                     B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+  fit_cand <- lapply(candidates, est_DAG, rhino, ape::corPagel, rhino_tree)
+  ave_cand <- average_DAGs(fit_cand)
+  coef_plot(ave_cand)
 }
 

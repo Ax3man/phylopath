@@ -65,9 +65,9 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
 
 #' Perform model averaging on a list of DAGs.
 #'
-#' @param coef A list of estimated DAGs, usually created with \code{est_DAG}.
-#' @param std_error Optionally, a list of associated matrices standard errors,
-#'   one matrix for each DAG. Can also be obtained from \code{est_DAG}.
+#' @param fitted_DAGs A list of \code{fitted_DAG} objects containing
+#'   coefficents and standard errors, usually obtainted by using \code{est_DAG}
+#'   on several DAGs.
 #' @param weights A vector of associated model weights.
 #' @param method Either \code{"full"} or \code{"conditional"}. The methods
 #'   differ in how they deal with averaging a path coefficient where the path is
@@ -82,15 +82,27 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
 #'   For details on the error calculations, see \link[MuMIn]{par.avg}.
 #'
 #' @return An object of class \code{fitted_DAG}, including standard errors and
-#'   confidence inverals if \code{std_error} was supplied.
+#'   confidence inverals.
 #' @export
 #'
-average_DAGs <- function(coef, std_error = NULL,
-                         weights = rep(1, length(coef)), method = 'conditional',
-                         ...) {
+#' @examples
+#'   # Normally, I would advocate the use of the phylo_path and average
+#'   # functions, but this code shows how to average any set of models. Note
+#'   # that not many checks are implemented, so you may want to be careful and
+#'   # make sure the DAGs make sense and contain the same variables!
+#'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
+#'                      B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+#'   fit_cand <- lapply(candidates, est_DAG, rhino, ape::corPagel, rhino_tree)
+#'   ave_cand <- average_DAGs(fit_cand)
+#'   coef_plot(ave_cand)
+average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
+                         method = 'conditional', ...) {
   if (!(method %in% c('full', 'conditional'))) {
     stop('method has to be either "full" or "conditional".', call. = FALSE)
   }
+  coef      <- lapply(fitted_DAGs, `[[`, 'coef')
+  std_error <- lapply(fitted_DAGs, `[[`, 'se')
+
   rel_weights <- weights / sum(weights)
   coef      <- simplify2array(coef)
   std_error <- simplify2array(std_error)

@@ -146,9 +146,7 @@ average <- function(phylopath, cut_off = 2, method = 'conditional', ...) {
   b <- d[d$delta_CICc < cut_off, ]
   best_models <- lapply(phylopath$models[b$model], est_DAG, phylopath$data,
                         phylopath$cor_fun, phylopath$tree)
-  best_models_coef <- lapply(best_models, `[[`, 'coef')
-  best_models_se <- lapply(best_models, `[[`, 'se')
-  average <- average_DAGs(best_models_coef, best_models_se, b$w, method, ...)
+  average <- average_DAGs(best_models, b$w, method, ...)
 
   class(average$coef) <- c('matrix', 'DAG')
   return(average)
