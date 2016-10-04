@@ -8,6 +8,7 @@
 #'   Phylogenetic Path Analysis. Chapter 8. In: Garamszegi LZ (ed.), Modern
 #'   Phylogenetic Comparative Methods and Their Application in Evolutionary
 #'   Biology. pp. 201-229. Springer-Verlag Berlin Heidelberg.
+#'   <doi:10.1111/j.1558-5646.2012.01790.x>
 "rhino"
 
 #' Rhinogrades phylogeny
@@ -18,5 +19,6 @@
 #'   Phylogenetic Path Analysis. Chapter 8. In: Garamszegi LZ (ed.), Modern
 #'   Phylogenetic Comparative Methods and Their Application in Evolutionary
 #'   Biology. pp. 201-229. Springer-Verlag Berlin Heidelberg.
+#'   <doi:10.1111/j.1558-5646.2012.01790.x>
 "rhino_tree"
 
