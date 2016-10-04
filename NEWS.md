@@ -20,3 +20,4 @@ pylopath 0.0.2
   
 * A new function `plot_coefs` for plotting regression coefficients and their
   confidence intervals has been added.
+  

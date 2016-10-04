@@ -25,3 +25,8 @@ of life.
 
 ## Downstream dependencies
 The package does not have downstream dependencies.
+
+## Comments regarding previous rejected submission
+Thanks! I've have made these changes:
+* doi has been added to both DESCRIPTION as well as data documentation.
+* I have added examples to all exported functions with documentation.
