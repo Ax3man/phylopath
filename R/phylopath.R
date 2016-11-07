@@ -58,7 +58,7 @@ phylo_path <- function(models, data, tree, order = NULL,
   d_sep <- Map(function(a, b, c, d) {
     dplyr::data_frame(d_sep = unlist(as.character(a)),
                       p = unlist(b),
-                      corStruct = unlist(c),
+                      corStruct = ifelse(!is.null(unlist(c)), unlist(c), NA),
                       model = d)
   }, formulas, p_vals, corStructs, dsep_models)
 
