@@ -1,8 +1,9 @@
 phylopath 0.2.1
 --------------------------------------------------------------------------------
 
-* Faulty model averaging has been fixed. This was often introduced due to
-  differences in matrix ordering.
+* IMPORTANT: Faulty model averaging has been fixed. This was often introduced
+  due to differences in matrix ordering. Avering results from versions before
+  0.2.1 should NOT be trusted.
 
 * Using `ape::corBrownian()` no longer returns an error.
 

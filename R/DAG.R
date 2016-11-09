@@ -44,13 +44,13 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
       return(cbind(y, y, y, y))
     }
     f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
-    m <- phylopath:::gls2(f, data = data, cor_fun = cor_fun, tree = tree)
+    m <- gls2(f, data = data, cor_fun = cor_fun, tree = tree)
     Coef <- se <- lower <- upper <- y
-    Coef[Coef != 0]   <- phylopath:::get_est(m)
-    se[se != 0]       <- phylopath:::get_se(m)
-    lower[lower != 0] <- tryCatch(phylopath:::get_lower(m),
+    Coef[Coef != 0]   <- get_est(m)
+    se[se != 0]       <- get_se(m)
+    lower[lower != 0] <- tryCatch(get_lower(m),
                                   error = function(e) NA)
-    upper[upper != 0] <- tryCatch(phylopath:::get_upper(m),
+    upper[upper != 0] <- tryCatch(get_upper(m),
                                   error = function(e) NA)
     return(cbind(coef = Coef, se = se, lower = lower, upper = upper))
   }, colnames(DAG), as.data.frame(DAG), MoreArgs = list(n = rownames(DAG)))
