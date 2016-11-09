@@ -78,4 +78,4 @@ get_lower <- function(m) nlme::intervals(m)$coef[-1, 'lower']
 
 get_upper <- function(m) nlme::intervals(m)$coef[-1, 'upper']
 
-get_corStruct <- function(m) attr(m$apVar, "Pars")["corStruct"]
+get_corStruct <- function(m) m$modelStruct
