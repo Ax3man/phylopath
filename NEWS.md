@@ -1,13 +1,15 @@
-phylopath 0.0.3
+phylopath 0.2.1
 --------------------------------------------------------------------------------
 
-* Faulty model averaging has been fixed. This was sometimes introduced due to
-  differences in matrix order.
+* Faulty model averaging has been fixed. This was often introduced due to
+  differences in matrix ordering.
 
-* Using `ape::corBrownian` no longer returns an error.
+* Using `ape::corBrownian()` no longer returns an error.
+
+* Averaging is less likely to fail due to errors in `nlme::intervals()`.
 
 
-phylopath 0.0.2
+phylopath 0.2.0
 --------------------------------------------------------------------------------
 
 * `phylo_path()` has become more streamlined with functionality moved to other

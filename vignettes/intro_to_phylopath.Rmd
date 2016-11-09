@@ -61,6 +61,8 @@ Now that we have the models, we can perform the path analysis using the `phylo_p
 
 Importantly, when using PGLS, we need to be consistent in which variables are used as independent and dependent variables in the analysis. If one has a specific idea about which variables are to be conscidered as up- and down-stream, then you can use the `order` argument to give the ordering (from up to down). In this case, we supply the ordering to mimic the choices made by the chapter authors. Alternatively, you can choose to not supply an order, and the function will try to make a sensible order by itself. If the combination of all causal models is itself a DAG, the ordering of that model will be used, otherwise the ordering will be constructed by consensus (i.e. the most common ordering is chosen).
 
+Generally, I advise to not supply the order argument, in order to reduce "reseacher degrees of freedom".
+
 By default, `phylo_path` uses Pagel's “lambda” correlation structure (`ape::corPagel`), but if you want, for example, to use a simple Brownian motion model, you can supply `ape::corBrownian` instead.
 
 ```{r}
@@ -80,7 +82,7 @@ To get an overview of the analysis, we can ask for its `summary`:
 summary(result)
 ```
 
-The ranking of the models obtained here is identical as the worked example in the book chapter. The estimates differ slightly however, since we are using `nlme::gls` whereas the chapter was using `caper::pgls`.
+The ranking of the models obtained here is identical as the worked example in the book chapter. The estimates differ slightly however, since we are using `nlme::gls` whereas the chapter was using `caper::pgls`. (Specifically, the differences are due to `gls` and `pgls` estimating the lambda parameter slightly differently. Also there is one or two small mistakes in the book chapter analysis.)
 
 To view the best ranked model, we can use `best`. This returns a DAG with standardized regression coefficients, as well matrices of standard errors and confidence intervals. These can be obtained for any particular DAG using `est_DAG`.
 
@@ -115,7 +117,9 @@ plot(average_model_full)
 ```
 ![](Vignette_figures/fig4.png)
 
-We can see that paths that occur in all the best models, such as BM -> NL, are not effected. But paths that occur only in some models suffer _shrinkage_, reflecting the fact that they were not as well supported.
+We can see that paths that occur in all the best models, such as NL -> DD, are not effected. But paths that occur only in some models suffer _shrinkage_, reflecting the fact that they were not as well supported.
+
+In this case in particular, the average model is actually not a DAG since it is cyclical and the relationship between RS and NL is clearly not well resolved by our analysis.
 
 If one is interested in the confidence in the regression coefficients, `coef_plot` can visualize the estimates and their approximate confidence intervals. We can see that for the best model, the four paths are all well supported and of approximately equal strength. The order of the paths from left to right, attempts to follow the paths downstream, in this indicated by the `order` argument we gave the `phylo_path` function at the start.
 
@@ -123,7 +127,7 @@ If one is interested in the confidence in the regression coefficients, `coef_plo
 coef_plot(best_model)
 ```
 
-This plot can be manipulated using `ggplot2` functions, for example, to create a horizontal black-and-white version. We can see that for full average model, shrinkage has caused all but one path to become uncertain.
+This plot can be manipulated using `ggplot2` functions, for example, to create a horizontal black-and-white version. We can see that for full average model, shrinkage has caused several paths to become uncertain.
 
 ```{r, fig.width=6}
 coef_plot(average_model_full, reverse_order = TRUE) + 
