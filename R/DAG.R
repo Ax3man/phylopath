@@ -100,7 +100,7 @@ average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
   if (!(method %in% c('full', 'conditional'))) {
     stop('method has to be either "full" or "conditional".', call. = FALSE)
   }
-  ord <- rownames(fits[[1]]$coef)
+  ord <- rownames(fitted_DAGs[[1]]$coef)
   fitted_DAGs <- lapply(fitted_DAGs, function(l) {
     lapply(l, function(m) m[ord, ord]) } )
 
