@@ -1,6 +1,6 @@
 ## Test environments
-* local Windows 10 install, R 3.3.1
-* win-builder (devel and release)
+* local Windows 10 install, R 3.3.2
+* win-builder (devel)
 
 ## R CMD check results
 There were no ERRORs or WARNINGs.
@@ -9,8 +9,6 @@ There was 1 NOTE:
 
   * checking CRAN incoming feasibility ... NOTE
 Maintainer: 'Wouter van der Bijl <wouter.van.der.bijl@zoologi.su.se>'
-
-New submission
 
 Possibly mis-spelled words in DESCRIPTION:
   Hardenberg (8:52)
@@ -25,8 +23,3 @@ of life.
 
 ## Downstream dependencies
 The package does not have downstream dependencies.
-
-## Comments regarding previous rejected submission
-Thanks! I've have made these changes:
-* doi has been added to both DESCRIPTION as well as data documentation.
-* I have added examples to all exported functions with documentation.
