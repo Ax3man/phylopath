@@ -5,7 +5,7 @@
 ## R CMD check results
 There were no ERRORs or WARNINGs.
 
-There was 1 NOTE:
+There were 2 NOTES:
 
   * checking CRAN incoming feasibility ... NOTE
 Maintainer: 'Wouter van der Bijl <wouter.van.der.bijl@zoologi.su.se>'
@@ -20,6 +20,14 @@ Possibly mis-spelled words in DESCRIPTION:
 These words are not mis-spelled, but include names and 'phylogenetic' analysis
 refers to analyses that control for interdependence of species due to the tree
 of life.
+
+  & checking dependencies in R code ... NOTE
+Namespace in Imports field not imported from: 'ape'
+  All declared Imports should be used.
+
+This NOTE appears on some builds (CRAN Package Check Results). While no function
+from ape is directly used, a function from ape is used as a default argument
+in the phylo_path function.
 
 ## Downstream dependencies
 The package does not have downstream dependencies.
