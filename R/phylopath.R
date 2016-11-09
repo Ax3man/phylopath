@@ -54,6 +54,9 @@ phylo_path <- function(models, data, tree, order = NULL,
   } ) )
   p_vals <- lapply(dsep_models, function(x) sapply(x, get_p))
   corStructs <- lapply(dsep_models, function(x) sapply(x, get_corStruct))
+  if (is.null(unlist(corStructs))) {
+    corStructs <- NA
+  }
 
   d_sep <- Map(function(a, b, c, d) {
     dplyr::data_frame(d_sep = unlist(as.character(a)),

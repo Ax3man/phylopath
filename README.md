@@ -3,6 +3,12 @@
 Install the package using:
 
 ```{r}
+install.packages("phylopath")
+```
+
+Or if you'd like to install the development version (here on github), use:
+
+```{r}
 if (packageVersion("devtools") < 1.6) {
   install.packages("devtools")
 }
