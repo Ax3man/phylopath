@@ -11,7 +11,7 @@ print.phylopath <- function(x, ...) {
   cat('\n')
   cat('  Evaluated for these models:', names(x$models), '\n')
   cat('\n')
-  cat('  Containing', sum(lengths(x$d_sep)), 'phylogenetic regressions.')
+  cat('  Containing', sum(purrr::map_dbl(x$d_sep, nrow)), 'phylogenetic regressions.')
   cat('\n')
 }
 
