@@ -14,6 +14,9 @@
 #'   itself a DAG, then the ordering of that full model is used. Otherwise,
 #'   the most common ordering between each pair of variables is used to create
 #'   a general ordering.
+#' @param parallel An optional vector containing the virtual connection
+#'   process type for running the chains in parallel (such as \code{"SOCK"}).
+#'   A cluster is create using the \code{parallel} package.
 #'
 #' @return A phylopath object, with the following components:
 #'  \describe{
@@ -35,7 +38,7 @@
 #'   summary(p)
 #'
 phylo_path <- function(models, data, tree, order = NULL,
-                       cor_fun = ape::corPagel) {
+                       cor_fun = ape::corPagel, parallel = NULL) {
   cor_fun <- match.fun(cor_fun)
   # Check if all models have the same number of nodes
   var_names <- lapply(models, colnames)
@@ -56,8 +59,20 @@ phylo_path <- function(models, data, tree, order = NULL,
   formulas <- purrr::map(formulas,
                          ~purrr::map(.x, ~{attr(., ".Environment") <- NULL; .}))
   f_list <- unique(unlist(formulas))
-  dsep_models <- purrr::map(f_list, gls2,
-                            data = data, tree = tree, cor_fun = cor_fun)
+  if (is.null(parallel)) {
+    dsep_models <- purrr::map(f_list, gls2,
+                              data = data, tree = tree, cor_fun = cor_fun)
+  } else {
+    cl <- parallel::makeCluster(min(c(parallel::detectCores() - 1,
+                                      length(f_list))),
+                            parallel)
+    parallel::clusterExport(cl, list('gls2', 'data', 'tree', 'cor_fun'),
+                            environment())
+    dsep_models <- parallel::parLapply(cl, f_list, function(x) {
+      gls2(x, data = data, tree = tree, cor_fun = cor_fun)
+    } )
+    parallel::stopCluster(cl)
+  }
   dsep_models <- purrr::map(formulas, ~dsep_models[match(.x, f_list)])
 
   d_sep <- purrr::map2(formulas, dsep_models,

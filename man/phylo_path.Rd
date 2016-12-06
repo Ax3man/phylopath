@@ -4,7 +4,8 @@
 \alias{phylo_path}
 \title{Compare causal models in a phylogenetic context.}
 \usage{
-phylo_path(models, data, tree, order = NULL, cor_fun = ape::corPagel)
+phylo_path(models, data, tree, order = NULL, cor_fun = ape::corPagel,
+  parallel = NULL)
 }
 \arguments{
 \item{models}{A list of directed acyclic graphs. These are matrices,
@@ -25,6 +26,10 @@ a general ordering.}
 \item{cor_fun}{A function that creates a \code{corStruct} object, typically
 one of the cor function from the \code{ape}, such as \code{corBrownian},
 \code{corPagel} etc.}
+
+\item{parallel}{An optional vector containing the virtual connection
+process type for running the chains in parallel (such as \code{"SOCK"}).
+A cluster is create using the \code{parallel} package.}
 }
 \value{
 A phylopath object, with the following components:
