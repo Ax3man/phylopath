@@ -27,9 +27,13 @@ one of the cor function from the \code{ape}, such as \code{corBrownian},
 \code{corPagel} etc.}
 }
 \value{
-A table with relevant statistics for each model, including the C
-  statistic, the associated p-values, information criterions, and model
-  weigths.
+A phylopath object, with the following components:
+ \describe{
+  \item{d_sep}{for each model a table with seperation statements and statistics.}
+  \item{models}{the DAGs}
+  \item{data}{the supplied data}
+  \item{tree}{the supplied tree}
+  }
 }
 \description{
 Compare causal models in a phylogenetic context.

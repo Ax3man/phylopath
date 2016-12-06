@@ -15,9 +15,13 @@
 #'   the most common ordering between each pair of variables is used to create
 #'   a general ordering.
 #'
-#' @return A table with relevant statistics for each model, including the C
-#'   statistic, the associated p-values, information criterions, and model
-#'   weigths.
+#' @return A phylopath object, with the following components:
+#'  \describe{
+#'   \item{d_sep}{for each model a table with seperation statements and statistics.}
+#'   \item{models}{the DAGs}
+#'   \item{data}{the supplied data}
+#'   \item{tree}{the supplied tree}
+#'   }
 #' @export
 #' @examples
 #'   #see vignette('intro_to_phylopath') for more details
@@ -48,22 +52,19 @@ phylo_path <- function(models, data, tree, order = NULL,
   if (is.null(order)) {
     order <- find_consensus_order(models)
   }
-  formulas <- lapply(models, find_formulas, order)
-  dsep_models <- lapply(formulas, function(x) lapply(x, function(y) {
-    gls2(y, data = data, tree = tree, cor_fun = cor_fun)
-  } ) )
-  p_vals <- lapply(dsep_models, function(x) sapply(x, get_p))
-  corStructs <- lapply(dsep_models, function(x) sapply(x, get_corStruct))
-  if (is.null(unlist(corStructs))) {
-    corStructs <- NA
-  }
+  formulas <- purrr::map(models, find_formulas, order)
+  formulas <- purrr::map(formulas,
+                         ~purrr::map(.x, ~{attr(., ".Environment") <- NULL; .}))
+  f_list <- unique(unlist(formulas))
+  dsep_models <- purrr::map(f_list, gls2,
+                            data = data, tree = tree, cor_fun = cor_fun)
+  dsep_models <- purrr::map(formulas, ~dsep_models[match(.x, f_list)])
 
-  d_sep <- Map(function(a, b, c, d) {
-    dplyr::data_frame(d_sep = unlist(as.character(a)),
-                      p = unlist(b),
-                      corStruct = unlist(c),
-                      model = d)
-  }, formulas, p_vals, corStructs, dsep_models)
+  d_sep <- purrr::map2(formulas, dsep_models,
+                      ~dplyr::data_frame(d_sep = as.character(.x),
+                                         p = purrr::map_dbl(.y, get_p),
+                                         corStruct = purrr::map_dbl(.y, ~get_corStruct(.)[[1]]),
+                                         model = .y))
 
   out <- list(d_sep = d_sep, models = models, data = data, tree = tree,
               cor_fun = cor_fun)
