@@ -36,6 +36,7 @@ DAG <- function(..., order = TRUE) {
 #'   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
 #'   plot(d_fitted)
 est_DAG <- function(DAG, data, cor_fun, tree) {
+  cor_fun <- match.fun(cor_fun)
   r <- rownames(data)
   data <- dplyr::mutate_if(data, is.numeric, scale)
   rownames(data) <- r
