@@ -23,6 +23,7 @@ Imports:
     MuMIn,
     nlme,
     parallel,
+    pbapply,
     purrr,
     tibble,
     tidyr

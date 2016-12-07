@@ -59,20 +59,19 @@ phylo_path <- function(models, data, tree, order = NULL,
   formulas <- purrr::map(formulas,
                          ~purrr::map(.x, ~{attr(., ".Environment") <- NULL; .}))
   f_list <- unique(unlist(formulas))
-  if (is.null(parallel)) {
-    dsep_models <- purrr::map(f_list, gls2,
-                              data = data, tree = tree, cor_fun = cor_fun)
-  } else {
+  if (!is.null(parallel)) {
     cl <- parallel::makeCluster(min(c(parallel::detectCores() - 1,
                                       length(f_list))),
-                            parallel)
+                                parallel)
     parallel::clusterExport(cl, list('gls2', 'data', 'tree', 'cor_fun'),
                             environment())
-    dsep_models <- parallel::parLapply(cl, f_list, function(x) {
-      gls2(x, data = data, tree = tree, cor_fun = cor_fun)
-    } )
-    parallel::stopCluster(cl)
+    on.exit(parallel::stopCluster(cl))
+  } else {
+    cl <- NULL
   }
+  dsep_models <- pbapply::pblapply(f_list, function(x) {
+    gls2(x, data = data, tree = tree, cor_fun = cor_fun)
+  }, cl = cl)
   dsep_models <- purrr::map(formulas, ~dsep_models[match(.x, f_list)])
 
   d_sep <- purrr::map2(formulas, dsep_models,
