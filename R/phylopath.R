@@ -42,8 +42,9 @@ phylo_path <- function(models, data, tree, order = NULL,
   cor_fun <- match.fun(cor_fun)
   # Check if all models have the same number of nodes
   var_names <- lapply(models, colnames)
-  if (stats::var(lengths(models)) != 0 |
-      any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0)) {
+  if (length(models) > 1 &
+      (stats::var(lengths(models)) != 0 |
+       any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0))) {
     stop('All causal models need to include the same variables.', call. = FALSE)
   }
   if (is.null(names(models))) {
