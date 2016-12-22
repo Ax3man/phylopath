@@ -1,4 +1,32 @@
-pylopath 0.0.2
+phylopath 0.2.2
+--------------------------------------------------------------------------------
+
+* Fewer models are now fitted when using `phylo_path()`, since any duplicated
+  independence statements are now only fitted once. This leads to a significant
+  reduction in running time in many cases, especially when many models are
+  conscidered.
+  
+* Implemented support for parallel processing in `phylo_path()` using the
+  `parallel` argument.
+  
+* `phylo_path()` now shows a progress bar. 
+  
+* Prepared plotting functions for new release of `DiagrammeR`.
+
+
+phylopath 0.2.1
+--------------------------------------------------------------------------------
+
+* IMPORTANT: Faulty model averaging has been fixed. This was often introduced
+  due to differences in matrix ordering. Avering results from versions before
+  0.2.1 should NOT be trusted.
+
+* Using `ape::corBrownian()` no longer returns an error.
+
+* Averaging is less likely to fail due to errors in `nlme::intervals()`.
+
+
+phylopath 0.2.0
 --------------------------------------------------------------------------------
 
 * `phylo_path()` has become more streamlined with functionality moved to other

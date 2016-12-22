@@ -14,10 +14,17 @@
 #'   itself a DAG, then the ordering of that full model is used. Otherwise,
 #'   the most common ordering between each pair of variables is used to create
 #'   a general ordering.
+#' @param parallel An optional vector containing the virtual connection
+#'   process type for running the chains in parallel (such as \code{"SOCK"}).
+#'   A cluster is create using the \code{parallel} package.
 #'
-#' @return A table with relevant statistics for each model, including the C
-#'   statistic, the associated p-values, information criterions, and model
-#'   weigths.
+#' @return A phylopath object, with the following components:
+#'  \describe{
+#'   \item{d_sep}{for each model a table with seperation statements and statistics.}
+#'   \item{models}{the DAGs}
+#'   \item{data}{the supplied data}
+#'   \item{tree}{the supplied tree}
+#'   }
 #' @export
 #' @examples
 #'   #see vignette('intro_to_phylopath') for more details
@@ -31,12 +38,13 @@
 #'   summary(p)
 #'
 phylo_path <- function(models, data, tree, order = NULL,
-                       cor_fun = ape::corPagel) {
+                       cor_fun = ape::corPagel, parallel = NULL) {
   cor_fun <- match.fun(cor_fun)
   # Check if all models have the same number of nodes
   var_names <- lapply(models, colnames)
-  if (stats::var(lengths(models)) != 0 |
-      any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0)) {
+  if (length(models) > 1 &
+      (stats::var(lengths(models)) != 0 |
+       any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0))) {
     stop('All causal models need to include the same variables.', call. = FALSE)
   }
   if (is.null(names(models))) {
@@ -48,19 +56,30 @@ phylo_path <- function(models, data, tree, order = NULL,
   if (is.null(order)) {
     order <- find_consensus_order(models)
   }
-  formulas <- lapply(models, find_formulas, order)
-  dsep_models <- lapply(formulas, function(x) lapply(x, function(y) {
-    gls2(y, data = data, tree = tree, cor_fun = cor_fun)
-  } ) )
-  p_vals <- lapply(dsep_models, function(x) sapply(x, get_p))
-  corStructs <- lapply(dsep_models, function(x) sapply(x, get_corStruct))
+  formulas <- purrr::map(models, find_formulas, order)
+  formulas <- purrr::map(formulas,
+                         ~purrr::map(.x, ~{attr(., ".Environment") <- NULL; .}))
+  f_list <- unique(unlist(formulas))
+  if (!is.null(parallel)) {
+    cl <- parallel::makeCluster(min(c(parallel::detectCores() - 1,
+                                      length(f_list))),
+                                parallel)
+    parallel::clusterExport(cl, list('gls2', 'data', 'tree', 'cor_fun'),
+                            environment())
+    on.exit(parallel::stopCluster(cl))
+  } else {
+    cl <- NULL
+  }
+  dsep_models <- pbapply::pblapply(f_list, function(x) {
+    gls2(x, data = data, tree = tree, cor_fun = cor_fun)
+  }, cl = cl)
+  dsep_models <- purrr::map(formulas, ~dsep_models[match(.x, f_list)])
 
-  d_sep <- Map(function(a, b, c, d) {
-    dplyr::data_frame(d_sep = unlist(as.character(a)),
-                      p = unlist(b),
-                      corStruct = unlist(c),
-                      model = d)
-  }, formulas, p_vals, corStructs, dsep_models)
+  d_sep <- purrr::map2(formulas, dsep_models,
+                      ~dplyr::data_frame(d_sep = as.character(.x),
+                                         p = purrr::map_dbl(.y, get_p),
+                                         corStruct = purrr::map_dbl(.y, ~get_corStruct(.)[[1]]),
+                                         model = .y))
 
   out <- list(d_sep = d_sep, models = models, data = data, tree = tree,
               cor_fun = cor_fun)
@@ -125,7 +144,6 @@ best <- function(phylopath) {
 #'
 #' @examples
 #'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS),
-#'                      B = DAG(LS ~ BM, NL ~ LS, DD ~ NL),
 #'                      C = DAG(LS ~ BM, NL ~ LS + BM, DD ~ NL))
 #'   p <- phylo_path(candidates, rhino, rhino_tree)
 #'   summary(p)
@@ -135,12 +153,15 @@ best <- function(phylopath) {
 #'   avg_model <- average(p)
 #'   # Print the average model to see coefficients, se and ci:
 #'   avg_model
+#'
+#'   \dontrun{
 #'   # Plot to show the weighted graph:
 #'   plot(avg_model)
 #'   # Note that coefficents that only occur in one of the models become much
 #'   # smaller when we use full averaging:
 #'   coef_plot(avg_model)
 #'   coef_plot(average(p, method = 'full'))
+#'   }
 #'
 average <- function(phylopath, cut_off = 2, method = 'conditional', ...) {
   d <- summary(phylopath)

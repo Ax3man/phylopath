@@ -11,7 +11,7 @@ print.phylopath <- function(x, ...) {
   cat('\n')
   cat('  Evaluated for these models:', names(x$models), '\n')
   cat('\n')
-  cat('  Containing', sum(lengths(x$d_sep)), 'phylogenetic regressions.')
+  cat('  Containing', sum(purrr::map_dbl(x$d_sep, nrow)), 'phylogenetic regressions.')
   cat('\n')
 }
 
@@ -19,30 +19,42 @@ print.phylopath <- function(x, ...) {
 plot.DAG <- function(x, ...) {
   df <- igraph::as_data_frame(
     igraph::graph_from_adjacency_matrix(x, weighted = TRUE), what = "both")
-  df$vertices <- cbind(nodes = rownames(df$vertices),
-                       df$vertices)
+
+  nodes_df <- DiagrammeR::create_node_df(n = nrow(df$vertices),
+                                         label = df$vertices$name,
+                                         shape = 'oval')
+  edges_df <- DiagrammeR::create_edge_df(match(df$edges$from, df$vertices$name),
+                                         match(df$edges$to, df$vertices$name))
+
   dg <- DiagrammeR::create_graph(
-    nodes_df = df$vertices,
-    edges_df = df$edges
+    nodes_df = nodes_df,
+    edges_df = edges_df
   )
-  DiagrammeR::render_graph(dg, ...)
+  DiagrammeR::render_graph(dg, title = '', ...)
 }
 
 #' @export
 plot.fitted_DAG <- function(x, width_const = 5, ...) {
   df <- igraph::as_data_frame(
     igraph::graph_from_adjacency_matrix(x$coef, weighted = TRUE), what = "both")
-  df$vertices <- cbind(nodes = rownames(df$vertices),
-                       df$vertices)
-  df$edges$label <- round(df$edges$weight, 3)
-  df$edges$penwidth <- abs(df$edges$weight / max(df$edges$weight) * width_const)
-  df$edges$color <- ifelse(sign(df$edges$weight) == -1, 'red4', 'green4')
+
+  nodes_df <- DiagrammeR::create_node_df(n = nrow(df$vertices),
+                                         label = df$vertices$name,
+                                         shape = 'oval')
+  edges_df <- DiagrammeR::create_edge_df(
+    from = match(df$edges$from, df$vertices$name),
+    to = match(df$edges$to, df$vertices$name),
+    rel = round(df$edges$weight, 3),
+    label = round(df$edges$weight, 3),
+    penwidth = abs(df$edges$weight / max(df$edges$weight) * width_const),
+    color = ifelse(sign(df$edges$weight) == -1, 'red4', 'green4')
+  )
 
   dg <- DiagrammeR::create_graph(
-    nodes_df = df$vertices,
-    edges_df = df$edges
+    nodes_df = nodes_df,
+    edges_df = edges_df
   )
-  DiagrammeR::render_graph(dg)
+  DiagrammeR::render_graph(dg, title = '', ...)
 }
 
 #' Plot path coefficients and their confidence intervals.

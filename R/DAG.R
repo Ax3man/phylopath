@@ -36,6 +36,7 @@ DAG <- function(..., order = TRUE) {
 #'   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
 #'   plot(d_fitted)
 est_DAG <- function(DAG, data, cor_fun, tree) {
+  cor_fun <- match.fun(cor_fun)
   r <- rownames(data)
   data <- dplyr::mutate_if(data, is.numeric, scale)
   rownames(data) <- r
@@ -48,10 +49,15 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
     Coef <- se <- lower <- upper <- y
     Coef[Coef != 0]   <- get_est(m)
     se[se != 0]       <- get_se(m)
-    lower[lower != 0] <- get_lower(m)
-    upper[upper != 0] <- get_upper(m)
+    lower[lower != 0] <- tryCatch(get_lower(m),
+                                  error = function(e) NA)
+    upper[upper != 0] <- tryCatch(get_upper(m),
+                                  error = function(e) NA)
     return(cbind(coef = Coef, se = se, lower = lower, upper = upper))
   }, colnames(DAG), as.data.frame(DAG), MoreArgs = list(n = rownames(DAG)))
+  if (any(sapply(d, function(x) any(is.na(x))))) {
+    warnings("NA's have been generated, most likely some confidence intervals could not be estimated.")
+  }
   coefs  <- sapply(d, `[`, 1:nrow(DAG), 1)
   ses    <- sapply(d, `[`, 1:nrow(DAG), 2)
   lowers <- sapply(d, `[`, 1:nrow(DAG), 3)
@@ -100,6 +106,10 @@ average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
   if (!(method %in% c('full', 'conditional'))) {
     stop('method has to be either "full" or "conditional".', call. = FALSE)
   }
+  ord <- rownames(fitted_DAGs[[1]]$coef)
+  fitted_DAGs <- lapply(fitted_DAGs, function(l) {
+    lapply(l, function(m) m[ord, ord]) } )
+
   coef      <- lapply(fitted_DAGs, `[[`, 'coef')
   std_error <- lapply(fitted_DAGs, `[[`, 'se')
 
