@@ -82,7 +82,7 @@ coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
   df <- tidyr::gather_(df, 'to', 'coef', colnames(fitted_DAG$coef))
   df$lower <- c(fitted_DAG$lower)
   df$upper <- c(fitted_DAG$upper)
-  df$path <- paste(df$from, df$to, sep = ' -> ')
+  df$path <- paste(df$from, df$to, sep = ' \U2192 ')
   df <- dplyr::arrange_(df,
                         ~match(df$from, colnames(fitted_DAG$coef)),
                         ~match(df$to, colnames(fitted_DAG$coef)))
