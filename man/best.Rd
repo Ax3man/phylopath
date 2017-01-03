@@ -2,7 +2,7 @@
 % Please edit documentation in R/phylopath.R
 \name{best}
 \alias{best}
-\title{Extract and estimate the best supported model for a phylogenetic path
+\title{Extract and estimate the best supported model from a phylogenetic path
 analysis.}
 \usage{
 best(phylopath)
@@ -14,7 +14,7 @@ best(phylopath)
 An object of class \code{fitted_DAG}.
 }
 \description{
-Extract and estimate the best supported model for a phylogenetic path
+Extract and estimate the best supported model from a phylogenetic path
 analysis.
 }
 \examples{

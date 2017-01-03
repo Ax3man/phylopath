@@ -2,7 +2,7 @@
 % Please edit documentation in R/phylopath.R
 \name{average}
 \alias{average}
-\title{Extract and average the best supported models for a phylogenetic path
+\title{Extract and average the best supported models from a phylogenetic path
 analysis.}
 \usage{
 average(phylopath, cut_off = 2, method = "conditional", ...)
@@ -31,7 +31,7 @@ averaging is set as the default. Also see \link[MuMIn]{model.avg}.}
 An object of class \code{fitted_DAG}.
 }
 \description{
-Extract and average the best supported models for a phylogenetic path
+Extract and average the best supported models from a phylogenetic path
 analysis.
 }
 \examples{
