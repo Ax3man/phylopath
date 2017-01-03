@@ -130,6 +130,30 @@ best <- function(phylopath) {
   est_DAG(best_model, phylopath$data, phylopath$cor_fun, phylopath$tree)
 }
 
+#' Extract and estimate an arbitrary model from a phylogenetic path analysis.
+#'
+#' @param phylopath An object of class \code{phylopath}.
+#' @param choice A character string of the name of the model to be chosen, or
+#'   the index in \code{models}.
+#'
+#' @return An object of class \code{fitted_DAG}.
+#' @export
+#'
+#' @examples
+#'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
+#'                      B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+#'   p <- phylo_path(candidates, rhino, rhino_tree)
+#'   my_model <- choice(p, "B")
+#'   # Print the best model to see coefficients, se and ci:
+#'   my_model
+#'   # Plot to show the weighted graph:
+#'   plot(my_model)
+#'
+choice <- function(phylopath, choice) {
+  est_DAG(phylopath$models[[choice]], phylopath$data, phylopath$cor_fun,
+          phylopath$tree)
+}
+
 #' Extract and average the best supported models from a phylogenetic path
 #' analysis.
 #'
