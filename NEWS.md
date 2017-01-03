@@ -10,8 +10,14 @@ phylopath 0.2.2
   `parallel` argument.
   
 * `phylo_path()` now shows a progress bar. 
+
+* New function added (`choice()`) that is a very simple wrapper around 
+  `est_DAG()`. It adds to `best()` and `average()` by allowing for choosing
+  any model as the final model, and encourages users to not always pick the 
+  lowest CICc model.
   
-* Prepared plotting functions for new release of `DiagrammeR`.
+* Prepared plotting functions for new release of `DiagrammeR`, v0.9 now
+  required.
 
 
 phylopath 0.2.1

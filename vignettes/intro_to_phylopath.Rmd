@@ -84,7 +84,7 @@ summary(result)
 
 The ranking of the models obtained here is identical as the worked example in the book chapter. The estimates differ slightly however, since we are using `nlme::gls` whereas the chapter was using `caper::pgls`. (Specifically, the differences are due to `gls` and `pgls` estimating the lambda parameter slightly differently. Also there is one or two small mistakes in the book chapter analysis.)
 
-To view the best ranked model, we can use `best`. This returns a DAG with standardized regression coefficients, as well matrices of standard errors and confidence intervals. These can be obtained for any particular DAG using `est_DAG`.
+To view the best ranked model, we can use `best`. This returns a DAG with standardized regression coefficients, as well matrices of standard errors and confidence intervals. These can be obtained for any particular model we looked at by using the `choice` function.
 
 ```{r}
 (best_model <- best(result))
