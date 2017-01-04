@@ -1,5 +1,7 @@
 # phylopath
 
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/phylopath)](https://cran.r-project.org/package=phylopath)
+
 Install the package using:
 
 ```{r}
