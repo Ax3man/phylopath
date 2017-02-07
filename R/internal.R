@@ -57,10 +57,8 @@ w <- function(l) l / sum(l)
 
 gls2 <- function(..., cor_fun, tree) {
   for (par in seq(1, 0, -0.05)) {
-    m <- tryCatch(
-      nlme::gls(..., correlation = cor_fun(par, tree)),
-      error = function(e) NA, warning = function(w) NA)
-    if ('gls' %in% class(m)) break
+    m <- purrr::safely(~nlme::gls(..., correlation = cor_fun(par, .x)))(tree)
+    if (is.null(m$error)) break
   }
   return(m)
 }

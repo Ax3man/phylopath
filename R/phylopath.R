@@ -70,9 +70,19 @@ phylo_path <- function(models, data, tree, order = NULL,
   } else {
     cl <- NULL
   }
-  dsep_models <- pbapply::pblapply(f_list, function(x) {
+  dsep_models_runs <- pbapply::pblapply(f_list, function(x) {
     gls2(x, data = data, tree = tree, cor_fun = cor_fun)
   }, cl = cl)
+  # Produce appropriate error if needed
+  errors <- purrr::map(dsep_models_runs, 'error')
+  purrr::map2(errors, f_list,
+              ~if(!is.null(.x))
+                stop(paste('Fitting the following model:\n   ',
+                           Reduce(paste, deparse(f_list[[1]])),
+                           '\nproduced this error:\n   ', .x),
+                     call. = FALSE))
+  # Otherwise collect models and move on.
+  dsep_models <- purrr::map(dsep_models_runs, 'result')
   dsep_models <- purrr::map(formulas, ~dsep_models[match(.x, f_list)])
 
   d_sep <- purrr::map2(formulas, dsep_models,
