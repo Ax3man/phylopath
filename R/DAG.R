@@ -46,6 +46,12 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
     }
     f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
     m <- gls2(f, data = data, cor_fun = cor_fun, tree = tree)
+    if (!is.null(m$error)) {
+      stop(paste('Fitting the following model:\n   ', Reduce(paste, deparse(f)),
+                 '\nproduced this error:\n   ', m$error),
+           call. = FALSE)
+    }
+    m <- m$result
     Coef <- se <- lower <- upper <- y
     Coef[Coef != 0]   <- get_est(m)
     se[se != 0]       <- get_se(m)
