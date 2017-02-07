@@ -29,4 +29,3 @@ Extract and estimate an arbitrary model from a phylogenetic path analysis.
   plot(my_model)
 
 }
-

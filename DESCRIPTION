@@ -27,7 +27,7 @@ Imports:
     purrr,
     tibble,
     tidyr
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.0
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr

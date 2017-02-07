@@ -29,4 +29,3 @@ Add standardized path coefficients to a DAG.
   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
   plot(d_fitted)
 }
-

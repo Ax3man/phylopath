@@ -45,4 +45,3 @@ Perform model averaging on a list of DAGs.
   ave_cand <- average_DAGs(fit_cand)
   coef_plot(ave_cand)
 }
-

@@ -29,4 +29,3 @@ Plot path coefficients and their confidence intervals.
   # to create a horizontal version, use this:
   coef_plot(d_fitted, reverse_order = TRUE) + ggplot2::coord_flip()
 }
-

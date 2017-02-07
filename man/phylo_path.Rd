@@ -55,4 +55,3 @@ Compare causal models in a phylogenetic context.
   summary(p)
 
 }
-
