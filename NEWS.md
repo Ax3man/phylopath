@@ -1,3 +1,11 @@
+phylopath 0.2.2.9000 (dev)
+
+* When PGLS models fail, an informative error is now returned to the user.
+
+* `phylo_path()` now checks for rownames that line up with the tree tip lables.
+  If the tree is too large, but contains all required species, it gets pruned
+  with a message.
+
 phylopath 0.2.2
 --------------------------------------------------------------------------------
 
