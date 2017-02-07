@@ -47,6 +47,14 @@ phylo_path <- function(models, data, tree, order = NULL,
        any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0))) {
     stop('All causal models need to include the same variables.', call. = FALSE)
   }
+  # Check if models and tree line up
+  if (length(setdiff(tree$tip.label, rownames(data))) > 0) {
+    stop('Make sure that all rows in data are matched by name with tips in the tree.')
+  }
+  if (length(tree$tip.label) > nrow(data)) {
+    tree <- ape::drop.tip(tree, setdiff(tree$tip.label, rownames(data)))
+    message('Pruned tree to drop species not included in dat.')
+  }
   if (is.null(names(models))) {
     names(models) <- LETTERS[1:length(models)]
   }
