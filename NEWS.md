@@ -2,7 +2,7 @@ phylopath 0.2.2.9000 (dev)
 
 * When PGLS models fail, an informative error is now returned to the user.
 
-* `phylo_path()` now checks for rownames that line up with the tree tip lables.
+* `phylo_path()` now checks for row.names that line up with the tree tip labels.
   If the tree is too large, but contains all required species, it gets pruned
   with a message.
 
@@ -12,7 +12,7 @@ phylopath 0.2.2
 * Fewer models are now fitted when using `phylo_path()`, since any duplicated
   independence statements are now only fitted once. This leads to a significant
   reduction in running time in many cases, especially when many models are
-  conscidered.
+  considered.
   
 * Implemented support for parallel processing in `phylo_path()` using the
   `parallel` argument.
@@ -32,7 +32,7 @@ phylopath 0.2.1
 --------------------------------------------------------------------------------
 
 * IMPORTANT: Faulty model averaging has been fixed. This was often introduced
-  due to differences in matrix ordering. Avering results from versions before
+  due to differences in matrix ordering. Averaging results from versions before
   0.2.1 should NOT be trusted.
 
 * Using `ape::corBrownian()` no longer returns an error.
@@ -44,7 +44,7 @@ phylopath 0.2.0
 --------------------------------------------------------------------------------
 
 * `phylo_path()` has become more streamlined with functionality moved to other
-  functions. The `phylopath` object now containts all necessary models and data,
+  functions. The `phylopath` object now contains all necessary models and data,
   `summary()` is used to obtain the results table, and `best()` and `average()` 
   are used to extract and fit the best or average model. See the vignette for
   details.
@@ -54,7 +54,7 @@ phylopath 0.2.0
 * Model averaging now supports both conditional and full model averaging.
 
 * Both the old `est_DAG()` and the new `average_DAGs()` now return objects of a
-  new class `fitted_DAG`, that has it's seperate `plot` method. The `plot` 
+  new class `fitted_DAG`, that has it's separate `plot` method. The `plot` 
   method for objects of class `DAG` has been simplified.
 
 * Model averaging now returns standard errors and confidence intervals based on
