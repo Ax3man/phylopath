@@ -1,8 +1,6 @@
 # phylopath
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/phylopath)](https://cran.r-project.org/package=phylopath)
-
-[![Research software impact](http://depsy.org/api/package/cran/phylopath/badge.svg)](http://depsy.org/package/r/phylopath)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/phylopath)](https://cran.r-project.org/package=phylopath) [![Research software impact](http://depsy.org/api/package/cran/phylopath/badge.svg)](http://depsy.org/package/r/phylopath)
 
 Install the package using:
 
