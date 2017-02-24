@@ -1,0 +1,25 @@
+citHeader("To cite the 'phylopath' package in publications use:")
+
+year <- 2017
+vers <- paste("R package version", meta$Version)
+
+bibentry(bibtype = "Article",
+         title = "Disentangling evolutionary cause-effect relationships with phylogenetic confirmatory path analysis",
+         author = personList(person("Achaz", "von Hardenberg"),
+                             person("Alejandro", "Gonzalez-Voyer")),
+         journal = "Evolution",
+         volume = "67 - 2",
+         pages = "378-387",
+         year = 2013,
+         doi = "10.1111/j.1558-5646.2012.01790.x",
+         key = "phylopath-methods-paper")
+
+bibentry(
+     bibtype = "Misc",
+     title = "phylopath: Perform phylogenetic path analysis",
+     author = person("Wouter", "van der Bijl"),
+     year = year,
+     note = vers,
+     url = "https://github.com/Ax3man/phylopath",
+     key = "phylopath-package"
+   )

@@ -5,6 +5,9 @@ phylopath 0.2.2.9000 (dev)
 * `phylo_path()` now checks for row.names that line up with the tree tip labels.
   If the tree is too large, but contains all required species, it gets pruned
   with a message.
+  
+* `citation()` now correctly refers to the methods paper by Von Hardenberg &
+  Gonzalez-Voyer first and the package second.
 
 phylopath 0.2.2
 --------------------------------------------------------------------------------
