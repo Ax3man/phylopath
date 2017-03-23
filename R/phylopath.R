@@ -17,6 +17,8 @@
 #' @param parallel An optional vector containing the virtual connection
 #'   process type for running the chains in parallel (such as \code{"SOCK"}).
 #'   A cluster is create using the \code{parallel} package.
+#' @param na.rm Should rows that contain missing values be dropped from the data
+#'   as necessary (with a message)?
 #'
 #' @return A phylopath object, with the following components:
 #'  \describe{
@@ -38,7 +40,7 @@
 #'   summary(p)
 #'
 phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
-                       order = NULL, parallel = NULL) {
+                       order = NULL, parallel = NULL, na.rm = TRUE) {
   cor_fun <- match.fun(cor_fun)
   # Check if all models have the same number of nodes
   var_names <- lapply(models, colnames)
@@ -56,9 +58,13 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
     data <- as.data.frame(data)
   }
   if (anyNA(data)) {
-    NAs <- which(apply(data, 1, anyNA))
-    message(length(NAs), ' rows were dropped because they contained NA values.')
-    data <- data[-NAs, ]
+    if (na.rm) {
+      NAs <- which(apply(data, 1, anyNA))
+      message(length(NAs), ' rows were dropped because they contained NA values.')
+      data <- data[-NAs, ]
+    } else {
+      stop('NA values were found in the variables of interest.', call. = FALSE)
+    }
   }
   if (length(setdiff(rownames(data), tree$tip.label)) > 0) {
     stop('Make sure that species in your data have rownames that are exactly matched by name with tips in the tree.')
