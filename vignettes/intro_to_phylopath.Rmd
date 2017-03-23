@@ -9,7 +9,21 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette gives a quick overview of the package by recreating the phylogenetic path analysis described in:
+### Some starting notes
+
+If you are unfamiliar with phylogenetic comparative methods in general, I'd advise you learn more simple methods first. If you are comfortable with phylogenetic methods, but not with phylogenetic path analysis (PPA) in particular, you should have a look at the example below together with the wonderful book chapter by Gonzalez-Voyer and Von Hardenberg.
+
+This package follows the general approach to phylogenetic methods as used by the package `ape` (and this package with `nlme::gls` is also used "under the hood"). This means in particular that you line up your phylogenetic tree and data by assigning the tip labels as the row names of your data.frame. (Please note that this is different from the approach of `caper::pgls` where you create a comparative data object.)
+
+`phylopath` makes it's best attempt at helping users out with their data and tree. That means in particular that:
+ 
+* an informative error is raised when you have species (rownames) in your data that are not in the tree,
+* that `NA` values are filtered out of the data as necessary, with an informative message, and
+* that the tree will be pruned for you if it has surplus species, with an informative message.
+
+### An example analysis
+
+Below I recreate the phylogenetic path analysis described in:
 
 > Gonzalez-Voyer A & von Hardenberg A. 2014. An Introduction to Phylogenetic Path Analysis. Chapter 8. In: Garamszegi LZ (ed.), Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. pp. 201-229. Springer-Verlag Berlin Heidelberg.
 
