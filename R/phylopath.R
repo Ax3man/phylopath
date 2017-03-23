@@ -61,7 +61,7 @@ phylo_path <- function(models, data, tree, order = NULL,
     data <- data[-NAs, ]
   }
   if (length(setdiff(rownames(data), tree$tip.label)) > 0) {
-    stop('Make sure that all rows in data are matched by name with tips in the tree.')
+    stop('Make sure that species in your data have rownames that are exactly matched by name with tips in the tree.')
   }
   if (length(tree$tip.label) > nrow(data)) {
     tree <- ape::drop.tip(tree, setdiff(tree$tip.label, rownames(data)))
