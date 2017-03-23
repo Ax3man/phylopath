@@ -50,7 +50,16 @@ phylo_path <- function(models, data, tree, order = NULL,
          paste(sort(unique(unlist(var_names))), collapse = '\n'),
          call. = FALSE)
   }
-  # Check if models and tree line up
+  data <- data[, unique(unlist(var_names))]
+  # Check NAs and if models and tree line up
+  if ('tbl_df' %in% class(data)) {
+    data <- as.data.frame(data)
+  }
+  if (anyNA(data)) {
+    NAs <- which(apply(data, 1, anyNA))
+    message(length(NAs), ' rows were dropped because they contained NA values.')
+    data <- data[-NAs, ]
+  }
   if (length(setdiff(rownames(data), tree$tip.label)) > 0) {
     stop('Make sure that all rows in data are matched by name with tips in the tree.')
   }
@@ -60,9 +69,6 @@ phylo_path <- function(models, data, tree, order = NULL,
   }
   if (is.null(names(models))) {
     names(models) <- LETTERS[1:length(models)]
-  }
-  if ('tbl_df' %in% class(data)) {
-    data <- as.data.frame(data)
   }
   if (is.null(order)) {
     order <- find_consensus_order(models)
