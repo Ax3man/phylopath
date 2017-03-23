@@ -1,19 +1,13 @@
 ## Test environments
-* local Windows 10 install, R 3.3.2
+* local Windows 10 install, R 3.3.3
+* Development version using winbuilder r72375
 
 ## R CMD check results
 0 errors | 0 warnings | 0 notes
 
 ## CRAN check:
 
-There are currently 1 ERROR and 1 NOTE:
-
-Result: ERROR 
-    
-  Running examples in ‘phylopath-Ex.R’ failed
-
-This ERROR occurs due to an update in the DiagrammeR package to v0.9.0. This
-release fixes all errors.
+There is currently 1 NOTE on some builds:
 
 Result: NOTE 
     Namespace in Imports field not imported from: ‘ape’
