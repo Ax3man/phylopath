@@ -13,7 +13,9 @@ vignette: >
 
 If you are unfamiliar with phylogenetic comparative methods in general, I'd advise you learn more simple methods first. If you are comfortable with phylogenetic methods, but not with phylogenetic path analysis (PPA) in particular, you should have a look at the example below together with the wonderful book chapter by Gonzalez-Voyer and Von Hardenberg.
 
-This package follows the general approach to phylogenetic methods as used by the package `ape` (and this package with `nlme::gls` is also used "under the hood"). This means in particular that you line up your phylogenetic tree and data by assigning the tip labels as the row names of your data.frame. (Please note that this is different from the approach of `caper::pgls` where you create a comparative data object.)
+This package follows the general approach to phylogenetic methods as used by the package `ape` (`nlme::gls` and `ape` are also used "under the hood"). This means in particular that you line up your phylogenetic tree and data by assigning the tip labels as the row names of your data.frame. (Please note that this is different from the approach of `caper::pgls` where you create a comparative data object.)
+
+This also means that you use the correlation function from `ape`, by default `corPagel`, to supply the model of evolution. `corPagel` in particular estimates _lambda_ without constraints (so it can be smaller than 0), and results can therefore be different from analysis using `caper` (which constrains _lambda_ between 0 and 1).
 
 `phylopath` makes it's best attempt at helping users out with their data and tree. That means in particular that:
  

@@ -5,8 +5,8 @@
 #' @param data A \code{data.frame} with data.
 #' @param tree A phylogenetic tree of class \code{pylo}.
 #' @param cor_fun A function that creates a \code{corStruct} object, typically
-#'   one of the cor function from the \code{ape}, such as \code{corBrownian},
-#'   \code{corPagel} etc.
+#'   one of the cor functions from the \code{ape} package, such as
+#'   \code{corBrownian}, \code{corPagel} etc.
 #' @param order Causal order of the included variable, given as a character
 #'   vector. This is used to determine which variable should be the dependent
 #'   in the dsep regression equations. If left unspecified, the order will be
@@ -37,8 +37,8 @@
 #'   # And the summary gives statistics to compare the models:
 #'   summary(p)
 #'
-phylo_path <- function(models, data, tree, order = NULL,
-                       cor_fun = ape::corPagel, parallel = NULL) {
+phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
+                       order = NULL, parallel = NULL) {
   cor_fun <- match.fun(cor_fun)
   # Check if all models have the same number of nodes
   var_names <- lapply(models, colnames)
