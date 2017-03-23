@@ -1,10 +1,13 @@
-phylopath 0.2.2.9000 (dev)
+phylopath 0.2.3
+
+* If there are any `NA` values in `data` for the variables in `models`, these
+  rows are now dropped from `data` with a message. Use `na.rm = FALSE` to revert
+  to the old behavior.
 
 * When PGLS models fail, an informative error is now returned to the user.
 
 * `phylo_path()` now checks for row.names that line up with the tree tip labels.
-  If the tree is too large, but contains all required species, it gets pruned
-  with a message.
+  If the tree contains surplus species, it gets pruned to size with a message.
   
 * `citation()` now correctly refers to the methods paper by Von Hardenberg &
   Gonzalez-Voyer first and the package second.

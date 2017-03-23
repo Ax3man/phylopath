@@ -1,7 +1,7 @@
 Package: phylopath
 Type: Package
 Title: Perform Phylogenetic Path Analysis
-Version: 0.2.2.9000
+Version: 0.2.3
 Author: Wouter van der Bijl
 Maintainer: Wouter van der Bijl <wouter.van.der.bijl@zoologi.su.se>
 Description: A comprehensive and easy to use R implementation of confirmatory
