@@ -4,8 +4,8 @@
 \alias{phylo_path}
 \title{Compare causal models in a phylogenetic context.}
 \usage{
-phylo_path(models, data, tree, order = NULL, cor_fun = ape::corPagel,
-  parallel = NULL)
+phylo_path(models, data, tree, cor_fun = ape::corPagel, order = NULL,
+  parallel = NULL, na.rm = TRUE)
 }
 \arguments{
 \item{models}{A list of directed acyclic graphs. These are matrices,
@@ -15,6 +15,10 @@ typically created with \code{DAG}.}
 
 \item{tree}{A phylogenetic tree of class \code{pylo}.}
 
+\item{cor_fun}{A function that creates a \code{corStruct} object, typically
+one of the cor functions from the \code{ape} package, such as
+\code{corBrownian}, \code{corPagel} etc.}
+
 \item{order}{Causal order of the included variable, given as a character
 vector. This is used to determine which variable should be the dependent
 in the dsep regression equations. If left unspecified, the order will be
@@ -23,13 +27,12 @@ itself a DAG, then the ordering of that full model is used. Otherwise,
 the most common ordering between each pair of variables is used to create
 a general ordering.}
 
-\item{cor_fun}{A function that creates a \code{corStruct} object, typically
-one of the cor function from the \code{ape}, such as \code{corBrownian},
-\code{corPagel} etc.}
-
 \item{parallel}{An optional vector containing the virtual connection
 process type for running the chains in parallel (such as \code{"SOCK"}).
 A cluster is create using the \code{parallel} package.}
+
+\item{na.rm}{Should rows that contain missing values be dropped from the data
+as necessary (with a message)?}
 }
 \value{
 A phylopath object, with the following components:
