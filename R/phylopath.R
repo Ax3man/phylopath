@@ -45,7 +45,10 @@ phylo_path <- function(models, data, tree, order = NULL,
   if (length(models) > 1 &
       (stats::var(lengths(models)) != 0 |
        any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0))) {
-    stop('All causal models need to include the same variables.', call. = FALSE)
+    stop('All causal models need to include the same variables. Combined, your
+         models include the following variables:\n',
+         paste(sort(unique(unlist(var_names))), collapse = '\n'),
+         call. = FALSE)
   }
   # Check if models and tree line up
   if (length(setdiff(rownames(data), tree$tip.label)) > 0) {
