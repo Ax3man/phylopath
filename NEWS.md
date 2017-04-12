@@ -1,4 +1,5 @@
 phylopath 0.2.3
+--------------------------------------------------------------------------------
 
 * If there are any `NA` values in `data` for the variables in `models`, these
   rows are now dropped from `data` with a message. Use `na.rm = FALSE` to revert
