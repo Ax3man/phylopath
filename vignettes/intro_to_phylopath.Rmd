@@ -75,8 +75,12 @@ plot(models$one)
 
 Or we can plot all of the models at once (this uses the `ggraph` package):
 
-```{r, fig.height=7, fig.width=7, dpi = 90}
-plot_model_set(models, text_size = 3, edge_width = 1, box_x = 6, box_y = 6)
+```{r, eval = FALSE}
+plot_model_set(models)
+```
+
+```{r, echo=FALSE, out.width = "500px"}
+knitr::include_graphics("Vignette_figures/fig5.png")
 ```
 
 Now that we have the models, we can perform the path analysis using the `phylo_path` function. For this we will need a data set, included in this package as `rhino`, as well as a phylogenetic tree, `rhino_tree`.
