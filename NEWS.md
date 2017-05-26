@@ -9,6 +9,7 @@ phylopath 0.2.3
 
 * `phylo_path()` now checks for row.names that line up with the tree tip labels.
   If the tree contains surplus species, it gets pruned to size with a message.
+  This includes cases where species are dropped due to missing values.
   
 * `citation()` now correctly refers to the methods paper by Von Hardenberg &
   Gonzalez-Voyer first and the package second.

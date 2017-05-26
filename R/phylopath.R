@@ -26,6 +26,7 @@
 #'   \item{models}{the DAGs}
 #'   \item{data}{the supplied data}
 #'   \item{tree}{the supplied tree}
+#'   \item{cor_fun}{the employed correlation structure}
 #'   }
 #' @export
 #' @examples
@@ -42,40 +43,11 @@
 phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
                        order = NULL, parallel = NULL, na.rm = TRUE) {
   cor_fun <- match.fun(cor_fun)
-  # Check if all models have the same number of nodes
-  var_names <- lapply(models, colnames)
-  if (length(models) > 1 &
-      (stats::var(lengths(models)) != 0 |
-       any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0))) {
-    stop('All causal models need to include the same variables. Combined, your
-         models include the following variables:\n',
-         paste(sort(unique(unlist(var_names))), collapse = '\n'),
-         call. = FALSE)
-  }
-  data <- data[, unique(unlist(var_names))]
-  # Check NAs and if models and tree line up
-  if ('tbl_df' %in% class(data)) {
-    data <- as.data.frame(data)
-  }
-  if (anyNA(data)) {
-    if (na.rm) {
-      NAs <- which(apply(data, 1, anyNA))
-      message(length(NAs), ' rows were dropped because they contained NA values.')
-      data <- data[-NAs, ]
-    } else {
-      stop('NA values were found in the variables of interest.', call. = FALSE)
-    }
-  }
-  if (length(setdiff(rownames(data), tree$tip.label)) > 0) {
-    stop('Make sure that species in your data have rownames that are exactly matched by name with tips in the tree.')
-  }
-  if (length(tree$tip.label) > nrow(data)) {
-    tree <- ape::drop.tip(tree, setdiff(tree$tip.label, rownames(data)))
-    message('Pruned tree to drop species not included in dat.')
-  }
-  if (is.null(names(models))) {
-    names(models) <- LETTERS[1:length(models)]
-  }
+  tmp <- check_models_data_tree(models, data, tree, na.rm)
+  models <- tmp$models
+  data <- tmp$data
+  tree <- tmp$tree
+
   if (is.null(order)) {
     order <- find_consensus_order(models)
   }

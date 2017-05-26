@@ -54,5 +54,4 @@ analysis.
   coef_plot(avg_model)
   coef_plot(average(p, method = 'full'))
   }
-
 }

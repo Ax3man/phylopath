@@ -41,6 +41,7 @@ A phylopath object, with the following components:
   \item{models}{the DAGs}
   \item{data}{the supplied data}
   \item{tree}{the supplied tree}
+  \item{cor_fun}{the employed correlation structure}
   }
 }
 \description{
