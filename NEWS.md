@@ -5,6 +5,11 @@ phylopath 0.2.3.9000
   makes it easier to spot how models are different. This adds `ggraph` as a new
   dependency.
 
+* Added support for completely binary models, that are fitted with 
+  `ape::binaryPGLMM`. Use `phylo_path_binary()` to compare models. `average()`,
+  `best()` and `choose()` are now S3 generics and will handle both continious
+  and binary versions. `est_DAG_binary()` powers the binary S3 methods.
+
 phylopath 0.2.3
 --------------------------------------------------------------------------------
 
