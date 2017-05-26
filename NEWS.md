@@ -1,3 +1,10 @@
+phylopath 0.2.3.9000
+
+* You can now plot a list of causal models with `plot_model_set()`. This 
+  creates a facetted plot where all nodes are kept in the same location, which 
+  makes it easier to spot how models are different. This adds `ggraph` as a new
+  dependency.
+
 phylopath 0.2.3
 --------------------------------------------------------------------------------
 

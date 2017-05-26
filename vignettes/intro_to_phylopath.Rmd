@@ -73,6 +73,12 @@ plot(models$one)
 
 ![](Vignette_figures/fig1.png)
 
+Or we can plot all of the models at once (this uses the `ggraph` package):
+
+```{r, fig.height=7, fig.width=7, dpi = 90}
+plot_model_set(models, text_size = 3, edge_width = 1, box_x = 6, box_y = 6)
+```
+
 Now that we have the models, we can perform the path analysis using the `phylo_path` function. For this we will need a data set, included in this package as `rhino`, as well as a phylogenetic tree, `rhino_tree`.
 
 Importantly, when using PGLS, we need to be consistent in which variables are used as independent and dependent variables in the analysis. If one has a specific idea about which variables are to be conscidered as up- and down-stream, then you can use the `order` argument to give the ordering (from up to down). In this case, we supply the ordering to mimic the choices made by the chapter authors. Alternatively, you can choose to not supply an order, and the function will try to make a sensible order by itself. If the combination of all causal models is itself a DAG, the ordering of that model will be used, otherwise the ordering will be constructed by consensus (i.e. the most common ordering is chosen).
