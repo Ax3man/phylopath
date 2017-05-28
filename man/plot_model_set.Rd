@@ -11,24 +11,31 @@ plot_model_set(models, algorithm = "kk", text_size = 5, box_x = 12,
 \arguments{
 \item{models}{A list of \code{DAG} objects.}
 
-\item{algorithm}{A layout algorithm from \code{igraph}, see \code{\link[ggraph]{create_layout}}.
-By default, uses the Kamada-Kawai layout algorithm. Another good option is \code{"sugiyama"},
-which is designed to minimize overlapping edges in DAGs. However, it can often plot nodes too
-close together.}
+\item{algorithm}{A layout algorithm from \code{igraph}, see
+\code{\link[ggraph]{create_layout}}. By default, uses the Kamada-Kawai
+layout algorithm. Another good option is \code{"sugiyama"}, which is
+designed to minimize edge crossing in DAGs. However, it can often plot
+nodes too close together.}
 
 \item{text_size}{Size of the node label text.}
 
-\item{box_x}{To avoid the arrows colliding with the nodes, specify the rectangular dimensions of
-an invisible box around each node. If you have long labels, you need to increase this.}
+\item{box_x}{To avoid the arrows colliding with the nodes, specify the
+rectangular dimensions of an invisible box around each node. If you have
+long labels, you need to increase this.}
 
-\item{box_y}{To avoid the arrows colliding with the nodes, specify the rectangular dimensions of
-an invisible box around each node. If you have multi-line labels, you need to increase this.}
+\item{box_y}{To avoid the arrows colliding with the nodes, specify the
+rectangular dimensions of an invisible box around each node. If you have
+multi-line labels, you need to increase this.}
 
 \item{edge_width}{Width of the edges.}
 
 \item{curvature}{Curvature of the edges. A slight curvature can look pretty.}
 
-\item{arrow}{A \code{grid::arrow} object, specifying the shape and size of the arrowheads.}
+\item{arrow}{A \code{grid::arrow} object, specifying the shape and size of the arrowheads.
+
+The order of facets is taken from the ordering of the list, with the facet
+labels coming from the names of the list. If the list is unnamed, sequential
+lettering is used.}
 }
 \value{
 A \code{ggplot} object.
@@ -41,3 +48,4 @@ m <- list(one = DAG(a ~ b + c + d), two = DAG(a ~ b, b ~ c, d ~ d))
 plot_model_set(m)
 plot_model_set(m, "sugiyama")
 }
+

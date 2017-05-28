@@ -104,18 +104,25 @@ coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
 #' Plot several causal hypothesis at once.
 #'
 #' @param models A list of \code{DAG} objects.
-#' @param algorithm A layout algorithm from \code{igraph}, see \code{\link[ggraph]{create_layout}}.
-#'   By default, uses the Kamada-Kawai layout algorithm. Another good option is \code{"sugiyama"},
-#'   which is designed to minimize overlapping edges in DAGs. However, it can often plot nodes too
-#'   close together.
+#' @param algorithm A layout algorithm from \code{igraph}, see
+#'   \code{\link[ggraph]{create_layout}}. By default, uses the Kamada-Kawai
+#'   layout algorithm. Another good option is \code{"sugiyama"}, which is
+#'   designed to minimize edge crossing in DAGs. However, it can often plot
+#'   nodes too close together.
 #' @param text_size Size of the node label text.
-#' @param box_x To avoid the arrows colliding with the nodes, specify the rectangular dimensions of
-#'   an invisible box around each node. If you have long labels, you need to increase this.
-#' @param box_y To avoid the arrows colliding with the nodes, specify the rectangular dimensions of
-#'   an invisible box around each node. If you have multi-line labels, you need to increase this.
+#' @param box_x To avoid the arrows colliding with the nodes, specify the
+#'   rectangular dimensions of an invisible box around each node. If you have
+#'   long labels, you need to increase this.
+#' @param box_y To avoid the arrows colliding with the nodes, specify the
+#'   rectangular dimensions of an invisible box around each node. If you have
+#'   multi-line labels, you need to increase this.
 #' @param edge_width Width of the edges.
 #' @param curvature Curvature of the edges. A slight curvature can look pretty.
 #' @param arrow A \code{grid::arrow} object, specifying the shape and size of the arrowheads.
+#'
+#' The order of facets is taken from the ordering of the list, with the facet
+#' labels coming from the names of the list. If the list is unnamed, sequential
+#' lettering is used.
 #'
 #' @return A \code{ggplot} object.
 #' @export
@@ -132,6 +139,10 @@ plot_model_set <- function(models, algorithm = 'kk', text_size = 5, box_x = 12, 
     stop('models should be a list of DAG objects.')
   }
 
+  if (is.null(names(models))) {
+    names(models) <- LETTERS[seq_along(models)]
+  }
+
   var_names <- lapply(models, colnames)
   if (length(models) > 1 &
       (stats::var(lengths(models)) != 0 |
@@ -141,8 +152,6 @@ plot_model_set <- function(models, algorithm = 'kk', text_size = 5, box_x = 12, 
          paste(sort(unique(unlist(var_names))), collapse = '\n'),
          call. = FALSE)
   }
-  # Sort all models the same
-  #models <- purrr::map(models, ~.[rownames(models[[1]]), colnames(models[[1]])])
 
   # Build graph
   result <- igraph::make_empty_graph() + igraph::vertices(row.names(models[[1]]))
@@ -154,19 +163,16 @@ plot_model_set <- function(models, algorithm = 'kk', text_size = 5, box_x = 12, 
     result <- igraph::add_edges(result, c(rbind(rownames(m)[from], colnames(m)[to])),
                                 attr = list(model = names(models)[[i]]))
   }
-  igraph::E(result)$model <- factor(igraph::E(result)$model, names(models), names(models))
+  igraph::edge.attributes(result)$model <- factor(igraph::E(result)$model,
+                                                  names(models), names(models))
 
   # Build plot.
-  my_lab <- function(labels) {
-    list(model = names(models))
-  }
-
   ggraph::ggraph(result, 'igraph', algorithm = algorithm) +
     ggraph::geom_edge_arc(curvature = curvature, arrow = arrow, edge_width = edge_width,
                            end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
                            start_cap = ggraph::rectangle(box_x, box_y, 'mm')) +
     ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
-    ggraph::facet_edges(~model, labeller = my_lab) +
+    ggraph::facet_edges(~model) +
     ggplot2::scale_x_continuous(expand = c(0.2, 0)) +
     ggplot2::scale_y_continuous(expand = c(0.2, 0)) +
     ggraph::theme_graph(foreground = 'grey80', base_family = 'sans')
