@@ -46,6 +46,12 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
     }
     f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
     m <- gls2(f, data = data, cor_fun = cor_fun, tree = tree)
+    if (!is.null(m$error)) {
+      stop(paste('Fitting the following model:\n   ', Reduce(paste, deparse(f)),
+                 '\nproduced this error:\n   ', m$error),
+           call. = FALSE)
+    }
+    m <- m$result
     Coef <- se <- lower <- upper <- y
     Coef[Coef != 0]   <- get_est(m)
     se[se != 0]       <- get_se(m)
@@ -66,6 +72,43 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
     rownames(DAG)
   res <- list(coef = coefs, se = ses, lower = lowers, upper = uppers)
   class(res) <- 'fitted_DAG'
+  return(res)
+}
+
+#' Add standardized path coefficients to a binary DAG.
+#'
+#' @param DAG A directed acyclic graph, typically created with \code{DAG}.
+#' @inheritParams phylo_path_binary
+#'
+#' @return An object of class \code{binary_fitted_DAG}.
+#'
+#' @export
+est_DAG_binary <- function(DAG, data, tree) {
+  d <- Map(function(x, y, n) {
+    if (all(y == 0)) {
+      return(cbind(y, y, y, y))
+    }
+    f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
+    m <- purrr::safely(ape::binaryPGLMM)(f, data = data, phy = tree)
+    if (!is.null(m$error)) {
+      stop(paste('Fitting the following model:\n   ', Reduce(paste, deparse(f)),
+                 '\nproduced this error:\n   ', m$error),
+           call. = FALSE)
+    }
+    m <- m$result
+    Coef <- se <- y
+    Coef[Coef != 0]   <- get_est_binary(m)
+    se[se != 0]       <- get_se_binary(m)
+    return(cbind(coef = Coef, se = se))
+  }, colnames(DAG), as.data.frame(DAG), MoreArgs = list(n = rownames(DAG)))
+  if (any(sapply(d, function(x) any(is.na(x))))) {
+    warnings("NA's have been generated, most likely some confidence intervals could not be estimated.")
+  }
+  coefs  <- sapply(d, `[`, 1:nrow(DAG), 1)
+  ses    <- sapply(d, `[`, 1:nrow(DAG), 2)
+  rownames(coefs) <- rownames(ses) <- rownames(DAG)
+  res <- list(coef = coefs, se = ses)
+  class(res) <- c('binary_fitted_DAG', 'fitted_DAG')
   return(res)
 }
 

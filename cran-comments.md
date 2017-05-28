@@ -1,33 +1,20 @@
 ## Test environments
-* local Windows 10 install, R 3.3.2
-* win-builder (devel)
+* local Windows 10 install, R 3.3.3
+* Development version using winbuilder r72375
 
 ## R CMD check results
-There were no ERRORs or WARNINGs.
+0 errors | 0 warnings | 0 notes
 
-There were 2 NOTES:
+## CRAN check:
 
-  * checking CRAN incoming feasibility ... NOTE
-Maintainer: 'Wouter van der Bijl <wouter.van.der.bijl@zoologi.su.se>'
+There is currently 1 NOTE on some builds:
 
-Possibly mis-spelled words in DESCRIPTION:
-  Hardenberg (8:52)
-  Phylogenetic (3:16)
-  Von (8:48)
-  Voyer (8:76)
-  phylogenetic (8:5)
+Result: NOTE 
+    Namespace in Imports field not imported from: ‘ape’
+     All declared Imports should be used. 
 
-These words are not mis-spelled, but include names and 'phylogenetic' analysis
-refers to analyses that control for interdependence of species due to the tree
-of life.
-
-  & checking dependencies in R code ... NOTE
-Namespace in Imports field not imported from: 'ape'
-  All declared Imports should be used.
-
-This NOTE appears on some builds (CRAN Package Check Results). While no function
-from ape is directly used, a function from ape is used as a default argument
-in the phylo_path function.
+While no function from ape is directly used, a function from ape is used as a
+default argument in the phylo_path function.
 
 ## Downstream dependencies
 The package does not have downstream dependencies.

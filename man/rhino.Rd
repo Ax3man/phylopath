@@ -21,4 +21,3 @@ example, containing variables on body mass (BM), litter size (LS), nose
 length (NL), dispersal distance (DD) and range size (RS).
 }
 \keyword{datasets}
-

@@ -30,4 +30,3 @@ to \code{TRUE} and that it adds a \code{DAG} class for easy plotting.
   # Add a node as it's own parent to create an isolate:
   plot(DAG(A~B+C, D~D))
 }
-

@@ -12,8 +12,8 @@ est_DAG(DAG, data, cor_fun, tree)
 \item{data}{A \code{data.frame} with data.}
 
 \item{cor_fun}{A function that creates a \code{corStruct} object, typically
-one of the cor function from the \code{ape}, such as \code{corBrownian},
-\code{corPagel} etc.}
+one of the cor functions from the \code{ape} package, such as
+\code{corBrownian}, \code{corPagel} etc.}
 
 \item{tree}{A phylogenetic tree of class \code{pylo}.}
 }
@@ -29,4 +29,3 @@ Add standardized path coefficients to a DAG.
   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
   plot(d_fitted)
 }
-

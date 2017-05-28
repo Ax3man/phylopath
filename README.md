@@ -1,5 +1,7 @@
 # phylopath
 
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/phylopath)](https://cran.r-project.org/package=phylopath) [![Research software impact](http://depsy.org/api/package/cran/phylopath/badge.svg)](http://depsy.org/package/r/phylopath) [![Cran downloads](http://cranlogs.r-pkg.org/badges/grand-total/phylopath)](http://cran.rstudio.com/web/packages/phylopath/index.html)
+
 Install the package using:
 
 ```{r}
@@ -9,9 +11,6 @@ install.packages("phylopath")
 Or if you'd like to install the development version (here on github), use:
 
 ```{r}
-if (packageVersion("devtools") < 1.6) {
-  install.packages("devtools")
-}
 devtools::install_github("Ax3man/phylopath")
 ```
 

@@ -19,4 +19,3 @@ rhino_tree
 A phylogenetic tree for the 100 species of the \code{rhino} dataset.
 }
 \keyword{datasets}
-

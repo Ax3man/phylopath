@@ -9,7 +9,23 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This vignette gives a quick overview of the package by recreating the phylogenetic path analysis described in:
+### Some starting notes
+
+If you are unfamiliar with phylogenetic comparative methods in general, I'd advise you learn more simple methods first. If you are comfortable with phylogenetic methods, but not with phylogenetic path analysis (PPA) in particular, you should have a look at the example below together with the wonderful book chapter by Gonzalez-Voyer and Von Hardenberg.
+
+This package follows the general approach to phylogenetic methods as used by the package `ape` (`nlme::gls` and `ape` are also used "under the hood"). This means in particular that you line up your phylogenetic tree and data by assigning the tip labels as the row names of your data.frame. (Please note that this is different from the approach of `caper::pgls` where you create a comparative data object.)
+
+This also means that you use the correlation function from `ape`, by default `corPagel`, to supply the model of evolution. `corPagel` in particular estimates _lambda_ without constraints (so it can be smaller than 0), and results can therefore be different from analysis using `caper` (which constrains _lambda_ between 0 and 1).
+
+`phylopath` makes it's best attempt at helping users out with their data and tree. That means in particular that:
+ 
+* an informative error is raised when you have species (rownames) in your data that are not in the tree,
+* that `NA` values are filtered out of the data as necessary, with an informative message, and
+* that the tree will be pruned for you if it has surplus species, with an informative message.
+
+### An example analysis
+
+Below I recreate the phylogenetic path analysis described in:
 
 > Gonzalez-Voyer A & von Hardenberg A. 2014. An Introduction to Phylogenetic Path Analysis. Chapter 8. In: Garamszegi LZ (ed.), Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. pp. 201-229. Springer-Verlag Berlin Heidelberg.
 
@@ -57,6 +73,16 @@ plot(models$one)
 
 ![](Vignette_figures/fig1.png)
 
+Or we can plot all of the models at once (this uses the `ggraph` package):
+
+```{r, eval = FALSE}
+plot_model_set(models)
+```
+
+```{r, echo=FALSE, out.width = "500px"}
+knitr::include_graphics("Vignette_figures/fig5.png")
+```
+
 Now that we have the models, we can perform the path analysis using the `phylo_path` function. For this we will need a data set, included in this package as `rhino`, as well as a phylogenetic tree, `rhino_tree`.
 
 Importantly, when using PGLS, we need to be consistent in which variables are used as independent and dependent variables in the analysis. If one has a specific idea about which variables are to be conscidered as up- and down-stream, then you can use the `order` argument to give the ordering (from up to down). In this case, we supply the ordering to mimic the choices made by the chapter authors. Alternatively, you can choose to not supply an order, and the function will try to make a sensible order by itself. If the combination of all causal models is itself a DAG, the ordering of that model will be used, otherwise the ordering will be constructed by consensus (i.e. the most common ordering is chosen).
@@ -84,7 +110,7 @@ summary(result)
 
 The ranking of the models obtained here is identical as the worked example in the book chapter. The estimates differ slightly however, since we are using `nlme::gls` whereas the chapter was using `caper::pgls`. (Specifically, the differences are due to `gls` and `pgls` estimating the lambda parameter slightly differently. Also there is one or two small mistakes in the book chapter analysis.)
 
-To view the best ranked model, we can use `best`. This returns a DAG with standardized regression coefficients, as well matrices of standard errors and confidence intervals. These can be obtained for any particular DAG using `est_DAG`.
+To view the best ranked model, we can use `best`. This returns a DAG with standardized regression coefficients, as well matrices of standard errors and confidence intervals. These can be obtained for any particular model we looked at by using the `choice` function.
 
 ```{r}
 (best_model <- best(result))

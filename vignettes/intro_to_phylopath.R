@@ -22,6 +22,12 @@ models$one
 ## ---- eval=FALSE---------------------------------------------------------
 #  plot(models$one)
 
+## ---- eval = FALSE-------------------------------------------------------
+#  plot_model_set(models)
+
+## ---- echo=FALSE, out.width = "500px"------------------------------------
+knitr::include_graphics("Vignette_figures/fig5.png")
+
 ## ------------------------------------------------------------------------
 result <- phylo_path(models, data = rhino, tree = rhino_tree, 
                      order = c('BM', 'NL', 'DD', 'LS', 'RS'))
