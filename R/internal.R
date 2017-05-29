@@ -162,3 +162,7 @@ combine_with_labels <- function(l, labels) {
   class(l) <- c("layout_igraph", "layout_ggraph", "data.frame")
   return(l)
 }
+
+#' @importFrom ggraph guide_train.edge_colourbar
+#' @export
+ggraph::guide_train.edge_colourbar

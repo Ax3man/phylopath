@@ -72,25 +72,23 @@ plot.fitted_DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size 
   l <- adjust_layout(l, rotation, flip_x, flip_y)
   l <- combine_with_labels(l, labels)
 
-  suppressWarnings( {
-    ggplot2::ggplot(l) +
-      ggraph::geom_edge_arc(ggplot2::aes_(colour = ~weight, label = ~round(weight, 2)),
-                            edge_width = edge_width,
-                            curvature = curvature, arrow = arrow,
-                            end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
-                            start_cap = ggraph::rectangle(box_x, box_y, 'mm'),
-                            show.legend = show.legend,
-                            linejoin = c('bevel'),
-                            angle_calc = 'along',
-                            label_dodge = grid::unit(10, 'points')) +
-      ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
-      ggraph::scale_edge_color_gradient2('standardized\npath coefficient',
-                                         low = colors[1], high = colors[2],
-                                         limits = c(-max(abs(igraph::E(g)$weight)),
-                                                    max(abs(igraph::E(g)$weight))),
-                                         guide = ggraph::guide_edge_colorbar()) +
-      ggraph::theme_graph(base_family = 'sans')
-  } )
+  ggplot2::ggplot(l) +
+    ggraph::geom_edge_arc(ggplot2::aes_(colour = ~weight, label = ~round(weight, 2)),
+                          edge_width = edge_width,
+                          curvature = curvature, arrow = arrow,
+                          end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+                          start_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+                          show.legend = show.legend,
+                          linejoin = c('bevel'),
+                          angle_calc = 'along',
+                          label_dodge = grid::unit(10, 'points')) +
+    ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
+    ggraph::scale_edge_color_gradient2('standardized\npath coefficient',
+                                       low = colors[1], high = colors[2],
+                                       limits = c(-max(abs(igraph::E(g)$weight)),
+                                                  max(abs(igraph::E(g)$weight))),
+                                       guide = ggraph::guide_edge_colorbar()) +
+    ggraph::theme_graph(base_family = 'sans')
 }
 
 #' Plot path coefficients and their confidence intervals.
