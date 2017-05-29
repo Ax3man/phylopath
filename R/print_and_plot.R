@@ -15,46 +15,82 @@ print.phylopath <- function(x, ...) {
   cat('\n')
 }
 
+#' Plot a directed acyclic graph.
+#'
+#' @param x A \code{DAG} object, usually created with the \code{DAG} function.
+#' @param algorithm A layout algorithm from \code{igraph}, see
+#'   \code{\link[ggraph]{create_layout}} and \code{\link[ggraph]{create_layout.igraph}}. By default,
+#'   uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.
+#' @param ... Not used.
+#' @inheritParams plot_model_set
+#'
 #' @export
-plot.DAG <- function(x, ...) {
-  df <- igraph::as_data_frame(
-    igraph::graph_from_adjacency_matrix(x, weighted = TRUE), what = "both")
+plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, box_x = 12, box_y = 8,
+                     edge_width = 1.5, curvature = 0.02, rotation = 0, flip_x = FALSE,
+                     flip_y = FALSE,
+                     arrow = grid::arrow(type = 'closed', 18, grid::unit(15, 'points')), ...) {
+  g <- igraph::graph_from_adjacency_matrix(x, weighted = TRUE)
 
-  nodes_df <- DiagrammeR::create_node_df(n = nrow(df$vertices),
-                                         label = df$vertices$name,
-                                         shape = 'oval')
-  edges_df <- DiagrammeR::create_edge_df(match(df$edges$from, df$vertices$name),
-                                         match(df$edges$to, df$vertices$name))
+  l <- ggraph::create_layout(g, 'igraph', algorithm = algorithm)
+  l <- adjust_layout(l, rotation, flip_x, flip_y)
+  l <- combine_with_labels(l, labels)
 
-  dg <- DiagrammeR::create_graph(
-    nodes_df = nodes_df,
-    edges_df = edges_df
-  )
-  DiagrammeR::render_graph(dg, title = '', ...)
+  ggraph::ggraph(l) +
+    ggraph::geom_edge_arc(curvature = curvature, arrow = arrow, edge_width = edge_width,
+                          end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+                          start_cap = ggraph::rectangle(box_x, box_y, 'mm')) +
+    ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
+    ggraph::theme_graph(base_family = 'sans')
 }
 
+#' Plot a directed acyclic graph with path coefficients.
+#'
+#' @param x An object of class \code{fitted_DAG}.
+#' @param algorithm A layout algorithm from \code{igraph}, see
+#'   \code{\link[ggraph]{create_layout}} and \code{\link[ggraph]{create_layout.igraph}}. By default,
+#'   uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.
+#' @param colors The end points of the continious color scale. Keep in mind that red and green are
+#'   obvious colors to use, but are better to be avoided because of color blind users.
+#' @param show.legend Whether a legend for the color scale should be shown.
+#' @param width_const Deprecated.
+#' @param ... Not used.
+#' @inheritParams plot_model_set
+#'
 #' @export
-plot.fitted_DAG <- function(x, width_const = 5, ...) {
-  df <- igraph::as_data_frame(
-    igraph::graph_from_adjacency_matrix(x$coef, weighted = TRUE), what = "both")
+plot.fitted_DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, box_x = 12,
+                            box_y = 8, edge_width = 1.25, curvature = 0.02, rotation = 0,
+                            flip_x = FALSE, flip_y = FALSE,
+                            arrow = grid::arrow(type = 'closed', 18, grid::unit(15, 'points')),
+                            colors = c('firebrick', 'navy'), show.legend = TRUE,
+                            width_const = NULL, ...) {
+  if (!is.null(width_const)) {
+    warning('width_const has been deprecated and is ignored.', call. = FALSE)
+  }
 
-  nodes_df <- DiagrammeR::create_node_df(n = nrow(df$vertices),
-                                         label = df$vertices$name,
-                                         shape = 'oval')
-  edges_df <- DiagrammeR::create_edge_df(
-    from = match(df$edges$from, df$vertices$name),
-    to = match(df$edges$to, df$vertices$name),
-    rel = round(df$edges$weight, 3),
-    label = round(df$edges$weight, 3),
-    penwidth = abs(df$edges$weight / max(df$edges$weight) * width_const),
-    color = ifelse(sign(df$edges$weight) == -1, 'red4', 'green4')
-  )
+  g <- igraph::graph_from_adjacency_matrix(x$coef, weighted = TRUE)
+  l <- ggraph::create_layout(g, 'igraph', algorithm = algorithm)
+  l <- adjust_layout(l, rotation, flip_x, flip_y)
+  l <- combine_with_labels(l, labels)
 
-  dg <- DiagrammeR::create_graph(
-    nodes_df = nodes_df,
-    edges_df = edges_df
-  )
-  DiagrammeR::render_graph(dg, title = '', ...)
+  suppressWarnings( {
+    ggplot2::ggplot(l) +
+      ggraph::geom_edge_arc(ggplot2::aes_(colour = ~weight, label = ~round(weight, 2)),
+                            edge_width = edge_width,
+                            curvature = curvature, arrow = arrow,
+                            end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+                            start_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+                            show.legend = show.legend,
+                            linejoin = c('bevel'),
+                            angle_calc = 'along',
+                            label_dodge = grid::unit(10, 'points')) +
+      ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
+      ggraph::scale_edge_color_gradient2('standardized\npath coefficient',
+                                         low = colors[1], high = colors[2],
+                                         limits = c(-max(abs(igraph::E(g)$weight)),
+                                                    max(abs(igraph::E(g)$weight))),
+                                         guide = ggraph::guide_edge_colorbar()) +
+      ggraph::theme_graph(base_family = 'sans')
+  } )
 }
 
 #' Plot path coefficients and their confidence intervals.
@@ -104,6 +140,9 @@ coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
 #' Plot several causal hypothesis at once.
 #'
 #' @param models A list of \code{DAG} objects.
+#' @param labels An optional set of labels to use for the nodes. This should be a named vector, of
+#'   the form \code{c(var1 = "label1", var2 = "label2")}.
+#'   If left at \code{NULL}, the variable names of the DAGs are used.
 #' @param algorithm A layout algorithm from \code{igraph}, see
 #'   \code{\link[ggraph]{create_layout}}. By default, uses the Kamada-Kawai
 #'   layout algorithm. Another good option is \code{"sugiyama"}, which is
@@ -118,6 +157,11 @@ coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
 #'   multi-line labels, you need to increase this.
 #' @param edge_width Width of the edges.
 #' @param curvature Curvature of the edges. A slight curvature can look pretty.
+#' @param rotation Supply the degrees you want to rotate the layout by. This is useful in order to
+#'   put rotate your upstream nodes towards the top if needed.
+#' @param flip_x Whether to flip the node positions horizontally.
+#' @param flip_y Whether to flip the node positions vertically.
+#' @param nrow Number of rows to display the models on.
 #' @param arrow A \code{grid::arrow} object, specifying the shape and size of the arrowheads.
 #'
 #' The order of facets is taken from the ordering of the list, with the facet
@@ -130,19 +174,18 @@ coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
 #' @examples
 #' m <- list(one = DAG(a ~ b + c + d), two = DAG(a ~ b, b ~ c, d ~ d))
 #' plot_model_set(m)
-#' plot_model_set(m, "sugiyama")
-plot_model_set <- function(models, algorithm = 'kk', text_size = 5, box_x = 12, box_y = 10,
-                           edge_width = 1, curvature = 0.05,
+#' plot_model_set(m, algorithm = "sugiyama")
+plot_model_set <- function(models, labels = NULL, algorithm = 'kk', text_size = 5, box_x = 12,
+                           box_y = 10, edge_width = 1, curvature = 0.05, rotation = 0,
+                           flip_x = FALSE, flip_y = FALSE, nrow = NULL,
                            arrow = grid::arrow(type = 'closed', 15, grid::unit(10, 'points'))) {
   # Input checks
   if (!is.list(models) | !all(purrr::map_lgl(models, ~inherits(., 'DAG')))) {
     stop('models should be a list of DAG objects.')
   }
-
   if (is.null(names(models))) {
     names(models) <- LETTERS[seq_along(models)]
   }
-
   var_names <- lapply(models, colnames)
   if (length(models) > 1 &
       (stats::var(lengths(models)) != 0 |
@@ -153,7 +196,7 @@ plot_model_set <- function(models, algorithm = 'kk', text_size = 5, box_x = 12, 
          call. = FALSE)
   }
 
-  # Build graph
+  # Build  single complete graph
   result <- igraph::make_empty_graph() + igraph::vertices(row.names(models[[1]]))
   for (i in seq_along(models)) {
     m <- models[[i]]
@@ -166,13 +209,17 @@ plot_model_set <- function(models, algorithm = 'kk', text_size = 5, box_x = 12, 
   igraph::edge.attributes(result)$model <- factor(igraph::E(result)$model,
                                                   names(models), names(models))
 
+  l <- ggraph::create_layout(result, 'igraph', algorithm = algorithm)
+  l <- adjust_layout(l, rotation, flip_x, flip_y)
+  l <- combine_with_labels(l, labels)
+
   # Build plot.
-  ggraph::ggraph(result, 'igraph', algorithm = algorithm) +
+  ggraph::ggraph(l) +
     ggraph::geom_edge_arc(curvature = curvature, arrow = arrow, edge_width = edge_width,
                            end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
                            start_cap = ggraph::rectangle(box_x, box_y, 'mm')) +
     ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
-    ggraph::facet_edges(~model) +
+    ggraph::facet_edges(~model, nrow = nrow) +
     ggplot2::scale_x_continuous(expand = c(0.2, 0)) +
     ggplot2::scale_y_continuous(expand = c(0.2, 0)) +
     ggraph::theme_graph(foreground = 'grey80', base_family = 'sans')

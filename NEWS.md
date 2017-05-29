@@ -1,9 +1,12 @@
 phylopath 0.2.3.9000
 
+* All plot functions that used `DiagrammeR` now use `ggraph` instead. This gives
+  much more control over the positioning of the nodes, and allows to plot 
+  multiple models at once. Exporting plots also becomes much easier.
+
 * You can now plot a list of causal models with `plot_model_set()`. This 
   creates a facetted plot where all nodes are kept in the same location, which 
-  makes it easier to spot how models are different. This adds `ggraph` as a new
-  dependency.
+  makes it easier to spot how models are different.
 
 * Added support for completely binary models, that are fitted with 
   `ape::binaryPGLMM`. Use `phylo_path_binary()` to compare models. `average()`,

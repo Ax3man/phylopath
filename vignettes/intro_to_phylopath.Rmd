@@ -38,7 +38,7 @@ Following figure 8.7, we first create all 9 causal models using the `DAG` functi
 Note: any unconnected nodes can be added using `var ~ var`, but we won't be needing that for this example.
 
 ```{r, include = FALSE}
-knitr::opts_chunk$set(dev = "png")
+knitr::opts_chunk$set(dev = "png", fig.height = 5, fig.width = 5, dpi = 300, out.width = "450px")
 ```
 
 
@@ -67,21 +67,16 @@ Note that the models are of class `matrix` as well as of class `DAG`. This means
 
 For example, it is good to check if the DAG looks like you were expecting. Simply `plot` one of the models to inspect it visually.
 
-```{r, eval=FALSE}
+```{r, fig.height = 5, fig.width = 5, dpi = 300}
 plot(models$one)
 ```
 
-![](Vignette_figures/fig1.png)
+Or we can plot all of the models at once:
 
-Or we can plot all of the models at once (this uses the `ggraph` package):
-
-```{r, eval = FALSE}
+```{r, fig.height=8, fig.width=8, out.width = "600px"}
 plot_model_set(models)
 ```
 
-```{r, echo=FALSE, out.width = "500px"}
-knitr::include_graphics("Vignette_figures/fig5.png")
-```
 
 Now that we have the models, we can perform the path analysis using the `phylo_path` function. For this we will need a data set, included in this package as `rhino`, as well as a phylogenetic tree, `rhino_tree`.
 
@@ -118,30 +113,23 @@ To view the best ranked model, we can use `best`. This returns a DAG with standa
 
 This object can also be plotted, now the numbers and width of the arrow represent path coefficients. In this case, all paths are green since all relationships are positive.
 
-```{r, eval=FALSE}
+```{r, warning = FALSE, fig.width = 6}
 plot(best_model)
 ```
-![](Vignette_figures/fig2.png)
 
 From the summary we could see that in reality, there are several models that are quite good. Instead of using the best model, we can use the average of the best models, weigted by their relative evidence. By simply calling `average`, we can obtain the coefficients and standard errors of the averaged model where the CICc `cut_off` is 2 by default. If a model does not include a path, we assume that coefficient to be 0.
 
-```{r}
+```{r, fig.width = 7}
 average_model <- average(result)
+plot(average_model, algorithm = 'mds', curvature = 0.1) # increase the curvature to avoid overlapping edges
 ```
-```{r, eval=FALSE}
-plot(average_model)
-```
-![](Vignette_figures/fig3.png)
 
 Note that, by default, the path averaging is only done for the models that actually contain that path. This facilitates the detection of weak effects, but also biases coefficients away from zero. Alternatively, we can assume the coefficients (and their variance) for absent paths to be zero by setting `method = "full"`.
 
-```{r}
+```{r, fig.width = 7}
 average_model_full <- average(result, method = "full")
+plot(average_model_full, algorithm = 'mds', curvature = 0.1)
 ```
-```{r, eval=FALSE}
-plot(average_model_full)
-```
-![](Vignette_figures/fig4.png)
 
 We can see that paths that occur in all the best models, such as NL -> DD, are not effected. But paths that occur only in some models suffer _shrinkage_, reflecting the fact that they were not as well supported.
 
@@ -149,13 +137,13 @@ In this case in particular, the average model is actually not a DAG since it is 
 
 If one is interested in the confidence in the regression coefficients, `coef_plot` can visualize the estimates and their approximate confidence intervals. We can see that for the best model, the four paths are all well supported and of approximately equal strength. The order of the paths from left to right, attempts to follow the paths downstream, in this indicated by the `order` argument we gave the `phylo_path` function at the start.
 
-```{r, fig.height=4}
+```{r}
 coef_plot(best_model)
 ```
 
 This plot can be manipulated using `ggplot2` functions, for example, to create a horizontal black-and-white version. We can see that for full average model, shrinkage has caused several paths to become uncertain.
 
-```{r, fig.width=6}
+```{r, fig.height=3.5}
 coef_plot(average_model_full, reverse_order = TRUE) + 
   ggplot2::coord_flip() + 
   ggplot2::theme_bw()

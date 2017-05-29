@@ -133,3 +133,32 @@ get_lower <- function(m) nlme::intervals(m)$coef[-1, 'lower']
 get_upper <- function(m) nlme::intervals(m)$coef[-1, 'upper']
 
 get_corStruct <- function(m) m$modelStruct
+
+adjust_layout <- function(l, rotation, flip_x, flip_y) {
+  rotation <- rotation * (2 * pi / 360)
+  R <- matrix(c(cos(rotation), sin(rotation), -sin(rotation), cos(rotation)), nrow = 2)
+  l[c('x', 'y')] <- as.matrix(l[c('x', 'y')]) %*% R
+  if (flip_x) {
+    l$x <- -l$x
+  }
+  if (flip_y) {
+    l$y <- -l$y
+  }
+  return(l)
+}
+
+labels <- c(a = 'body mass', c = 'nose length', b = 'some words', d = 'some other words')
+combine_with_labels <- function(l, labels) {
+  if (is.null(labels)) {
+    return(l)
+  }
+  if (is.null(names(labels))) {
+    stop('labels must be a named vector.', call. = FALSE)
+  }
+  if (length(setdiff(l$name, names(labels))) > 0) {
+    stop('Some nodes are missing from labels.', call. = FALSE)
+  }
+  l$name <- labels[match(names(labels), l$name)]
+  class(l) <- c("layout_igraph", "layout_ggraph", "data.frame")
+  return(l)
+}
