@@ -24,20 +24,24 @@
 
 #' Cichlid traits and the evolution of cooperative breeding.
 #'
-#' A data set with binary traits, used in an analysis on the evolution of cooperative breeding by
-#' Dey et al 2017. Variable names are shortened for easy of use and consist of cooperative breeding
-#' (C), mating system (M), parental care (P), social grouping (G) and diet (D). All traits are coded
-#' as two level factors.
+#' A data set with binary traits, used in an analysis on the evolution of
+#' cooperative breeding by Dey et al 2017. Variable names are shortened for
+#' easy of use and consist of cooperative breeding (C), mating system (M),
+#' parental care (P), social grouping (G) and diet (D). All traits are coded as
+#' two level factors.
 #'
-#' @source Dey, C.J., O’Connor, C.M., Wilkinson, H., Shultz, S., Balshine, S. & Fitzpatrick, J.L.
-#'   2017. Direct benefits and evolutionary transitions to complex societies. Nat Ecol Evol 1: 137.
+#' @source Dey, C.J., O'Connor, C.M., Wilkinson, H., Shultz, S., Balshine, S. &
+#'   Fitzpatrick, J.L. 2017. Direct benefits and evolutionary transitions to
+#'   complex societies. Nat Ecol Evol 1: 137.
 "cichlids"
 
 #' Cichlid phylogeny.
 #'
-#' The phylogenetic tree of cichlid species that accompanies the `cichlids` dataset. The phylogeny
-#' is based on five nuclear genes and three mitochondrial genes.
+#' The phylogenetic tree of cichlid species that accompanies the `cichlids`
+#' dataset. The phylogeny is based on five nuclear genes and three
+#' mitochondrial genes.
 #'
-#' @source Dey, C.J., O’Connor, C.M., Wilkinson, H., Shultz, S., Balshine, S. & Fitzpatrick, J.L.
-#'   2017. Direct benefits and evolutionary transitions to complex societies. Nat Ecol Evol 1: 137.
+#' @source Dey, C.J., O'Connor, C.M., Wilkinson, H., Shultz, S., Balshine, S. &
+#'   Fitzpatrick, J.L. 2017. Direct benefits and evolutionary transitions to
+#'   complex societies. Nat Ecol Evol 1: 137.
 "cichlids_tree"
