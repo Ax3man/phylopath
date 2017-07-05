@@ -25,6 +25,9 @@ print.phylopath <- function(x, ...) {
 #' @inheritParams plot_model_set
 #'
 #' @export
+#'
+#' @examples
+#'   plot(DAG(a ~ b + c + d))
 plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, box_x = 12, box_y = 8,
                      edge_width = 1.5, curvature = 0.02, rotation = 0, flip_x = FALSE,
                      flip_y = FALSE,
@@ -57,6 +60,11 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, bo
 #' @inheritParams plot_model_set
 #'
 #' @export
+#'
+#' @examples
+#'   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
+#'   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
+#'   plot(d_fitted)
 plot.fitted_DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, box_x = 12,
                             box_y = 8, edge_width = 1.25, curvature = 0.02, rotation = 0,
                             flip_x = FALSE, flip_y = FALSE,
