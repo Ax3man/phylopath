@@ -157,7 +157,7 @@ combine_with_labels <- function(l, labels) {
   if (length(setdiff(l$name, names(labels))) > 0) {
     stop('Some nodes are missing from labels.', call. = FALSE)
   }
-  l$name <- labels[match(names(labels), l$name)]
+  l$name <- factor(l$name, names(labels), labels)
   class(l) <- c("layout_igraph", "layout_ggraph", "data.frame")
   return(l)
 }
