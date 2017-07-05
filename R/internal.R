@@ -147,7 +147,6 @@ adjust_layout <- function(l, rotation, flip_x, flip_y) {
   return(l)
 }
 
-labels <- c(a = 'body mass', c = 'nose length', b = 'some words', d = 'some other words')
 combine_with_labels <- function(l, labels) {
   if (is.null(labels)) {
     return(l)
