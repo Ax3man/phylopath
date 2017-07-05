@@ -1,0 +1,49 @@
+template:
+  params:
+  bootswatch: cosmo
+
+reference:
+  - title: "Top level functions"
+    desc: "Use these functions to describe, fit, select and average your models."
+    contents:
+      - DAG
+      - phylo_path
+      - phylo_path_binary
+      - average
+      - best
+      - choice
+  - title: "Plotting"
+    contents:
+      - plot.DAG
+      - plot.fitted_DAG
+      - plot_model_set
+      - coef_plot
+  - title: "Low level functions"
+    desc: "Use these functions for finer control. These are mostly for internal use."
+    contents:
+      - est_DAG
+      - est_DAG_binary
+      - average_DAGs
+  - title: "Included datasets"
+    contents:
+      - rhino
+      - rhino_tree
+      - cichlids
+      - cichlids_tree
+
+
+navbar:
+  title: "phylopath"
+  type: inverse
+  left:
+    - icon: fa-home
+      href: index.html
+    - text: "Get started"
+      href: articles/intro_to_phylopath.html
+    - text: "Reference"
+      href: "reference/index.html"
+    - text: "News"
+      href: "news/index.html"
+  right:
+    - icon: fa-github
+      href: https://github.com/Ax3man/phylopath

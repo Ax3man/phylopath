@@ -1,0 +1,51 @@
+---
+title: "Easy phylogenetic path analysis in R"
+author: "Wouter van der Bijl"
+date: "July 5, 2017"
+output: html_document
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(dev = "png", fig.height = 7, fig.width = 7, dpi = 300, out.width = "600px",
+                      fig.align = 'center')
+```
+
+#Easy phylogenetic path analysis in R
+
+Use the `phylopath` package for an easy to use framework to perform PPA. It builds on the popular package for phylogenetic analysis `ape`.
+
+PPA can be used to compare support for competing causal models of trait evolution, while taking shared ancesty into account. All you need is:
+1. A clear set of models to test.
+2. A data set of species with trait values.
+3. A phylogeny of your species.
+
+For a complete worked example, click "Get Started" above.
+
+This method was developed by Von Hardenberg and Gonzalez-Voyer. See `citation()` for info on correct citations.
+
+```{r, echo = FALSE}
+library(phylopath)
+
+models <- list(
+  one   = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ DD),
+  two   = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ LS + DD),
+  three = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ NL),
+  four  = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ BM + NL),
+  five  = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ BM + NL + DD),
+  six   = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL, RS ~ BM),
+  seven = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL, RS ~ LS + BM),
+  eight = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL),
+  nine  = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL, RS ~ LS)
+)
+
+plot_model_set(models, rotation = -57, flip_x = TRUE)
+```
+
+```{r, echo = FALSE}
+result <- phylo_path(models, data = rhino, tree = rhino_tree, 
+                     order = c('BM', 'NL', 'DD', 'LS', 'RS'))
+#plot(choice(result, 'five'), rotation = 9.45, curvature = -0.0000001, flip_x = TRUE)
+set.seed(1)
+plot(choice(result, 'five'), algorithm = "nicely", rotation = 95, curvature = -0.0000001, flip_x = FALSE)
+```
+
