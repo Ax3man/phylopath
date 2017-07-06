@@ -16,7 +16,7 @@ typically created with \code{DAG}.}
 \item{tree}{A phylogenetic tree of class \code{pylo}.}
 
 \item{cor_fun}{A function that creates a \code{corStruct} object, typically
-one of the cor functions from the \code{ape} package, such as
+one of the \code{cor*} functions from the \code{ape} package, such as
 \code{corBrownian}, \code{corPagel} etc.}
 
 \item{order}{Causal order of the included variable, given as a character

@@ -52,7 +52,7 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, bo
 #' @param algorithm A layout algorithm from \code{igraph}, see
 #'   \code{\link[ggraph]{create_layout}} and \code{\link[ggraph]{create_layout.igraph}}. By default,
 #'   uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.
-#' @param colors The end points of the continious color scale. Keep in mind that red and green are
+#' @param colors The end points of the continuous color scale. Keep in mind that red and green are
 #'   obvious colors to use, but are better to be avoided because of color blind users.
 #' @param show.legend Whether a legend for the color scale should be shown.
 #' @param width_const Deprecated.

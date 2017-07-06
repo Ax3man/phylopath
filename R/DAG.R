@@ -115,12 +115,12 @@ est_DAG_binary <- function(DAG, data, tree) {
 #' Perform model averaging on a list of DAGs.
 #'
 #' @param fitted_DAGs A list of \code{fitted_DAG} objects containing
-#'   coefficents and standard errors, usually obtainted by using \code{est_DAG}
+#'   coefficients and standard errors, usually obtained by using \code{est_DAG}
 #'   on several DAGs.
 #' @param weights A vector of associated model weights.
 #' @param method Either \code{"full"} or \code{"conditional"}. The methods
 #'   differ in how they deal with averaging a path coefficient where the path is
-#'   absent in some of the models. The full method sets the coefficent (and the
+#'   absent in some of the models. The full method sets the coefficient (and the
 #'   variance) for the missing paths to zero, meaning paths that are missing in
 #'   some models will shrink towards zero. The conditional method only averages
 #'   over models where the path appears, making it more sensitive to small
@@ -131,7 +131,7 @@ est_DAG_binary <- function(DAG, data, tree) {
 #'   For details on the error calculations, see \link[MuMIn]{par.avg}.
 #'
 #' @return An object of class \code{fitted_DAG}, including standard errors and
-#'   confidence inverals.
+#'   confidence intervals.
 #' @export
 #'
 #' @examples

@@ -11,7 +11,7 @@ phylo_path_binary(models, data, tree, order = NULL, parallel = NULL,
 \item{models}{A list of directed acyclic graphs. These are matrices,
 typically created with \code{DAG}.}
 
-\item{data}{A \code{data.frame} with binary data. Variables can be a numberic vector (with all
+\item{data}{A \code{data.frame} with binary data. Variables can be a numeric vector (with all
 values either 0 or 1), a factor (with two levels) or character vector (with two unique values).}
 
 \item{tree}{A phylogenetic tree of class \code{pylo}.}

@@ -9,14 +9,14 @@ average_DAGs(fitted_DAGs, weights = rep(1, length(coef)),
 }
 \arguments{
 \item{fitted_DAGs}{A list of \code{fitted_DAG} objects containing
-coefficents and standard errors, usually obtainted by using \code{est_DAG}
+coefficients and standard errors, usually obtained by using \code{est_DAG}
 on several DAGs.}
 
 \item{weights}{A vector of associated model weights.}
 
 \item{method}{Either \code{"full"} or \code{"conditional"}. The methods
 differ in how they deal with averaging a path coefficient where the path is
-absent in some of the models. The full method sets the coefficent (and the
+absent in some of the models. The full method sets the coefficient (and the
 variance) for the missing paths to zero, meaning paths that are missing in
 some models will shrink towards zero. The conditional method only averages
 over models where the path appears, making it more sensitive to small
@@ -29,7 +29,7 @@ averaging is set as the default. Also see \link[MuMIn]{model.avg}.}
 }
 \value{
 An object of class \code{fitted_DAG}, including standard errors and
-  confidence inverals.
+  confidence intervals.
 }
 \description{
 Perform model averaging on a list of DAGs.

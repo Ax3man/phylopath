@@ -49,7 +49,7 @@ The order of facets is taken from the ordering of the list, with the facet
 labels coming from the names of the list. If the list is unnamed, sequential
 lettering is used.}
 
-\item{colors}{The end points of the continious color scale. Keep in mind that red and green are
+\item{colors}{The end points of the continuous color scale. Keep in mind that red and green are
 obvious colors to use, but are better to be avoided because of color blind users.}
 
 \item{show.legend}{Whether a legend for the color scale should be shown.}

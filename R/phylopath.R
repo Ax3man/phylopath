@@ -5,7 +5,7 @@
 #' @param data A \code{data.frame} with data.
 #' @param tree A phylogenetic tree of class \code{pylo}.
 #' @param cor_fun A function that creates a \code{corStruct} object, typically
-#'   one of the cor functions from the \code{ape} package, such as
+#'   one of the \code{cor*} functions from the \code{ape} package, such as
 #'   \code{corBrownian}, \code{corPagel} etc.
 #' @param order Causal order of the included variable, given as a character
 #'   vector. This is used to determine which variable should be the dependent
@@ -96,7 +96,7 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
 #'
 #' @param models A list of directed acyclic graphs. These are matrices,
 #'   typically created with \code{DAG}.
-#' @param data A \code{data.frame} with binary data. Variables can be a numberic vector (with all
+#' @param data A \code{data.frame} with binary data. Variables can be a numeric vector (with all
 #'   values either 0 or 1), a factor (with two levels) or character vector (with two unique values).
 #' @param tree A phylogenetic tree of class \code{pylo}.
 #' @param order Causal order of the included variable, given as a character
@@ -280,7 +280,7 @@ choice.phylopath_binary <- function(phylopath, choice) {
 #'   \code{phylopath_binary}.
 #' @param cut_off The CICc cut-off used to select the best models. Use
 #'   \code{Inf} to average over all models. Use the \code{best} function to
-#'   only use the top model.
+#'   only use the top model, or \code{choice} to select any single model.
 #' @inheritParams average_DAGs
 #'
 #' @return An object of class \code{fitted_DAG}.
@@ -308,7 +308,7 @@ choice.phylopath_binary <- function(phylopath, choice) {
 #'   # One can see that an averaged model is not necessarily a DAG itself.
 #'   # This model actually has a path in two directions.
 #'
-#'   # Note that coefficents that only occur in one of the models become much
+#'   # Note that coefficients that only occur in one of the models become much
 #'   # smaller when we use full averaging:
 #'
 #'   coef_plot(avg_model)

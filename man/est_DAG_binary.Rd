@@ -9,7 +9,7 @@ est_DAG_binary(DAG, data, tree)
 \arguments{
 \item{DAG}{A directed acyclic graph, typically created with \code{DAG}.}
 
-\item{data}{A \code{data.frame} with binary data. Variables can be a numberic vector (with all
+\item{data}{A \code{data.frame} with binary data. Variables can be a numeric vector (with all
 values either 0 or 1), a factor (with two levels) or character vector (with two unique values).}
 
 \item{tree}{A phylogenetic tree of class \code{pylo}.}
