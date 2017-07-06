@@ -3,5 +3,6 @@
 ^vignettes/intro_to_phylopath\.html$
 ^cran-comments\.md$
 ^README\.md$
+^index\.Rmd$
 ^docs$
 ^_pkgdown\.yml$
