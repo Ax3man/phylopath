@@ -276,7 +276,8 @@ choice.phylopath_binary <- function(phylopath, choice) {
 #' Extract and average the best supported models from a phylogenetic path
 #' analysis.
 #'
-#' @param phylopath An object of class \code{phylopath}.
+#' @param phylopath An object of class \code{phylopath} or
+#'   \code{phylopath_binary}.
 #' @param cut_off The CICc cut-off used to select the best models. Use
 #'   \code{Inf} to average over all models. Use the \code{best} function to
 #'   only use the top model.
@@ -286,11 +287,14 @@ choice.phylopath_binary <- function(phylopath, choice) {
 #' @export
 #'
 #' @examples
-#'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS),
-#'                      C = DAG(LS ~ BM, NL ~ LS + BM, DD ~ NL))
+#'   candidates <- list(
+#'     A = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ BM + NL),
+#'     B = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL)
+#'   )
 #'   p <- phylo_path(candidates, rhino, rhino_tree)
 #'   summary(p)
-#'   # Models A and C have close to equal support, so we may decide to take
+#'
+#'   # Models A and B have similar support, so we may decide to take
 #'   # their average.
 #'
 #'   avg_model <- average(p)
@@ -300,11 +304,17 @@ choice.phylopath_binary <- function(phylopath, choice) {
 #'   \dontrun{
 #'   # Plot to show the weighted graph:
 #'   plot(avg_model)
+#'
+#'   # One can see that an averaged model is not necessarily a DAG itself.
+#'   # This model actually has a path in two directions.
+#'
 #'   # Note that coefficents that only occur in one of the models become much
 #'   # smaller when we use full averaging:
+#'
 #'   coef_plot(avg_model)
 #'   coef_plot(average(p, method = 'full'))
 #'   }
+#'
 average <- function(phylopath, cut_off = 2, method = 'conditional', ...) {
   UseMethod('average')
 }
