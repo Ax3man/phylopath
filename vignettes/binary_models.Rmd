@@ -23,7 +23,7 @@ If you have useful opinions or information on these points, feel free to contact
 
 #Example analysis
 
-###Data and hypothesis
+###Data and hypotheses
 
 This recreates the analysis from the following paper:
 
@@ -31,7 +31,7 @@ This recreates the analysis from the following paper:
 
 This is, to my knowledge, the first study to employ PPA on binary traits.
 
-The study investigates the evolution of cooperative breeding in cichlids. In short (my summary), there has been intense debate about what factors drive species towards evolving systems of cooperative breeding. Many have argued and provided evidence in birds and mammals that cooperative breeding chiefly evolves when inbreeding is high and helpers gain indirect fitness benefits (i.e. kin selection). However, a non-exclusive alternative hypothesis is that direct benefits due to ecological factors may be important and provide direct benefits. Therefore, both hypotheses should be considered at the same time. 
+The study investigates the evolution of cooperative breeding in cichlids. In short (my summary), there has been intense debate about what factors drive species towards evolving systems of cooperative breeding. Many have argued (and provided evidence in birds and mammals) that cooperative breeding chiefly evolves from monogamous mating systems because helpers can gain indirect fitness benefits through kin selection. However, a non-exclusive alternative hypothesis is that direct benefits due to ecological factors may be important and provide direct benefits. Therefore, both hypotheses should be considered at the same time. 
 
 The data is included in this paper as `cichlids` and `cichlids_tree`
 
