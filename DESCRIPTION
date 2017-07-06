@@ -1,7 +1,7 @@
 Package: phylopath
 Type: Package
 Title: Perform Phylogenetic Path Analysis
-Version: 0.2.3.9000
+Version: 0.3.0
 Authors@R: person("Wouter", "van der Bijl",
                   email = "wouter.van.der.bijl@zoologi.su.se",
                   role = c("aut", "cre"))

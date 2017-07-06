@@ -1,4 +1,4 @@
-phylopath 0.2.3.9000
+phylopath 0.3.0
 
 * Added support for completely binary models, that are fitted with 
   `ape::binaryPGLMM`. Use `phylo_path_binary()` to compare models. `average()`,
