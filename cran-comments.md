@@ -1,5 +1,5 @@
 ## Test environments
-* local Windows 10 install (x86_64-w64-mingw32/x64), R 3.4.0 Patched (r72771)
+* local Windows 10 install (x86_64-w64-mingw32/x64), R 3.4.1
 * Development version using winbuilder r72891
 
 ## Local R CMD check results
