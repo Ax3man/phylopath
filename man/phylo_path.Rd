@@ -37,7 +37,7 @@ as necessary (with a message)?}
 \value{
 A phylopath object, with the following components:
  \describe{
-  \item{d_sep}{for each model a table with seperation statements and statistics.}
+  \item{d_sep}{for each model a table with separation statements and statistics.}
   \item{models}{the DAGs}
   \item{data}{the supplied data}
   \item{tree}{the supplied tree}
