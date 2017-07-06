@@ -1,0 +1,122 @@
+---
+title: "Comparing causal models of binary traits using phylopath"
+author: "Wouter van der Bijl"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+#Introduction
+
+This vignette gives a short example of how PPA can be applied to binary data sets using `phylopath`. A longer example with more explanation of the code can be found in the other vignette, "intro to phylopath".
+
+**Important notes**: 
+
+- There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses `ape::binaryPGLMM`, written by Anthony Ives. Read `?ape::binaryPGLMM` for more information. `phylopath`'s accuracy is directly dependent on the accuracy of that method, and if you don't trust `ape::binaryPGLMM` you should not trust `phylo_path_binary`.
+
+- This method does not allow for the specification of different models of evolution, as `ape::binaryPGLMM` does not support it. Since it is unclear to me whether it makes sense to mix different models of evolution while evaluating a single causal model, it is currently not possible to have causal models with mixed variable types. That is, for `phylo_path` all variables are expected to be continuous and for `phylo_path_binary` all variables should be binary.
+
+If you have useful opinions or information on these points, feel free to contact me.
+
+#Example analysis
+
+###Data and hypothesis
+
+This recreates the analysis from the following paper:
+
+> Dey CJ, O’Connor CM, Wilkinson H, Shultz S, Balshine S & Fitzpatrick JL. 2017. Direct benefits and evolutionary transitions to complex societies. Nature Ecology & Evolution. 0137.
+
+This is, to my knowledge, the first study to employ PPA on binary traits.
+
+The study investigates the evolution of cooperative breeding in cichlids. In short (my summary), there has been intense debate about what factors drive species towards evolving systems of cooperative breeding. Many have argued and provided evidence in birds and mammals that cooperative breeding chiefly evolves when inbreeding is high and helpers gain indirect fitness benefits (i.e. kin selection). However, a non-exclusive alternative hypothesis is that direct benefits due to ecological factors may be important and provide direct benefits. Therefore, both hypotheses should be considered at the same time. 
+
+The data is included in this paper as `cichlids` and `cichlids_tree`
+
+It contains five variables:
+
+- C: Cooperative breeding, cooperative or non-cooperative.
+- M: Mating system, monogamous or non-monogamous.
+- P: Parental care, maternal or biparental.
+- G: Social grouping, grouping or non-grouping.
+- D: Diet, piscivore or non-piscivore.
+
+Under the indirect fitness hypothesis, monogamy is expected to be a major driver of cooperative breeding, while group living, biparental care and diet type may be important contributors towards a direct benefits scenario.
+
+###Defining the causal models
+
+Following the paper in question, we define 12 putative causal models.
+
+```{r, fig.align='center', fig.width=10, fig.height=8, out.height="600px", fig.dpi = 600}
+library(phylopath)
+
+models <- list(
+  A = DAG(C ~ M + P + G + D),
+  B = DAG(C ~ P + G + D,      M ~ M),
+  C = DAG(C ~ P + G + D,                P ~ M),
+  D = DAG(C ~ P + G + D,      M ~ P,               G ~ P),
+  E = DAG(C ~ P + G + D,                P ~ M,     G ~ P),
+  F = DAG(C ~ P + G + D,                P ~ M + G),
+  G = DAG(C ~ P + G + D,      M ~ P,    P ~ G),
+  H = DAG(C ~ P + G + D,      M ~ P),
+  I = DAG(C ~ P + G + D,      M ~ M,               G ~ P),
+  J = DAG(C ~ P + G,          M ~ P,               G ~ D),
+  K = DAG(C ~ P + G,                    P ~ M,     G ~ D),
+  L = DAG(C ~ M + P + G + D,            P ~ M + G)
+)
+
+plot_model_set(models)
+```
+
+###Comparing the models
+
+Now that we have our models, data and a tree, we can compare the models using `phylo_path_binary`
+
+Note: `ape::binaryPGLMM` is very slow. This code takes about 3 minutes to run on my machine. Therefore, I recommend making use of the `parallel` argument to speed things up. Depending on the situation, this can help a lot.
+
+```{r, eval=FALSE}
+cichlids_results <- phylo_path_binary(models, cichlids, cichlids_tree, parallel = "SOCK")
+```
+
+```{r, echo=FALSE}
+message("15 rows were dropped because they contained NA values.")
+message("Pruned tree to drop species not included in dat.")
+cichlids_results <- phylopath:::cichlids_results
+```
+
+Note that two messages are printed. This is because there are missing values in our data set that are first being removed. Also, since the tree includes species for which data is missing, the tree had to be pruned. This is done automatically with a message to the user. You should check whether the amount of data removed is correct.
+
+```{r}
+summary(cichlids_results)
+```
+
+We see that model F is the best supported model. This model notably does not include a link between monogamy and cooperative breeding, giving support to the direct benefits hypothesis.
+
+###Evaluating variable importance
+
+Now that we have selected F as our best model, we still have three factors that affect cooperative breeding: diet, social grouping and parental care. Which one is more important? For this we can fit the model and look at magnitude of the coefficients. In this case, since we want to use the best model we use the function `best()`. One can use `choice()` to choose any arbitrary model, or `average()` to average over several models.
+
+```{r, eval=FALSE}
+best_cichlids <- best(cichlid_results)
+```
+
+```{r, echo=FALSE}
+best_cichlids <- phylopath:::best_cichlids
+```
+
+
+To see the individual coefficients and their standard errors, simply print `best_cichlids`:
+
+```{r}
+best_cichlids
+```
+
+But we can also plot the final model:
+
+```{r, fig.align='center', fig.width=8, fig.height=4, out.width="600px", fig.dpi = 300}
+plot(best_cichlids, algorithm = 'kk')
+```
+
+It appears that social grouping is a slightly more important than diet and biparental care.

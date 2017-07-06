@@ -40,6 +40,8 @@ navbar:
       href: index.html
     - text: "Get started"
       href: articles/intro_to_phylopath.html
+    - text: "Binary data"
+      href: articles/binary_models.html
     - text: "Reference"
       href: "reference/index.html"
     - text: "News"
