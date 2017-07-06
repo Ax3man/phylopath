@@ -61,3 +61,8 @@ obvious colors to use, but are better to be avoided because of color blind users
 \description{
 Plot a directed acyclic graph with path coefficients.
 }
+\examples{
+  d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
+  d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
+  plot(d_fitted)
+}

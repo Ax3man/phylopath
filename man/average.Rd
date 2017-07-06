@@ -8,7 +8,8 @@ analysis.}
 average(phylopath, cut_off = 2, method = "conditional", ...)
 }
 \arguments{
-\item{phylopath}{An object of class \code{phylopath}.}
+\item{phylopath}{An object of class \code{phylopath} or
+\code{phylopath_binary}.}
 
 \item{cut_off}{The CICc cut-off used to select the best models. Use
 \code{Inf} to average over all models. Use the \code{best} function to
@@ -35,11 +36,14 @@ Extract and average the best supported models from a phylogenetic path
 analysis.
 }
 \examples{
-  candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS),
-                     C = DAG(LS ~ BM, NL ~ LS + BM, DD ~ NL))
+  candidates <- list(
+    A = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ BM + NL),
+    B = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL)
+  )
   p <- phylo_path(candidates, rhino, rhino_tree)
   summary(p)
-  # Models A and C have close to equal support, so we may decide to take
+
+  # Models A and B have similar support, so we may decide to take
   # their average.
 
   avg_model <- average(p)
@@ -49,9 +53,15 @@ analysis.
   \dontrun{
   # Plot to show the weighted graph:
   plot(avg_model)
+
+  # One can see that an averaged model is not necessarily a DAG itself.
+  # This model actually has a path in two directions.
+
   # Note that coefficents that only occur in one of the models become much
   # smaller when we use full averaging:
+
   coef_plot(avg_model)
   coef_plot(average(p, method = 'full'))
   }
+
 }

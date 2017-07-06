@@ -103,7 +103,8 @@ analysis.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>phylopath</th>
-      <td><p>An object of class <code>phylopath</code>.</p></td>
+      <td><p>An object of class <code>phylopath</code> or
+<code>phylopath_binary</code>.</p></td>
     </tr>
     <tr>
       <th>cut_off</th>
@@ -135,51 +136,69 @@ averaging is set as the default. Also see <a href='http://www.rdocumentation.org
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>  <span class='no'>candidates</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='kw'>A</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span> + <span class='no'>LS</span>),
-                     <span class='kw'>C</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>LS</span> + <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>))
-  <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='phylo_path.html'>phylo_path</a></span>(<span class='no'>candidates</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>)</div><div class='output co'>#&gt;    |+++++++++++++                                     | 25% ~00s             |+++++++++++++++++++++++++                         | 50% ~00s             |++++++++++++++++++++++++++++++++++++++            | 75% ~00s             |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed = 01s</div><div class='input'>  <span class='fu'>summary</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt;   model k q     C     p   CICc delta_CICc     l     w
-#&gt; 1     A 2 8 2.361 0.670 19.943       0.00 1.000 0.581
-#&gt; 2     C 2 8 3.011 0.556 20.593       0.65 0.722 0.419</div><div class='input'>  <span class='co'># Models A and C have close to equal support, so we may decide to take</span>
+    <pre class="examples"><div class='input'>  <span class='no'>candidates</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(
+    <span class='kw'>A</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>, <span class='no'>RS</span> ~ <span class='no'>BM</span> + <span class='no'>NL</span>),
+    <span class='kw'>B</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>BM</span> + <span class='no'>RS</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>)
+  )
+  <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='phylo_path.html'>phylo_path</a></span>(<span class='no'>candidates</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>)</div><div class='output co'>#&gt;    |++++++                                            | 11% ~01s             |++++++++++++                                      | 22% ~01s             |+++++++++++++++++                                 | 33% ~01s             |+++++++++++++++++++++++                           | 44% ~00s             |++++++++++++++++++++++++++++                      | 56% ~00s             |++++++++++++++++++++++++++++++++++                | 67% ~00s             |+++++++++++++++++++++++++++++++++++++++           | 78% ~00s             |+++++++++++++++++++++++++++++++++++++++++++++     | 89% ~00s             |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed = 01s</div><div class='input'>  <span class='fu'>summary</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt;   model k  q     C     p   CICc delta_CICc     l     w
+#&gt; 1     B 6  9 8.148 0.773 28.148      0.000 1.000 0.628
+#&gt; 2     A 5 10 6.721 0.752 29.193      1.045 0.593 0.372</div><div class='input'>
+  <span class='co'># Models A and B have similar support, so we may decide to take</span>
   <span class='co'># their average.</span>
 
   <span class='no'>avg_model</span> <span class='kw'>&lt;-</span> <span class='fu'>average</span>(<span class='no'>p</span>)
   <span class='co'># Print the average model to see coefficients, se and ci:</span>
   <span class='no'>avg_model</span></div><div class='output co'>#&gt; $coef
-#&gt;    BM          NL        LS          DD
-#&gt; BM  0 0.429814663 0.4988607  0.00000000
-#&gt; NL  0 0.000000000 0.0000000  0.62228150
-#&gt; LS  0 0.001072211 0.0000000 -0.01537559
-#&gt; DD  0 0.000000000 0.0000000  0.00000000
+#&gt;            RS BM        NL        DD        LS
+#&gt; RS  0.0000000  0 0.5272990 0.0000000 0.0000000
+#&gt; BM -0.4147735  0 0.4503421 0.0000000 0.4988607
+#&gt; NL  0.8766997  0 0.0000000 0.6206986 0.0000000
+#&gt; DD  0.0000000  0 0.0000000 0.0000000 0.0000000
+#&gt; LS  0.0000000  0 0.0000000 0.0000000 0.0000000
 #&gt; attr(,"class")
 #&gt; [1] "matrix" "DAG"   
 #&gt; 
 #&gt; $se
-#&gt;    BM         NL         LS         DD
-#&gt; BM  0 0.09479148 0.08954569 0.00000000
-#&gt; NL  0 0.00000000 0.00000000 0.08318122
-#&gt; LS  0 0.09995746 0.00000000 0.08304297
-#&gt; DD  0 0.00000000 0.00000000 0.00000000
+#&gt;            RS BM         NL         DD         LS
+#&gt; RS 0.00000000  0 0.05721587 0.00000000 0.00000000
+#&gt; BM 0.09201749  0 0.07642599 0.00000000 0.08954569
+#&gt; NL 0.09467253  0 0.00000000 0.08116661 0.00000000
+#&gt; DD 0.00000000  0 0.00000000 0.00000000 0.00000000
+#&gt; LS 0.00000000  0 0.00000000 0.00000000 0.00000000
 #&gt; 
 #&gt; $lower
-#&gt;    BM         NL        LS         DD
-#&gt; BM  0  0.2440268 0.3233544  0.0000000
-#&gt; NL  0  0.0000000 0.0000000  0.4592493
-#&gt; LS  0 -0.1948408 0.0000000 -0.1781368
-#&gt; DD  0  0.0000000 0.0000000  0.0000000
+#&gt;            RS BM       NL       DD        LS
+#&gt; RS  0.0000000  0 0.415158 0.000000 0.0000000
+#&gt; BM -0.5951245  0 0.300550 0.000000 0.3233544
+#&gt; NL  0.6911450  0 0.000000 0.461615 0.0000000
+#&gt; DD  0.0000000  0 0.000000 0.000000 0.0000000
+#&gt; LS  0.0000000  0 0.000000 0.000000 0.0000000
 #&gt; 
 #&gt; $upper
-#&gt;    BM        NL       LS        DD
-#&gt; BM  0 0.6156025 0.674367 0.0000000
-#&gt; NL  0 0.0000000 0.000000 0.7853137
-#&gt; LS  0 0.1969852 0.000000 0.1473856
-#&gt; DD  0 0.0000000 0.000000 0.0000000
+#&gt;            RS BM        NL        DD       LS
+#&gt; RS  0.0000000  0 0.6394401 0.0000000 0.000000
+#&gt; BM -0.2344225  0 0.6001343 0.0000000 0.674367
+#&gt; NL  1.0622545  0 0.0000000 0.7797823 0.000000
+#&gt; DD  0.0000000  0 0.0000000 0.0000000 0.000000
+#&gt; LS  0.0000000  0 0.0000000 0.0000000 0.000000
 #&gt; 
 #&gt; attr(,"class")
 #&gt; [1] "fitted_DAG"</div><div class='input'>
-  </div><div class='input'>  <span class='co'># Plot to show the weighted graph:</span>
-  <span class='fu'>plot</span>(<span class='no'>avg_model</span>)</div><div class='img'><img src='average-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>  <span class='co'># Note that coefficents that only occur in one of the models become much</span>
+  </div><span class='co'># NOT RUN {</span>
+  <span class='co'># Plot to show the weighted graph:</span>
+  <span class='fu'>plot</span>(<span class='no'>avg_model</span>)
+
+  <span class='co'># One can see that an averaged model is not necessarily a DAG itself.</span>
+  <span class='co'># This model actually has a path in two directions.</span>
+
+  <span class='co'># Note that coefficents that only occur in one of the models become much</span>
   <span class='co'># smaller when we use full averaging:</span>
-  <span class='fu'><a href='coef_plot.html'>coef_plot</a></span>(<span class='no'>avg_model</span>)</div><div class='img'><img src='average-2.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>  <span class='fu'><a href='coef_plot.html'>coef_plot</a></span>(<span class='fu'>average</span>(<span class='no'>p</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>'full'</span>))</div><div class='img'><img src='average-3.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>  </div></pre>
+
+  <span class='fu'><a href='coef_plot.html'>coef_plot</a></span>(<span class='no'>avg_model</span>)
+  <span class='fu'><a href='coef_plot.html'>coef_plot</a></span>(<span class='fu'>average</span>(<span class='no'>p</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>'full'</span>))
+
+<span class='co'># }</span><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

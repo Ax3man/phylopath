@@ -52,3 +52,6 @@ lettering is used.}
 \description{
 Plot a directed acyclic graph.
 }
+\examples{
+  plot(DAG(a ~ b + c + d))
+}
