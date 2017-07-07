@@ -94,6 +94,15 @@
     </div>
 
     <div class="contents">
+    <div id="phylopath-0-3-0" class="section level2">
+<h2 class="hasAnchor">
+<a href="#phylopath-0-3-0" class="anchor"></a>phylopath 0.3.0</h2>
+<ul>
+<li><p>Added support for completely binary models, that are fitted with <code><a href="http://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">ape::binaryPGLMM</a></code>. Use <code><a href="../reference/phylo_path_binary.html">phylo_path_binary()</a></code> to compare models. <code><a href="../reference/average.html">average()</a></code>, <code><a href="../reference/best.html">best()</a></code> and <code>choose()</code> are now S3 generics and will handle both continious and binary versions. Usage is designed to be as close to the continious version as possible. <code><a href="../reference/est_DAG_binary.html">est_DAG_binary()</a></code> powers the binary S3 methods.</p></li>
+<li><p>All plot functions that used <code>DiagrammeR</code> now use <code>ggraph</code> instead. This gives much more control over the positioning of the nodes, and allows to plot multiple models at once. Exporting plots also becomes much easier.</p></li>
+<li><p>You can now plot a list of causal models with <code><a href="../reference/plot_model_set.html">plot_model_set()</a></code>. This creates a facetted plot where all nodes are kept in the same location, which makes it easier to spot how models are different.</p></li>
+</ul>
+</div>
     <div id="phylopath-0-2-3" class="section level2">
 <h2 class="hasAnchor">
 <a href="#phylopath-0-2-3" class="anchor"></a>phylopath 0.2.3</h2>
@@ -143,6 +152,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#phylopath-0-3-0">0.3.0</a></li>
         <li><a href="#phylopath-0-2-3">0.2.3</a></li>
         <li><a href="#phylopath-0-2-2">0.2.2</a></li>
         <li><a href="#phylopath-0-2-1">0.2.1</a></li>
