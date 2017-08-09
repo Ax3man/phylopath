@@ -16,19 +16,19 @@ LazyData: TRUE
 Depends:
   R (>= 2.10)
 Imports:
-    ape,
-    dplyr,
-    ggm,
-    ggplot2,
-    ggraph,
-    igraph,
-    MuMIn,
-    nlme,
-    parallel,
-    pbapply,
-    purrr,
-    tibble,
-    tidyr
+    ape (>= 4.1),
+    dplyr (>= 0.7.1),
+    ggm (>= 2.3),
+    ggplot2 (>= 2.2.1),
+    ggraph (>= 1.0.0),
+    igraph (>= 1.0.1),
+    MuMIn (>= 1.15.6),
+    nlme (>= 3.1-131),
+    parallel (>= 3.4.1),
+    pbapply (>= 1.3-2),
+    purrr (>= 0.2.3),
+    tibble (>= 1.3.3),
+    tidyr (>= 0.6.2)
 RoxygenNote: 6.0.1.9000
 Suggests: knitr,
     rmarkdown
