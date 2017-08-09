@@ -171,7 +171,8 @@ average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
     coef_list      <- purrr::array_branch(coef, 1:2)
     std_error_list <- purrr::array_branch(std_error, 1:2)
     r <- purrr::map2(coef_list, std_error_list,
-                     ~ MuMIn::par.avg(.x, .y, rel_weights, ...))
+                     function(.x, .y, ...) MuMIn::par.avg(.x, .y, rel_weights, ...),
+                     ...)
     r <- purrr::map(r, function(x) { x[is.nan(x)] <- 0; x } )
     a_std_error <- matrix(purrr::map_dbl(r, "SE"), nrow = nrow(coef))
     lower       <- matrix(purrr::map_dbl(r, "Lower CI"), nrow = nrow(coef))
