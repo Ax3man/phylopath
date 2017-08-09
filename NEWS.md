@@ -7,8 +7,7 @@ phylopath 0.3.1
   (reported by Christoph Liedtke, @hcliedtke).
   
 * The package depends on a recent version of `nlme`, but this wasn't specified.
-  All package versions of dependencies are now defined. (reported by 
-  @ManuelaGonzalez)
+  All package versions of dependencies are now defined. (reported by @ManuelaGonzalez)
 
 phylopath 0.3.0
 --------------------------------------------------------------------------------

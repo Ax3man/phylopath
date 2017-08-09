@@ -45,7 +45,6 @@ plot_model_set(models, rotation = -57, flip_x = TRUE)
 result <- phylo_path(models, data = rhino, tree = rhino_tree, 
                      order = c('BM', 'NL', 'DD', 'LS', 'RS'))
 #plot(choice(result, 'five'), rotation = 9.45, curvature = -0.0000001, flip_x = TRUE)
-set.seed(1)
-plot(choice(result, 'five'), algorithm = "nicely", rotation = 95, curvature = -0.0000001, flip_x = FALSE)
+plot(choice(result, 'five'), rotation = 10, curvature = -0.05, flip_x = TRUE)
 ```
 
