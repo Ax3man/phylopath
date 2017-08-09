@@ -1,5 +1,5 @@
 ## ---- include = FALSE----------------------------------------------------
-knitr::opts_chunk$set(dev = "png")
+knitr::opts_chunk$set(dev = "png", fig.height = 5, fig.width = 5, dpi = 300, out.width = "450px")
 
 ## ------------------------------------------------------------------------
 library(phylopath)
@@ -19,14 +19,11 @@ models <- list(
 ## ------------------------------------------------------------------------
 models$one
 
-## ---- eval=FALSE---------------------------------------------------------
-#  plot(models$one)
+## ---- fig.height = 5, fig.width = 5, dpi = 300---------------------------
+plot(models$one)
 
-## ---- eval = FALSE-------------------------------------------------------
-#  plot_model_set(models)
-
-## ---- echo=FALSE, out.width = "500px"------------------------------------
-knitr::include_graphics("Vignette_figures/fig5.png")
+## ---- fig.height=8, fig.width=8, out.width = "600px"---------------------
+plot_model_set(models)
 
 ## ------------------------------------------------------------------------
 result <- phylo_path(models, data = rhino, tree = rhino_tree, 
@@ -41,29 +38,6 @@ summary(result)
 ## ------------------------------------------------------------------------
 (best_model <- best(result))
 
-## ---- eval=FALSE---------------------------------------------------------
-#  plot(best_model)
-
-## ------------------------------------------------------------------------
-average_model <- average(result)
-
-## ---- eval=FALSE---------------------------------------------------------
-#  plot(average_model)
-
-## ------------------------------------------------------------------------
-average_model_full <- average(result, method = "full")
-
-## ---- eval=FALSE---------------------------------------------------------
-#  plot(average_model_full)
-
-## ---- fig.height=4-------------------------------------------------------
-coef_plot(best_model)
-
-## ---- fig.width=6--------------------------------------------------------
-coef_plot(average_model_full, reverse_order = TRUE) + 
-  ggplot2::coord_flip() + 
-  ggplot2::theme_bw()
-
-## ------------------------------------------------------------------------
-result$d_sep$one
+## ---- warning = FALSE, fig.width = 6-------------------------------------
+plot(best_model)
 
