@@ -1,3 +1,10 @@
+phylopath 0.3.1.9000
+--------------------------------------------------------------------------------
+
+* Added support for additional arguments passed to `gls` from `phylo_path`. This
+  can helpful, for example, to set the fitting method to maximum likelihood
+  (`method = "ML"`).
+
 phylopath 0.3.1
 --------------------------------------------------------------------------------
 
