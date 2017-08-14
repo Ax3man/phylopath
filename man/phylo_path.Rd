@@ -5,7 +5,7 @@
 \title{Compare causal models in a phylogenetic context.}
 \usage{
 phylo_path(models, data, tree, cor_fun = ape::corPagel, order = NULL,
-  parallel = NULL, na.rm = TRUE)
+  parallel = NULL, na.rm = TRUE, ...)
 }
 \arguments{
 \item{models}{A list of directed acyclic graphs. These are matrices,
@@ -33,6 +33,8 @@ A cluster is create using the \code{parallel} package.}
 
 \item{na.rm}{Should rows that contain missing values be dropped from the data
 as necessary (with a message)?}
+
+\item{...}{Any other parameters passed to `nlme::gls`, such as `method = 'ML'`.}
 }
 \value{
 A phylopath object, with the following components:

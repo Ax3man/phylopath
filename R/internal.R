@@ -92,9 +92,10 @@ l <- function(dCICc) exp(-0.5 * dCICc)
 
 w <- function(l) l / sum(l)
 
-gls2 <- function(..., cor_fun, tree) {
+gls2 <- function(formula, data, cor_fun, tree, ...) {
   for (par in seq(1, 0, -0.05)) {
-    m <- purrr::safely(function(.x, ...) nlme::gls(..., correlation = cor_fun(par, .x)))(tree, ...)
+    m <- purrr::safely(function(.x) nlme::gls(model = formula, data = data,
+                                              correlation = cor_fun(par, .x), ...))(tree)
     if (is.null(m$error)) break
   }
   return(m)

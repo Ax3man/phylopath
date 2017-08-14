@@ -19,6 +19,7 @@
 #'   A cluster is create using the \code{parallel} package.
 #' @param na.rm Should rows that contain missing values be dropped from the data
 #'   as necessary (with a message)?
+#' @param ... Any other parameters passed to `nlme::gls`, such as `method = 'ML'`.
 #'
 #' @return A phylopath object, with the following components:
 #'  \describe{
@@ -41,7 +42,7 @@
 #'   summary(p)
 #'
 phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
-                       order = NULL, parallel = NULL, na.rm = TRUE) {
+                       order = NULL, parallel = NULL, na.rm = TRUE, ...) {
   cor_fun <- match.fun(cor_fun)
   tmp <- check_models_data_tree(models, data, tree, na.rm)
   models <- tmp$models
@@ -59,14 +60,14 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
     cl <- parallel::makeCluster(min(c(parallel::detectCores() - 1,
                                       length(f_list))),
                                 parallel)
-    parallel::clusterExport(cl, list('gls2', 'data', 'tree', 'cor_fun'),
+    parallel::clusterExport(cl, list('gls2', 'data', 'tree', 'cor_fun', '...'),
                             environment())
     on.exit(parallel::stopCluster(cl))
   } else {
     cl <- NULL
   }
   dsep_models_runs <- pbapply::pblapply(f_list, function(x) {
-    gls2(x, data = data, tree = tree, cor_fun = cor_fun)
+    gls2(formula = x, data = data, tree = tree, cor_fun = cor_fun, ...)
   }, cl = cl)
   # Produce appropriate error if needed
   errors <- purrr::map(dsep_models_runs, 'error')
