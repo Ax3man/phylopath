@@ -65,7 +65,7 @@ build_model_set <- function(..., .common) {
   # Get all unique variables
   vars <- unique(unlist(lapply(unlist(model_list), all.vars)))
   # And guarantee their inclusion as isolates if necessary
-  vars_formulas <- lapply(vars, function(x) as.formula(paste(x, '~', x)))
+  vars_formulas <- lapply(vars, function(x) stats::as.formula(paste(x, '~', x)))
   .common <- c(.common, vars_formulas, recursive = TRUE)
   # Add isolates and common paths to all models
   model_list <- lapply(model_list, function(x) c(x, .common))
