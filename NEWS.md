@@ -1,9 +1,14 @@
 phylopath 0.3.1.9000
 --------------------------------------------------------------------------------
 
+* Added a `build_model_set()` convenience function for building models, that 
+  avoids repeated calls to `DAG()` and has an argument to supply paths that are 
+  shared between all your models. It is not needed to specify isolate variables.
+  Old code using `DAG()` continues to work as normal.
+
 * Added support for additional arguments passed to `gls` from `phylo_path`. This
-  can helpful, for example, to set the fitting method to maximum likelihood
-  (`method = "ML"`).
+  can be helpful, for example, for setting the fitting method to maximum 
+  likelihood (`method = "ML"`).
 
 phylopath 0.3.1
 --------------------------------------------------------------------------------

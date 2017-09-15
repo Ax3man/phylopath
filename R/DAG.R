@@ -1,8 +1,16 @@
 #' Directed acyclic graphs (DAGs)
 #'
 #' This function is a simple wrapper around the function from the \code{ggm}
-#' package. The only differences are that the \code{order} argument defaults
-#' to \code{TRUE} and that it adds a \code{DAG} class for easy plotting.
+#' package with the same name. The only differences are that the \code{order}
+#' argument defaults to \code{TRUE} and that it adds a \code{DAG} class for
+#' easy plotting. Typically, one would use \code{\link{build_model_set}} to
+#' create models for use with the \code{phylopath} package.
+#'
+#' Supply a formulas for the model as arguments. Formulas should be of the
+#' form `parent ~ child` and describe each path in your model. Multiple
+#' children of a single parent can be combined into a single formula:
+#' `parent ~ child1 + child2`. Finally, an isolate (unconnected variable) can
+#' be included as being connected to itself: `isolate ~ isolate`.
 #'
 #' @param order logical, defaulting to `TRUE` If `TRUE` the nodes of the DAG
 #'   are permuted according to the topological order. If `FALSE` the nodes are
@@ -26,6 +34,43 @@ DAG <- function(..., order = TRUE) {
   d <- ggm::DAG(..., order = order)
   class(d) <- c(class(d), 'DAG')
   d
+}
+
+#' Build a model set.
+#'
+#' This is a convenience function to quickly and clearly define a set of causal
+#' models. Supply a list of formulas for each model, using either `list()`,
+#' or `c()`. Formulas should be of the form `parent ~ child` and describe each
+#' path in your model. Multiple children of a single parent can be combined
+#' into a single formula: `parent ~ child1 + child2`.
+#'
+#' @section Note This function uses `ggm::DAG`
+#'
+#' @param ... Named arugments, which each are a lists of formulas defining the
+#'   paths of a causal model.
+#' @param .common A list of formulas that contain causal paths that are common
+#'   to each model.
+#'
+#' @return A list of models, each of class \code{matrix} and \code{DAG}.
+#' @export
+#'
+#' @examples
+#' (m <- build_model_set(
+#'   A = c(a~b, b~c),
+#'   B = c(b~a, c~b),
+#'   .common = c(d~a)))
+#' plot_model_set(m)
+build_model_set <- function(..., .common) {
+  model_list <- list(...)
+  # Get all unique variables
+  vars <- unique(unlist(lapply(unlist(model_list), all.vars)))
+  # And guarantee their inclusion as isolates if necessary
+  vars_formulas <- lapply(vars, function(x) as.formula(paste(x, '~', x)))
+  .common <- c(.common, vars_formulas, recursive = TRUE)
+  # Add isolates and common paths to all models
+  model_list <- lapply(model_list, function(x) c(x, .common))
+  # Build the models with DAG
+  lapply(model_list, function(x) do.call(DAG, x))
 }
 
 #' Add standardized path coefficients to a DAG.

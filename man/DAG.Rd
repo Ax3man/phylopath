@@ -21,8 +21,17 @@ An object of classes \code{matrix} and \code{DAG}
 }
 \description{
 This function is a simple wrapper around the function from the \code{ggm}
-package. The only differences are that the \code{order} argument defaults
-to \code{TRUE} and that it adds a \code{DAG} class for easy plotting.
+package with the same name. The only differences are that the \code{order}
+argument defaults to \code{TRUE} and that it adds a \code{DAG} class for
+easy plotting. Typically, one would use \code{\link{build_model_set}} to
+create models for use with the \code{phylopath} package.
+}
+\details{
+Supply a formulas for the model as arguments. Formulas should be of the
+form `parent ~ child` and describe each path in your model. Multiple
+children of a single parent can be combined into a single formula:
+`parent ~ child1 + child2`. Finally, an isolate (unconnected variable) can
+be included as being connected to itself: `isolate ~ isolate`.
 }
 \examples{
   # Use formula notation to create DAGs:
