@@ -60,15 +60,17 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
     cl <- parallel::makeCluster(min(c(parallel::detectCores() - 1,
                                       length(f_list))),
                                 parallel)
-    parallel::clusterExport(cl, list('gls2', 'data', 'tree', 'cor_fun', '...'),
-                            environment())
+    parallel::clusterExport(cl, list('gls2'), environment())
     on.exit(parallel::stopCluster(cl))
   } else {
     cl <- NULL
   }
-  dsep_models_runs <- pbapply::pblapply(f_list, function(x) {
-    gls2(formula = x, data = data, tree = tree, cor_fun = cor_fun, ...)
-  }, cl = cl)
+  dsep_models_runs <- pbapply::pblapply(
+    f_list,
+    function(x, data, tree, cor_fun, ...) {
+      gls2(formula = x, data = data, tree = tree, cor_fun = cor_fun, ...)
+    },
+    data = data, tree = tree, cor_fun = cor_fun, cl = cl)
   # Produce appropriate error if needed
   errors <- purrr::map(dsep_models_runs, 'error')
   purrr::map2(errors, f_list,
