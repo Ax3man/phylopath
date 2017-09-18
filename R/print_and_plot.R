@@ -6,12 +6,17 @@ print.phylopath_summary <- function(x, ...) {
 
 #' @export
 print.phylopath <- function(x, ...) {
+  num_vars <- names(x$data)[sapply(x$data, is.numeric)]
+  bin_vars <- setdiff(names(x$data), num_vars)
+
+  #cat('\n')
+  cat('A phylogenetic path analysis, on the variables:\n')
+  cat('\tContinuous:\t', num_vars, '\n')
+  cat('\tBinary:\t\t', bin_vars, '\n')
   cat('\n')
-  cat('A phylogenetic path analysis\n')
+  cat(' Evaluated for these models:', names(x$models), '\n')
   cat('\n')
-  cat('  Evaluated for these models:', names(x$models), '\n')
-  cat('\n')
-  cat('  Containing', sum(purrr::map_dbl(x$d_sep, nrow)), 'phylogenetic regressions.')
+  cat(' Containing', sum(purrr::map_dbl(x$d_sep, nrow)), 'unqiue phylogenetic regressions.')
   cat('\n')
 }
 
