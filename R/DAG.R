@@ -3,7 +3,7 @@
 #' This function is a simple wrapper around the function from the \code{ggm}
 #' package with the same name. The only differences are that the \code{order}
 #' argument defaults to \code{TRUE} and that it adds a \code{DAG} class for
-#' easy plotting. Typically, one would use \code{\link{build_model_set}} to
+#' easy plotting. Typically, one would use \code{\link{define_model_set}} to
 #' create models for use with the \code{phylopath} package.
 #'
 #' Supply a formulas for the model as arguments. Formulas should be of the
@@ -36,7 +36,7 @@ DAG <- function(..., order = TRUE) {
   d
 }
 
-#' Build a model set.
+#' Define a model set.
 #'
 #' This is a convenience function to quickly and clearly define a set of causal
 #' models. Supply a list of formulas for each model, using either `list()`,
@@ -55,12 +55,12 @@ DAG <- function(..., order = TRUE) {
 #' @export
 #'
 #' @examples
-#' (m <- build_model_set(
+#' (m <- define_model_set(
 #'   A = c(a~b, b~c),
 #'   B = c(b~a, c~b),
 #'   .common = c(d~a)))
 #' plot_model_set(m)
-build_model_set <- function(..., .common) {
+define_model_set <- function(..., .common) {
   model_list <- list(...)
   # Get all unique variables
   vars <- unique(unlist(lapply(unlist(model_list), all.vars)))
