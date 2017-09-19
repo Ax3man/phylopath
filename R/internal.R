@@ -102,38 +102,62 @@ gls2 <- function(formula, data, cor_fun, tree, ...) {
 }
 
 get_p <- function(m) {
-  s <- stats::coef(summary(m))
-  s[nrow(s), ncol(s)]
-}
-
-get_p_binary <- function(m) {
-  s <- m$B.pvalue[, 1]
-  utils::tail(s, 1)
+  if (inherits(m, 'gls')) {
+    s <- stats::coef(summary(m))
+    return(s[nrow(s), ncol(s)])
+  }
+  if (inherits(m, 'binaryPGLMM')) {
+    s <- m$B.pvalue[, 1]
+    return(utils::tail(s, 1))
+  }
+  stop('Failed to extract p-value from unknown model type.')
 }
 
 get_est <- function(m) {
-  s <- stats::coef(summary(m))
-  s[-1, 1]
-}
-
-get_est_binary <- function(m) {
-  m$B[-1, 1]
+  if (inherits(m, 'gls')) {
+    s <- stats::coef(summary(m))
+    return(s[-1, 1])
+  }
+  if (inherits(m, 'binaryPGLMM')) {
+    return(m$B[-1, 1])
+  }
+  stop('Failed to extract estimate from unknown model type.')
 }
 
 get_se <- function(m) {
-  s <- stats::coef(summary(m))
-  s[-1, 2]
+  if (inherits(m, 'gls')) {
+    s <- stats::coef(summary(m))
+    return(s[-1, 2])
+  }
+  if (inherits(m, 'binaryPGLMM')) {
+    return(m$B.se[-1, 1])
+  }
+  stop('Failed to extract standard error from unknown model type.')
 }
 
-get_se_binary <- function(m) {
-  m$B.se[-1, 1]
+get_lower <- function(m) {
+  if (inherits(m, 'gls')) {
+    return(nlme::intervals(m)$coef[-1, 'lower'])
+  }
+  return(NA)
 }
 
-get_lower <- function(m) nlme::intervals(m)$coef[-1, 'lower']
+get_upper <- function(m) {
+  if (inherits(m, 'gls')) {
+    return(nlme::intervals(m)$coef[-1, 'upper'])
+  }
+  return(NA)
+}
 
-get_upper <- function(m) nlme::intervals(m)$coef[-1, 'upper']
-
-get_corStruct <- function(m) m$modelStruct
+get_phylo_param <- function(m) {
+  if (inherits(m, 'gls')) {
+    return(m$modelStruct[[1]])
+  }
+  if (inherits(m, 'binaryPGLMM')) {
+    return(m$s2)
+  }
+  stop('Failed to extract phylogentic parameter from unknown model type.')
+}
 
 adjust_layout <- function(l, rotation, flip_x, flip_y) {
   rotation <- rotation * (2 * pi / 360)

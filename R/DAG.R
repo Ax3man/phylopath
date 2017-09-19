@@ -88,8 +88,10 @@ define_model_set <- function(..., .common) {
 #'   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
 #'   plot(d_fitted)
 est_DAG <- function(DAG, data, cor_fun, tree) {
+  stopifnot(inherits(DAG, 'DAG'))
   cor_fun <- match.fun(cor_fun)
   r <- rownames(data)
+  # scale the continous variables
   data <- dplyr::mutate_if(data, is.numeric, scale)
   rownames(data) <- r
   d <- Map(function(x, y, n) {
@@ -97,7 +99,17 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
       return(cbind(y, y, y, y))
     }
     f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
-    m <- gls2(f, data = data, cor_fun = cor_fun, tree = tree)
+    x_var <- data[[all.vars(f)[1]]]
+    if (is.character(x_var) | is.factor(x_var)) {
+      if (length(unique(x_var)) != 2) {
+        stop("Variable '", all.vars(f)[1], "' is recognized as non-numeric, but does not have",
+             " exactly two distinct values. Either it has too many categories, or only one.")
+      }
+      data[[all.vars(f)[1]]] <- as.numeric(as.factor(data[[all.vars(f)[1]]])) - 1
+      m <- purrr::safely(ape::binaryPGLMM)(f, data = data, phy = tree)
+    } else {
+      m <- gls2(formula = f, data = data, tree = tree, cor_fun = cor_fun)
+    }
     if (!is.null(m$error)) {
       stop(paste('Fitting the following model:\n   ', Reduce(paste, deparse(f)),
                  '\nproduced this error:\n   ', m$error),
@@ -127,62 +139,25 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
   return(res)
 }
 
-#' Add standardized path coefficients to a binary DAG.
-#'
-#' @param DAG A directed acyclic graph, typically created with \code{DAG}.
-#' @inheritParams phylo_path_binary
-#'
-#' @return An object of class \code{binary_fitted_DAG}.
-#'
-#' @export
-est_DAG_binary <- function(DAG, data, tree) {
-  d <- Map(function(x, y, n) {
-    if (all(y == 0)) {
-      return(cbind(y, y, y, y))
-    }
-    f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
-    m <- purrr::safely(ape::binaryPGLMM)(f, data = data, phy = tree)
-    if (!is.null(m$error)) {
-      stop(paste('Fitting the following model:\n   ', Reduce(paste, deparse(f)),
-                 '\nproduced this error:\n   ', m$error),
-           call. = FALSE)
-    }
-    m <- m$result
-    Coef <- se <- y
-    Coef[Coef != 0]   <- get_est_binary(m)
-    se[se != 0]       <- get_se_binary(m)
-    return(cbind(coef = Coef, se = se))
-  }, colnames(DAG), as.data.frame(DAG), MoreArgs = list(n = rownames(DAG)))
-  if (any(sapply(d, function(x) any(is.na(x))))) {
-    warnings("NA's have been generated, most likely some confidence intervals could not be estimated.")
-  }
-  coefs  <- sapply(d, `[`, 1:nrow(DAG), 1)
-  ses    <- sapply(d, `[`, 1:nrow(DAG), 2)
-  rownames(coefs) <- rownames(ses) <- rownames(DAG)
-  res <- list(coef = coefs, se = ses)
-  class(res) <- c('binary_fitted_DAG', 'fitted_DAG')
-  return(res)
-}
-
 #' Perform model averaging on a list of DAGs.
 #'
-#' @param fitted_DAGs A list of \code{fitted_DAG} objects containing
-#'   coefficients and standard errors, usually obtained by using \code{est_DAG}
+#' @param fitted_DAGs A list of `fitted_DAG` objects containing
+#'   coefficients and standard errors, usually obtained by using [est_DAG()]
 #'   on several DAGs.
 #' @param weights A vector of associated model weights.
-#' @param method Either \code{"full"} or \code{"conditional"}. The methods
+#' @param method Either `"full"` or `"conditional"`. The methods
 #'   differ in how they deal with averaging a path coefficient where the path is
 #'   absent in some of the models. The full method sets the coefficient (and the
 #'   variance) for the missing paths to zero, meaning paths that are missing in
 #'   some models will shrink towards zero. The conditional method only averages
 #'   over models where the path appears, making it more sensitive to small
 #'   effects. Following von Hardenberg & Gonzalez-Voyer 2013, conditional
-#'   averaging is set as the default. Also see \link[MuMIn]{model.avg}.
-#' @param ... Additional arguments passed to \link[MuMIn]{par.avg}.
+#'   averaging is set as the default. Also see [MuMIn::model.avg()].
+#' @param ... Additional arguments passed to [MuMIn::par.avg()].
 #'
-#'   For details on the error calculations, see \link[MuMIn]{par.avg}.
+#'   For details on the error calculations, see [MuMIn::par.avg()].
 #'
-#' @return An object of class \code{fitted_DAG}, including standard errors and
+#' @return An object of class `fitted_DAG`, including standard errors and
 #'   confidence intervals.
 #' @export
 #'
