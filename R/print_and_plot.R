@@ -68,9 +68,9 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, bo
 
 #' Plot a directed acyclic graph with path coefficients.
 #'
-#' @param x An object of class \code{fitted_DAG}.
+#' @param x An object of class `fitted_DAG`.
 #' @param algorithm A layout algorithm from \code{igraph}, see
-#'   \code{\link[ggraph]{create_layout}} and \code{\link[ggraph]{create_layout.igraph}}. By default,
+#'   [ggraph::create_layout()] and [ggraph::create_layout.igraph()]. By default,
 #'   uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.
 #' @param colors The end points of the continuous color scale. Keep in mind that red and green are
 #'   obvious colors to use, but are better to be avoided because of color blind users.
@@ -121,13 +121,12 @@ plot.fitted_DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size 
 
 #' Plot path coefficients and their confidence intervals.
 #'
-#' @param fitted_DAG A fitted DAG, usually obtained by \code{best},
-#'   \code{average} or \code{est_DAG}.
-#' @param reverse_order If \code{TRUE}, the paths are plotted in reverse order.
-#'   Particularly useful in combination with \code{ggplot2::coor_flip} to create
+#' @param fitted_DAG A fitted DAG, usually obtained by [best()], [average()] or [est_DAG()].
+#' @param reverse_order If `TRUE`, the paths are plotted in reverse order.
+#'   Particularly useful in combination with [ggplot2::coord_flip()] to create
 #'   horizontal versions of the plot.
 #'
-#' @return A \code{ggplot} object.
+#' @return A `ggplot` object.
 #' @export
 #'
 #' @examples
@@ -165,13 +164,13 @@ coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
 
 #' Plot several causal hypothesis at once.
 #'
-#' @param models A list of \code{DAG} objects.
+#' @param models A list of `DAG` objects, usually created with [define_model_set()].
 #' @param labels An optional set of labels to use for the nodes. This should be a named vector, of
-#'   the form \code{c(var1 = "label1", var2 = "label2")}.
-#'   If left at \code{NULL}, the variable names of the DAGs are used.
-#' @param algorithm A layout algorithm from \code{igraph}, see
-#'   \code{\link[ggraph]{create_layout}}. By default, uses the Kamada-Kawai
-#'   layout algorithm. Another good option is \code{"sugiyama"}, which is
+#'   the form `c(var1 = "label1", var2 = "label2")`.
+#'   If left at `NULL``, the variable names of the DAGs are used.
+#' @param algorithm A layout algorithm from `igraph`, see
+#'   [ggraph::create_layout()]. By default, uses the Kamada-Kawai
+#'   layout algorithm. Another good option is `"sugiyama"`, which is
 #'   designed to minimize edge crossing in DAGs. However, it can often plot
 #'   nodes too close together.
 #' @param text_size Size of the node label text.
@@ -194,7 +193,7 @@ coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
 #' labels coming from the names of the list. If the list is unnamed, sequential
 #' lettering is used.
 #'
-#' @return A \code{ggplot} object.
+#' @return A `ggplot` object.
 #' @export
 #'
 #' @examples

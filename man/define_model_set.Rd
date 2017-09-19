@@ -4,7 +4,7 @@
 \alias{define_model_set}
 \title{Define a model set.}
 \usage{
-define_model_set(..., .common)
+define_model_set(..., .common = NULL)
 }
 \arguments{
 \item{...}{Named arugments, which each are a lists of formulas defining the
@@ -18,15 +18,14 @@ A list of models, each of class \code{matrix} and \code{DAG}.
 }
 \description{
 This is a convenience function to quickly and clearly define a set of causal
-models. Supply a list of formulas for each model, using either `list()`,
-or `c()`. Formulas should be of the form `parent ~ child` and describe each
-path in your model. Multiple children of a single parent can be combined
-into a single formula: `parent ~ child1 + child2`.
+models. Supply a list of formulas for each model, using either \code{c()}. Formulas
+should be of the form \code{parent ~ child} and describe each path in your model.
+Multiple children of a single parent can be combined into a single formula:
+\code{parent ~ child1 + child2}.
 }
-\section{Note This function uses `ggm}{
-:DAG`
+\details{
+This function uses \code{\link[ggm:DAG]{ggm::DAG()}}.
 }
-
 \examples{
 (m <- define_model_set(
   A = c(a~b, b~c),

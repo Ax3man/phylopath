@@ -10,14 +10,14 @@ plot_model_set(models, labels = NULL, algorithm = "kk", text_size = 5,
   arrow = grid::arrow(type = "closed", 15, grid::unit(10, "points")))
 }
 \arguments{
-\item{models}{A list of \code{DAG} objects.}
+\item{models}{A list of \code{DAG} objects, usually created with \code{\link[=define_model_set]{define_model_set()}}.}
 
 \item{labels}{An optional set of labels to use for the nodes. This should be a named vector, of
 the form \code{c(var1 = "label1", var2 = "label2")}.
-If left at \code{NULL}, the variable names of the DAGs are used.}
+If left at `NULL``, the variable names of the DAGs are used.}
 
 \item{algorithm}{A layout algorithm from \code{igraph}, see
-\code{\link[ggraph]{create_layout}}. By default, uses the Kamada-Kawai
+\code{\link[ggraph:create_layout]{ggraph::create_layout()}}. By default, uses the Kamada-Kawai
 layout algorithm. Another good option is \code{"sugiyama"}, which is
 designed to minimize edge crossing in DAGs. However, it can often plot
 nodes too close together.}

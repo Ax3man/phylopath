@@ -9,9 +9,10 @@ phylo_path(models, data, tree, cor_fun = ape::corPagel, order = NULL,
 }
 \arguments{
 \item{models}{A list of directed acyclic graphs. These are matrices,
-typically created with \code{DAG}.}
+typically created with \code{define_model_set}.}
 
-\item{data}{A \code{data.frame} with data.}
+\item{data}{A \code{data.frame} with data. If you have binary variables, make
+sure they are either character values or factors.}
 
 \item{tree}{A phylogenetic tree of class \code{pylo}.}
 
@@ -34,20 +35,25 @@ A cluster is create using the \code{parallel} package.}
 \item{na.rm}{Should rows that contain missing values be dropped from the data
 as necessary (with a message)?}
 
-\item{...}{Any other parameters passed to `nlme::gls`, such as `method = 'ML'`.}
+\item{...}{Any other parameters passed to \code{nlme::gls}, such as \code{method = 'ML'}.}
 }
 \value{
 A phylopath object, with the following components:
- \describe{
-  \item{d_sep}{for each model a table with separation statements and statistics.}
-  \item{models}{the DAGs}
-  \item{data}{the supplied data}
-  \item{tree}{the supplied tree}
-  \item{cor_fun}{the employed correlation structure}
-  }
+\describe{
+\item{d_sep}{for each model a table with separation statements and statistics.}
+\item{models}{the DAGs}
+\item{data}{the supplied data}
+\item{tree}{the supplied tree}
+\item{cor_fun}{the employed correlation structure}
+}
 }
 \description{
-Compare causal models in a phylogenetic context.
+Continious variables are modeled using \code{\link[nlme:gls]{nlme::gls()}} and the various
+correlation functions provided by \link{ape}.
+Estimation of relationships between binary variables is built upon
+\code{\link[ape:binaryPGLMM]{ape::binaryPGLMM()}} and stands or falls with the accuracy of that method.
+Model fitting using this method is particularly slow and the \code{parallel}
+argument can therefore be especially useful.
 }
 \examples{
   #see vignette('intro_to_phylopath') for more details

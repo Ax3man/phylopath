@@ -8,12 +8,11 @@ analysis.}
 average(phylopath, cut_off = 2, method = "conditional", ...)
 }
 \arguments{
-\item{phylopath}{An object of class \code{phylopath} or
-\code{phylopath_binary}.}
+\item{phylopath}{An object of class \code{phylopath}.}
 
 \item{cut_off}{The CICc cut-off used to select the best models. Use
-\code{Inf} to average over all models. Use the \code{best} function to
-only use the top model, or \code{choice} to select any single model.}
+\code{Inf} to average over all models. Use the \code{\link[=best]{best()}} function to
+only use the top model, or \code{\link[=choice]{choice()}} to select any single model.}
 
 \item{method}{Either \code{"full"} or \code{"conditional"}. The methods
 differ in how they deal with averaging a path coefficient where the path is
@@ -22,11 +21,11 @@ variance) for the missing paths to zero, meaning paths that are missing in
 some models will shrink towards zero. The conditional method only averages
 over models where the path appears, making it more sensitive to small
 effects. Following von Hardenberg & Gonzalez-Voyer 2013, conditional
-averaging is set as the default. Also see \link[MuMIn]{model.avg}.}
+averaging is set as the default. Also see \code{\link[MuMIn:model.avg]{MuMIn::model.avg()}}.}
 
-\item{...}{Additional arguments passed to \link[MuMIn]{par.avg}.
+\item{...}{Additional arguments passed to \code{\link[MuMIn:par.avg]{MuMIn::par.avg()}}.
 
-  For details on the error calculations, see \link[MuMIn]{par.avg}.}
+For details on the error calculations, see \code{\link[MuMIn:par.avg]{MuMIn::par.avg()}}.}
 }
 \value{
 An object of class \code{fitted_DAG}.

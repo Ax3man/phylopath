@@ -19,7 +19,7 @@ models <- list(
 plot_model_set(models)
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  cichlids_results <- phylo_path_binary(models, cichlids, cichlids_tree, parallel = "SOCK")
+#  cichlids_results <- phylo_path(models, cichlids, cichlids_tree, parallel = "SOCK")
 
 ## ---- echo=FALSE---------------------------------------------------------
 message("15 rows were dropped because they contained NA values.")
@@ -27,10 +27,11 @@ message("Pruned tree to drop species not included in dat.")
 cichlids_results <- phylopath:::cichlids_results
 
 ## ------------------------------------------------------------------------
-summary(cichlids_results)
+(s <- summary(cichlids_results))
+plot(s)
 
 ## ---- eval=FALSE---------------------------------------------------------
-#  best_cichlids <- best(cichlid_results)
+#  best_cichlids <- best(cichlids_results)
 
 ## ---- echo=FALSE---------------------------------------------------------
 best_cichlids <- phylopath:::best_cichlids

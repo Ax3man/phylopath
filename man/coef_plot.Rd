@@ -7,11 +7,10 @@
 coef_plot(fitted_DAG, reverse_order = FALSE)
 }
 \arguments{
-\item{fitted_DAG}{A fitted DAG, usually obtained by \code{best},
-\code{average} or \code{est_DAG}.}
+\item{fitted_DAG}{A fitted DAG, usually obtained by \code{\link[=best]{best()}}, \code{\link[=average]{average()}} or \code{\link[=est_DAG]{est_DAG()}}.}
 
 \item{reverse_order}{If \code{TRUE}, the paths are plotted in reverse order.
-Particularly useful in combination with \code{ggplot2::coor_flip} to create
+Particularly useful in combination with \code{\link[ggplot2:coord_flip]{ggplot2::coord_flip()}} to create
 horizontal versions of the plot.}
 }
 \value{

@@ -7,8 +7,8 @@
 \format{An object of class \code{data.frame} with 69 rows and 5 columns.}
 \source{
 Dey, C.J., O'Connor, C.M., Wilkinson, H., Shultz, S., Balshine, S. &
-  Fitzpatrick, J.L. 2017. Direct benefits and evolutionary transitions to
-  complex societies. Nat Ecol Evol 1: 137.
+Fitzpatrick, J.L. 2017. Direct benefits and evolutionary transitions to
+complex societies. Nat Ecol Evol 1: 137.
 }
 \usage{
 cichlids

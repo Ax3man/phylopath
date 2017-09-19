@@ -9,7 +9,8 @@ est_DAG(DAG, data, cor_fun, tree)
 \arguments{
 \item{DAG}{A directed acyclic graph, typically created with \code{DAG}.}
 
-\item{data}{A \code{data.frame} with data.}
+\item{data}{A \code{data.frame} with data. If you have binary variables, make
+sure they are either character values or factors.}
 
 \item{cor_fun}{A function that creates a \code{corStruct} object, typically
 one of the \code{cor*} functions from the \code{ape} package, such as

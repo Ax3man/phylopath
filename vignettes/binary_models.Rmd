@@ -13,13 +13,11 @@ vignette: >
 
 This vignette gives a short example of how PPA can be applied to binary data sets using `phylopath`. A longer example with more explanation of the code can be found in the other vignette, "intro to phylopath".
 
-**Important notes**: 
+**Important note**: 
 
-- There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses `ape::binaryPGLMM`, written by Anthony Ives. Read `?ape::binaryPGLMM` for more information. `phylopath`'s accuracy is directly dependent on the accuracy of that method, and if you don't trust `ape::binaryPGLMM` you should not trust `phylo_path_binary`.
+There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses `ape::binaryPGLMM`, written by Anthony Ives. Read `?ape::binaryPGLMM` for more information. `phylopath`'s accuracy is directly dependent on the accuracy of that method, and if you don't trust `ape::binaryPGLMM` you should not trust binary models used in `phylo_path`.
 
-- This method does not allow for the specification of different models of evolution, as `ape::binaryPGLMM` does not support it. Since it is unclear to me whether it makes sense to mix different models of evolution while evaluating a single causal model, it is currently not possible to have causal models with mixed variable types. That is, for `phylo_path` all variables are expected to be continuous and for `phylo_path_binary` all variables should be binary.
-
-If you have useful opinions or information on these points, feel free to contact me.
+If you have useful opinions or information on this point, feel free to contact me.
 
 #Example analysis
 
@@ -72,12 +70,12 @@ plot_model_set(models)
 
 ###Comparing the models
 
-Now that we have our models, data and a tree, we can compare the models using `phylo_path_binary`
+Now that we have our models, data and a tree, we can compare the models using `phylo_path`
 
 Note: `ape::binaryPGLMM` is very slow. This code takes about 3 minutes to run on my machine. Therefore, I recommend making use of the `parallel` argument to speed things up. Depending on the situation, this can help a lot.
 
 ```{r, eval=FALSE}
-cichlids_results <- phylo_path_binary(models, cichlids, cichlids_tree, parallel = "SOCK")
+cichlids_results <- phylo_path(models, cichlids, cichlids_tree, parallel = "SOCK")
 ```
 
 ```{r, echo=FALSE}
@@ -89,7 +87,8 @@ cichlids_results <- phylopath:::cichlids_results
 Note that two messages are printed. This is because there are missing values in our data set that are first being removed. Also, since the tree includes species for which data is missing, the tree had to be pruned. This is done automatically with a message to the user. You should check whether the amount of data removed is correct.
 
 ```{r}
-summary(cichlids_results)
+(s <- summary(cichlids_results))
+plot(s)
 ```
 
 We see that model F is the best supported model. This model notably does not include a link between monogamy and cooperative breeding, giving support to the direct benefits hypothesis.
@@ -99,7 +98,7 @@ We see that model F is the best supported model. This model notably does not inc
 Now that we have selected F as our best model, we still have three factors that affect cooperative breeding: diet, social grouping and parental care. Which one is more important? For this we can fit the model and look at magnitude of the coefficients. In this case, since we want to use the best model we use the function `best()`. One can use `choice()` to choose any arbitrary model, or `average()` to average over several models.
 
 ```{r, eval=FALSE}
-best_cichlids <- best(cichlid_results)
+best_cichlids <- best(cichlids_results)
 ```
 
 ```{r, echo=FALSE}

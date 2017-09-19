@@ -10,14 +10,14 @@
   arrow = grid::arrow(type = "closed", 18, grid::unit(15, "points")), ...)
 }
 \arguments{
-\item{x}{A \code{DAG} object, usually created with the \code{DAG} function.}
+\item{x}{A `DAG`` object, usually created with the \code{\link[=define_model_set]{define_model_set()}} or \code{\link[=DAG]{DAG()}} function.}
 
 \item{labels}{An optional set of labels to use for the nodes. This should be a named vector, of
 the form \code{c(var1 = "label1", var2 = "label2")}.
-If left at \code{NULL}, the variable names of the DAGs are used.}
+If left at `NULL``, the variable names of the DAGs are used.}
 
-\item{algorithm}{A layout algorithm from \code{igraph}, see
-\code{\link[ggraph]{create_layout}} and \code{\link[ggraph]{create_layout.igraph}}. By default,
+\item{algorithm}{A layout algorithm from \link{igraph}, see
+\code{\link[ggraph:create_layout]{ggraph::create_layout()}} and \code{\link[ggraph:create_layout.igraph]{ggraph::create_layout.igraph()}}. By default,
 uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.}
 
 \item{text_size}{Size of the node label text.}

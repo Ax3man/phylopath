@@ -33,9 +33,7 @@ You can find this book chapter [online](http://www.consevol.org/pdf/Books/Chapte
 
 Specifically, we recreate the Rhinogrades example here. The data used has been included in this package.
 
-Following figure 8.7, we first create all 9 causal models using the `DAG` function. This function uses regression equations (or `formula`s) to express the hypothesized relationships in the models. The easiest way to create this is by taking each node (a variable), putting it on the left-hand side of a tilde (`~`), and putting its causal parents on the right-hand side.
-
-Note: any unconnected nodes can be added using `var ~ var`, but we won't be needing that for this example.
+Following figure 8.7, we first create all 9 causal models using the `define_model_set` function. This function uses regression equations (or `formula`s) to express the hypothesized relationships in the models.  Formulas should be of the form `parent ~ child` and describe each path in your model. Multiple children of a single parent can be combined into a single formula: `parent ~ child1 + child2`. Use `.common` to include paths that should appear in all your models.
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(dev = "png", fig.height = 5, fig.width = 5, dpi = 300, out.width = "450px")
@@ -45,20 +43,21 @@ knitr::opts_chunk$set(dev = "png", fig.height = 5, fig.width = 5, dpi = 300, out
 ```{r}
 library(phylopath)
 
-models <- list(
-  one   = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ DD),
-  two   = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ LS + DD),
-  three = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ NL),
-  four  = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ BM + NL),
-  five  = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ BM + NL + DD),
-  six   = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL, RS ~ BM),
-  seven = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL, RS ~ LS + BM),
-  eight = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL),
-  nine  = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL, RS ~ LS)
+models <- define_model_set(
+  one   = c(RS ~ DD),
+  two   = c(DD ~ NL, RS ~ LS + DD),
+  three = c(RS ~ NL),
+  four  = c(RS ~ BM + NL),
+  five  = c(RS ~ BM + NL + DD),
+  six   = c(NL ~ RS, RS ~ BM),
+  seven = c(NL ~ RS, RS ~ LS + BM),
+  eight = c(NL ~ RS),
+  nine  = c(NL ~ RS, RS ~ LS),
+  .common = c(LS ~ BM, NL ~ BM, DD ~ NL)
 )
 ```
 
-The `DAG` function simply produces a matrix that summarizes the connections between the variables.
+The `define_model_set` function simply produces a set of matrices that summarize the connections between the variables. For example:
 
 ```{r}
 models$one
@@ -77,12 +76,11 @@ Or we can plot all of the models at once:
 plot_model_set(models)
 ```
 
-
 Now that we have the models, we can perform the path analysis using the `phylo_path` function. For this we will need a data set, included in this package as `rhino`, as well as a phylogenetic tree, `rhino_tree`.
 
-Importantly, when using PGLS, we need to be consistent in which variables are used as independent and dependent variables in the analysis. If one has a specific idea about which variables are to be conscidered as up- and down-stream, then you can use the `order` argument to give the ordering (from up to down). In this case, we supply the ordering to mimic the choices made by the chapter authors. Alternatively, you can choose to not supply an order, and the function will try to make a sensible order by itself. If the combination of all causal models is itself a DAG, the ordering of that model will be used, otherwise the ordering will be constructed by consensus (i.e. the most common ordering is chosen).
+Importantly, when using PGLS, we need to be consistent in which variables are used as independent and dependent variables in the analysis. If one has a specific idea about which variables are to be considered as up- and down-stream, then you can use the `order` argument to give the ordering (from up to down). In this case, we supply the ordering to mimic the choices made by the chapter authors. Alternatively, you can choose to not supply an order, and the function will try to make a sensible order by itself. If the combination of all causal models is itself a DAG, the ordering of that model will be used, otherwise the ordering will be constructed by consensus (i.e. the most common ordering is chosen).
 
-Generally, I advise to not supply the order argument, in order to reduce "reseacher degrees of freedom".
+Generally, I advise to not supply the order argument, in order to reduce "researcher degrees of freedom".
 
 By default, `phylo_path` uses Pagel's “lambda” correlation structure (`ape::corPagel`), but if you want, for example, to use a simple Brownian motion model, you can supply `ape::corBrownian` instead.
 
@@ -91,7 +89,7 @@ result <- phylo_path(models, data = rhino, tree = rhino_tree,
                      order = c('BM', 'NL', 'DD', 'LS', 'RS'))
 ```
 
-The result we end up with is a `phylo_path` object. Simply printing it gives us a quick summary of what is in the object.
+The result we end up with is a `phylo_path` object. Simply printing it gives us a quick summary of what is in the object. In this case we end up with five continuous variables, nine causal models and 46 regressions.
 
 ```{r}
 result
@@ -100,7 +98,13 @@ result
 To get an overview of the analysis, we can ask for its `summary`:
 
 ```{r}
-summary(result)
+(s <- summary(result))
+```
+
+And plotting that summary gives us a quick overview of the support for each model:
+
+```{r}
+plot(s)
 ```
 
 The ranking of the models obtained here is identical as the worked example in the book chapter. The estimates differ slightly however, since we are using `nlme::gls` whereas the chapter was using `caper::pgls`. (Specifically, the differences are due to `gls` and `pgls` estimating the lambda parameter slightly differently. Also there is one or two small mistakes in the book chapter analysis.)
@@ -117,7 +121,7 @@ This object can also be plotted, now the numbers and width of the arrow represen
 plot(best_model)
 ```
 
-From the summary we could see that in reality, there are several models that are quite good. Instead of using the best model, we can use the average of the best models, weigted by their relative evidence. By simply calling `average`, we can obtain the coefficients and standard errors of the averaged model where the CICc `cut_off` is 2 by default. If a model does not include a path, we assume that coefficient to be 0.
+From the summary we could see that in reality, there are several models that are quite good. Instead of using the best model, we can use the average of the best models, weighted by their relative evidence. By simply calling `average`, we can obtain the coefficients and standard errors of the averaged model where the CICc `cut_off` is 2 by default. If a model does not include a path, we assume that coefficient to be 0.
 
 ```{r, fig.width = 7}
 average_model <- average(result)
@@ -131,7 +135,7 @@ average_model_full <- average(result, method = "full")
 plot(average_model_full, algorithm = 'mds', curvature = 0.1)
 ```
 
-We can see that paths that occur in all the best models, such as NL -> DD, are not effected. But paths that occur only in some models suffer _shrinkage_, reflecting the fact that they were not as well supported.
+We can see that paths that occur in all the best models, such as NL -> DD, are not effected. But paths that occur only in some models, such as NL -> RS, suffer _shrinkage_ reflecting the fact that they were not as well supported.
 
 In this case in particular, the average model is actually not a DAG since it is cyclical and the relationship between RS and NL is clearly not well resolved by our analysis.
 
@@ -141,7 +145,7 @@ If one is interested in the confidence in the regression coefficients, `coef_plo
 coef_plot(best_model)
 ```
 
-This plot can be manipulated using `ggplot2` functions, for example, to create a horizontal black-and-white version. We can see that for full average model, shrinkage has caused several paths to become uncertain.
+This plot, and others in the package, can be manipulated using `ggplot2` functions, for example, to create a horizontal black-and-white version. We can see that for full average model, shrinkage has caused several paths to become uncertain.
 
 ```{r, fig.height=3.5}
 coef_plot(average_model_full, reverse_order = TRUE) + 
@@ -149,7 +153,7 @@ coef_plot(average_model_full, reverse_order = TRUE) +
   ggplot2::theme_bw()
 ```
 
-Finally, you can access the conditional independencies and their associated p-values as well. This can be useful if you want to know _why_ a certain model was rejected. The `corStruct` column gives us the estimates for the correlation structure for each of the fitted models, in this case _lambda_. Finally, all models are stored in the `model` list as well, in case other information needs to be extracted.
+Finally, you can access the conditional independencies and their associated p-values as well. This can be useful if you want to know _why_ a certain model was rejected. The `phylo` column gives us the estimates for the correlation structure for each of the fitted models, in this case _lambda_ since we used `corPagel`. For binary models this shows _s2_, which also reflects the strength of phylogenetic signal. Finally, all models are stored in the `model` list as well, in case other information needs to be extracted.
 
 ```{r}
 result$d_sep$one

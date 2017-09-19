@@ -1,21 +1,21 @@
 #' Directed acyclic graphs (DAGs)
 #'
-#' This function is a simple wrapper around the function from the \code{ggm}
-#' package with the same name. The only differences are that the \code{order}
-#' argument defaults to \code{TRUE} and that it adds a \code{DAG} class for
-#' easy plotting. Typically, one would use \code{\link{define_model_set}} to
-#' create models for use with the \code{phylopath} package.
+#' This function is a simple wrapper around the function from the `ggm`
+#' package with the same name. The only differences are that the `order`
+#' argument defaults to `TRUE` and that it adds a `DAG` class for
+#' easy plotting. Typically, one would use [define_model_set()] to
+#' create models for use with the `phylopath` package.
 #'
 #' Supply a formulas for the model as arguments. Formulas should be of the
-#' form `parent ~ child` and describe each path in your model. Multiple
+#' form `parent ~ child`` and describe each path in your model. Multiple
 #' children of a single parent can be combined into a single formula:
 #' `parent ~ child1 + child2`. Finally, an isolate (unconnected variable) can
 #' be included as being connected to itself: `isolate ~ isolate`.
 #'
-#' @param order logical, defaulting to `TRUE` If `TRUE` the nodes of the DAG
-#'   are permuted according to the topological order. If `FALSE` the nodes are
+#' @param order logical, defaulting to `TRUE`. If [TRUE] the nodes of the DAG
+#'   are permuted according to the topological order. If [FALSE] the nodes are
 #'   in the order they first appear in the model formulae (from left to right).
-#'   For use in the `phylopath` package, this should always be kept to `TRUE`,
+#'   For use in the [phylopath] package, this should always be kept to [TRUE],
 #'   but the argument is available to avoid potential problems with masking the
 #'   function from other packages.
 #'
@@ -39,19 +39,19 @@ DAG <- function(..., order = TRUE) {
 #' Define a model set.
 #'
 #' This is a convenience function to quickly and clearly define a set of causal
-#' models. Supply a list of formulas for each model, using either `list()`,
-#' or `c()`. Formulas should be of the form `parent ~ child` and describe each
-#' path in your model. Multiple children of a single parent can be combined
-#' into a single formula: `parent ~ child1 + child2`.
+#' models. Supply a list of formulas for each model, using either `c()`. Formulas
+#' should be of the form `parent ~ child` and describe each path in your model.
+#' Multiple children of a single parent can be combined into a single formula:
+#' `parent ~ child1 + child2`.
 #'
-#' @section Note This function uses `ggm::DAG`
+#' This function uses [ggm::DAG()].
 #'
 #' @param ... Named arugments, which each are a lists of formulas defining the
 #'   paths of a causal model.
 #' @param .common A list of formulas that contain causal paths that are common
 #'   to each model.
 #'
-#' @return A list of models, each of class \code{matrix} and \code{DAG}.
+#' @return A list of models, each of class `matrix` and `DAG`.
 #' @export
 #'
 #' @examples
@@ -60,7 +60,7 @@ DAG <- function(..., order = TRUE) {
 #'   B = c(b~a, c~b),
 #'   .common = c(d~a)))
 #' plot_model_set(m)
-define_model_set <- function(..., .common) {
+define_model_set <- function(..., .common = NULL) {
   model_list <- list(...)
   # Get all unique variables
   vars <- unique(unlist(lapply(unlist(model_list), all.vars)))
