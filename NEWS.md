@@ -1,6 +1,9 @@
 phylopath 0.3.1.9000
 --------------------------------------------------------------------------------
 
+* Added `plot()` method for `phylopath.summary` objects, that shows the weights
+  and p-values for the different models.
+
 * Added a `define_model_set()` convenience function for building models, that 
   avoids repeated calls to `DAG()` and has an argument to supply paths that are 
   shared between all your models. It is not needed to specify isolate variables.

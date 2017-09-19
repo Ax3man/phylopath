@@ -5,26 +5,41 @@ print.phylopath_summary <- function(x, ...) {
 }
 
 #' @export
+plot.phylopath_summary <- function(x, cut_off = 2, ...) {
+  x$model <- factor(x$model, rev(x$model))
+  ggplot2::ggplot(x, ggplot2::aes_(~model, ~w, fill = ~delta_CICc < cut_off, label = ~round(p, 3))) +
+    ggplot2::geom_col(col = 'black', alpha = 0.6) +
+    ggplot2::geom_text(hjust = "inward") +
+    ggplot2::coord_flip(expand = FALSE) +
+    ggplot2::scale_fill_manual(values = c('TRUE' = 'firebrick', 'FALSE' = 'black'),
+                               labels = c('TRUE' = paste('within', cut_off, 'CICc')),
+                               breaks = c('TRUE')) +
+    ggplot2::scale_y_continuous(position = 'top') +
+    ggplot2::guides(fill = ggplot2::guide_legend(title = NULL)) +
+    ggplot2::labs(y = "model weight", caption = "bar labels are p-values, signficance indicates rejection") +
+    ggplot2::theme(legend.position = 'bottom')
+}
+
+#' @export
 print.phylopath <- function(x, ...) {
   num_vars <- names(x$data)[sapply(x$data, is.numeric)]
   bin_vars <- setdiff(names(x$data), num_vars)
 
-  #cat('\n')
   cat('A phylogenetic path analysis, on the variables:\n')
   cat('\tContinuous:\t', num_vars, '\n')
   cat('\tBinary:\t\t', bin_vars, '\n')
   cat('\n')
   cat(' Evaluated for these models:', names(x$models), '\n')
   cat('\n')
-  cat(' Containing', sum(purrr::map_dbl(x$d_sep, nrow)), 'unqiue phylogenetic regressions.')
+  cat(' Containing', sum(purrr::map_dbl(x$d_sep, nrow)), 'unique phylogenetic regressions.')
   cat('\n')
 }
 
 #' Plot a directed acyclic graph.
 #'
-#' @param x A \code{DAG} object, usually created with the \code{DAG} function.
-#' @param algorithm A layout algorithm from \code{igraph}, see
-#'   \code{\link[ggraph]{create_layout}} and \code{\link[ggraph]{create_layout.igraph}}. By default,
+#' @param x A `DAG`` object, usually created with the [define_model_set()] or [DAG()] function.
+#' @param algorithm A layout algorithm from [igraph], see
+#'   [ggraph::create_layout()] and [ggraph::create_layout.igraph()]. By default,
 #'   uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.
 #' @param ... Not used.
 #' @inheritParams plot_model_set
