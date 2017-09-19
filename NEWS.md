@@ -1,6 +1,10 @@
 phylopath 0.3.1.9000
 --------------------------------------------------------------------------------
 
+* `phylo_path` and all related methods now deal automatically with both 
+  continuous and binary data. All separate binary functions and methods have
+  disappeared as they are no longer needed.
+
 * Added `plot()` method for `phylopath.summary` objects, that shows the weights
   and p-values for the different models.
 
@@ -29,8 +33,8 @@ phylopath 0.3.0
 
 * Added support for completely binary models, that are fitted with 
   `ape::binaryPGLMM`. Use `phylo_path_binary()` to compare models. `average()`,
-  `best()` and `choose()` are now S3 generics and will handle both continious
-  and binary versions. Usage is designed to be as close to the continious version
+  `best()` and `choose()` are now S3 generics and will handle both continuous
+  and binary versions. Usage is designed to be as close to the continuous version
   as possible. `est_DAG_binary()` powers the binary S3 methods.
 
 * All plot functions that used `DiagrammeR` now use `ggraph` instead. This gives
@@ -38,7 +42,7 @@ phylopath 0.3.0
   multiple models at once. Exporting plots also becomes much easier.
 
 * You can now plot a list of causal models with `plot_model_set()`. This 
-  creates a facetted plot where all nodes are kept in the same location, which 
+  creates a faceted plot where all nodes are kept in the same location, which 
   makes it easier to spot how models are different.
 
 phylopath 0.2.3
