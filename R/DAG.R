@@ -173,7 +173,7 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
 #'   coef_plot(ave_cand)
 average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
                          method = 'conditional', ...) {
-  method <- match.arg(method, choices = c("full", "conditional")
+  method <- match.arg(method, choices = c("full", "conditional"))
   ord <- rownames(fitted_DAGs[[1]]$coef)
   fitted_DAGs <- lapply(fitted_DAGs, function(l) {
     lapply(l, function(m) m[ord, ord]) } )
