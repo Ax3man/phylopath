@@ -10,9 +10,6 @@ check_models_data_tree <- function(models, data, tree, na.rm) {
   }
   data <- data[, unique(unlist(var_names))]
   # Check NAs and if models and tree line up
-  if ('tbl_df' %in% class(data)) {
-    data <- as.data.frame(data)
-  }
   if (anyNA(data)) {
     if (na.rm) {
       NAs <- which(apply(data, 1, anyNA))

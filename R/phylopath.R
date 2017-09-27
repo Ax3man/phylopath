@@ -51,6 +51,8 @@
 #'
 phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
                        order = NULL, parallel = NULL, na.rm = TRUE, ...) {
+  # Always coerce to data.frame, as tibbles and data.tables do NOT play nice.
+  data <- as.data.frame(data)
   cor_fun <- match.fun(cor_fun)
   tmp <- check_models_data_tree(models, data, tree, na.rm)
   models <- tmp$models
