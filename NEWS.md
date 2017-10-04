@@ -33,7 +33,7 @@ phylopath 0.3.0
 
 * Added support for completely binary models, that are fitted with 
   `ape::binaryPGLMM`. Use `phylo_path_binary()` to compare models. `average()`,
-  `best()` and `choose()` are now S3 generics and will handle both continuous
+  `best()` and `choice()` are now S3 generics and will handle both continuous
   and binary versions. Usage is designed to be as close to the continuous version
   as possible. `est_DAG_binary()` powers the binary S3 methods.
 
