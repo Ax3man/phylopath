@@ -1,9 +1,26 @@
 phylopath 0.3.1.9000
 --------------------------------------------------------------------------------
 
+* All modeling functions now completely rely on the `phylolm` package, and no 
+  longer use `ape`. This is a major change, that will possibly change the 
+  outcomes of some of your existing analyses (as can happen when chaning 
+  the modeling package). There are, however, several good reasons to make this 
+  change, which I think make it worth the trouble. Firstly, the package is much
+  faster for large trees, and this effect is compounded in `phylopath` because 
+  one may have to fit a few dozen models. Secondly, I think it is important to 
+  have confidence intervals around the regression coefficients, and those were 
+  not available for `ape::binaryPGLMM`. Thirdly, `phylolm` makes it easy to use 
+  a larger variety of models of evolution, including two versions of OU and 
+  early burst, which can be simply set using the `model` parameter. Lastly, the
+  `phylolm()` and `phyloglm()` functions give more uniform results, which makes 
+  it easier to code for situation where you may use both.
+
 * `phylo_path` and all related methods now deal automatically with both 
   continuous and binary data. All separate binary functions and methods have
   disappeared as they are no longer needed.
+  
+* The variable order in d-seperation statements now better follows the causal
+  flow of the DAG.
 
 * Added `plot()` method for `phylopath.summary` objects, that shows the weights
   and p-values for the different models.
@@ -26,7 +43,8 @@ phylopath 0.3.1
   (reported by Christoph Liedtke, @hcliedtke).
   
 * The package depends on a recent version of `nlme`, but this wasn't specified.
-  All package versions of dependencies are now defined. (reported by @ManuelaGonzalez)
+  All package versions of dependencies are now defined (reported by 
+  @ManuelaGonzalez).
 
 phylopath 0.3.0
 --------------------------------------------------------------------------------

@@ -4,13 +4,16 @@
 \alias{choice}
 \title{Extract and estimate an arbitrary model from a phylogenetic path analysis.}
 \usage{
-choice(phylopath, choice)
+choice(phylopath, choice, ...)
 }
 \arguments{
 \item{phylopath}{An object of class \code{phylopath}.}
 
 \item{choice}{A character string of the name of the model to be chosen, or
-the index in \code{models}.}
+the index in \code{model_set}.}
+
+\item{...}{Arguments to pass to \code{phylolm} and \code{phyloglm}. If you specified options in the orignal
+\link{phylo_path} call you don't need to specify them again.}
 }
 \value{
 An object of class \code{fitted_DAG}.

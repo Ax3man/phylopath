@@ -12,10 +12,10 @@
 #' `parent ~ child1 + child2`. Finally, an isolate (unconnected variable) can
 #' be included as being connected to itself: `isolate ~ isolate`.
 #'
-#' @param order logical, defaulting to `TRUE`. If [TRUE] the nodes of the DAG
-#'   are permuted according to the topological order. If [FALSE] the nodes are
+#' @param order logical, defaulting to `TRUE`. If `TRUE` the nodes of the DAG
+#'   are permuted according to the topological order. If `FALSE` the nodes are
 #'   in the order they first appear in the model formulae (from left to right).
-#'   For use in the [phylopath] package, this should always be kept to [TRUE],
+#'   For use in the `phylopath` package, this should always be kept to `TRUE`,
 #'   but the argument is available to avoid potential problems with masking the
 #'   function from other packages.
 #'
@@ -76,6 +76,7 @@ define_model_set <- function(..., .common = NULL) {
 #' Add standardized path coefficients to a DAG.
 #'
 #' @param DAG A directed acyclic graph, typically created with \code{DAG}.
+#' @param boot The number of bootstrap replicates used to estimate confidence intervals.
 #' @inheritParams phylo_path
 #'
 #' @return An object of class \code{fitted_DAG}.
@@ -85,13 +86,12 @@ define_model_set <- function(..., .common = NULL) {
 #' @examples
 #'   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
 #'   plot(d)
-#'   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
+#'   d_fitted <- est_DAG(d, rhino, rhino_tree)
 #'   plot(d_fitted)
-est_DAG <- function(DAG, data, cor_fun, tree) {
+est_DAG <- function(DAG, data, tree, model, method, boot = 0, ...) {
   stopifnot(inherits(DAG, 'DAG'))
-  cor_fun <- match.fun(cor_fun)
-  r <- rownames(data)
   # scale the continous variables
+  r <- rownames(data)
   data <- dplyr::mutate_if(data, is.numeric, scale)
   rownames(data) <- r
   d <- Map(function(x, y, n) {
@@ -99,17 +99,7 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
       return(cbind(y, y, y, y))
     }
     f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
-    x_var <- data[[all.vars(f)[1]]]
-    if (is.character(x_var) | is.factor(x_var)) {
-      if (length(unique(x_var)) != 2) {
-        stop("Variable '", all.vars(f)[1], "' is recognized as non-numeric, but does not have",
-             " exactly two distinct values. Either it has too many categories, or only one.")
-      }
-      data[[all.vars(f)[1]]] <- as.numeric(as.factor(data[[all.vars(f)[1]]])) - 1
-      m <- purrr::safely(ape::binaryPGLMM)(f, data = data, phy = tree)
-    } else {
-      m <- gls2(formula = f, data = data, tree = tree, cor_fun = cor_fun)
-    }
+    m <- phylo_g_lm(f, data, tree, model, method, boot, ...)
     if (!is.null(m$error)) {
       stop(paste('Fitting the following model:\n   ', Reduce(paste, deparse(f)),
                  '\nproduced this error:\n   ', m$error),
@@ -119,22 +109,21 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
     Coef <- se <- lower <- upper <- y
     Coef[Coef != 0]   <- get_est(m)
     se[se != 0]       <- get_se(m)
-    lower[lower != 0] <- tryCatch(get_lower(m),
-                                  error = function(e) NA)
-    upper[upper != 0] <- tryCatch(get_upper(m),
-                                  error = function(e) NA)
+    lower[lower != 0] <- get_lower(m)
+    upper[upper != 0] <- get_upper(m)
     return(cbind(coef = Coef, se = se, lower = lower, upper = upper))
   }, colnames(DAG), as.data.frame(DAG), MoreArgs = list(n = rownames(DAG)))
-  if (any(sapply(d, function(x) any(is.na(x))))) {
-    warnings("NA's have been generated, most likely some confidence intervals could not be estimated.")
-  }
   coefs  <- sapply(d, `[`, 1:nrow(DAG), 1)
   ses    <- sapply(d, `[`, 1:nrow(DAG), 2)
   lowers <- sapply(d, `[`, 1:nrow(DAG), 3)
   uppers <- sapply(d, `[`, 1:nrow(DAG), 4)
   rownames(coefs) <- rownames(ses) <- rownames(lowers) <- rownames(uppers) <-
     rownames(DAG)
-  res <- list(coef = coefs, se = ses, lower = lowers, upper = uppers)
+  if (boot > 0) {
+    res <- list(coef = coefs, se = ses, lower = lowers, upper = uppers)
+  } else {
+    res <- list(coef = coefs, se = ses)
+  }
   class(res) <- 'fitted_DAG'
   return(res)
 }
@@ -145,7 +134,7 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
 #'   coefficients and standard errors, usually obtained by using [est_DAG()]
 #'   on several DAGs.
 #' @param weights A vector of associated model weights.
-#' @param method Either `"full"` or `"conditional"`. The methods
+#' @param avg_method Either `"full"` or `"conditional"`. The methods
 #'   differ in how they deal with averaging a path coefficient where the path is
 #'   absent in some of the models. The full method sets the coefficient (and the
 #'   variance) for the missing paths to zero, meaning paths that are missing in
@@ -168,12 +157,13 @@ est_DAG <- function(DAG, data, cor_fun, tree) {
 #'   # make sure the DAGs make sense and contain the same variables!
 #'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
 #'                      B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
-#'   fit_cand <- lapply(candidates, est_DAG, rhino, ape::corPagel, rhino_tree)
+#'   fit_cand <- lapply(candidates, est_DAG, rhino, rhino_tree,
+#'                      model = 'lambda', method = 'logistic_MPLE')
 #'   ave_cand <- average_DAGs(fit_cand)
 #'   coef_plot(ave_cand)
 average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
-                         method = 'conditional', ...) {
-  method <- match.arg(method, choices = c("full", "conditional"))
+                         avg_method = 'conditional', ...) {
+  avg_method <- match.arg(avg_method, choices = c("full", "conditional"))
   ord <- rownames(fitted_DAGs[[1]]$coef)
   fitted_DAGs <- lapply(fitted_DAGs, function(l) {
     lapply(l, function(m) m[ord, ord]) } )
@@ -184,8 +174,8 @@ average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
   rel_weights <- weights / sum(weights)
   coef      <- simplify2array(coef)
   std_error <- simplify2array(std_error)
-  if (method == 'conditional') {
-    coef[coef == 0]          <- NA
+  if (avg_method == 'conditional') {
+    coef[coef == 0]           <- NA
     std_error[std_error == 0] <- NA
   }
   a_coef <- apply(coef, 1:2, stats::weighted.mean, w = rel_weights,

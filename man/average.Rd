@@ -5,7 +5,7 @@
 \title{Extract and average the best supported models from a phylogenetic path
 analysis.}
 \usage{
-average(phylopath, cut_off = 2, method = "conditional", ...)
+average(phylopath, cut_off = 2, avg_method = "conditional", ...)
 }
 \arguments{
 \item{phylopath}{An object of class \code{phylopath}.}
@@ -14,7 +14,7 @@ average(phylopath, cut_off = 2, method = "conditional", ...)
 \code{Inf} to average over all models. Use the \code{\link[=best]{best()}} function to
 only use the top model, or \code{\link[=choice]{choice()}} to select any single model.}
 
-\item{method}{Either \code{"full"} or \code{"conditional"}. The methods
+\item{avg_method}{Either \code{"full"} or \code{"conditional"}. The methods
 differ in how they deal with averaging a path coefficient where the path is
 absent in some of the models. The full method sets the coefficient (and the
 variance) for the missing paths to zero, meaning paths that are missing in
@@ -23,9 +23,8 @@ over models where the path appears, making it more sensitive to small
 effects. Following von Hardenberg & Gonzalez-Voyer 2013, conditional
 averaging is set as the default. Also see \code{\link[MuMIn:model.avg]{MuMIn::model.avg()}}.}
 
-\item{...}{Additional arguments passed to \code{\link[MuMIn:par.avg]{MuMIn::par.avg()}}.
-
-For details on the error calculations, see \code{\link[MuMIn:par.avg]{MuMIn::par.avg()}}.}
+\item{...}{Arguments to pass to \link[phylolm:phylolm]{phylolm::phylolm} and \link[phylolm:phyloglm]{phylolm::phyloglm}. If you specified
+options in the orignal \link{phylo_path} call you don't need to specify them again.}
 }
 \value{
 An object of class \code{fitted_DAG}.

@@ -15,7 +15,7 @@ This vignette gives a short example of how PPA can be applied to binary data set
 
 **Important note**: 
 
-There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses `ape::binaryPGLMM`, written by Anthony Ives. Read `?ape::binaryPGLMM` for more information. `phylopath`'s accuracy is directly dependent on the accuracy of that method, and if you don't trust `ape::binaryPGLMM` you should not trust binary models used in `phylo_path`.
+There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses `phylolm::phyloglm`, written by Lam Si Tung Ho, Robert Lachlan, Rachel Feldman and Cécile Ané. `phylopath`'s accuracy is directly dependent on the accuracy of that functions, and if you don't trust `phyloglm` you should not trust binary models used in `phylo_path`.
 
 If you have useful opinions or information on this point, feel free to contact me.
 
@@ -50,41 +50,36 @@ Following the paper in question, we define 12 putative causal models.
 ```{r, fig.align='center', fig.width=10, fig.height=8, out.height="600px", fig.dpi = 600}
 library(phylopath)
 
-models <- list(
-  A = DAG(C ~ M + P + G + D),
-  B = DAG(C ~ P + G + D,      M ~ M),
-  C = DAG(C ~ P + G + D,                P ~ M),
-  D = DAG(C ~ P + G + D,      M ~ P,               G ~ P),
-  E = DAG(C ~ P + G + D,                P ~ M,     G ~ P),
-  F = DAG(C ~ P + G + D,                P ~ M + G),
-  G = DAG(C ~ P + G + D,      M ~ P,    P ~ G),
-  H = DAG(C ~ P + G + D,      M ~ P),
-  I = DAG(C ~ P + G + D,      M ~ M,               G ~ P),
-  J = DAG(C ~ P + G,          M ~ P,               G ~ D),
-  K = DAG(C ~ P + G,                    P ~ M,     G ~ D),
-  L = DAG(C ~ M + P + G + D,            P ~ M + G)
+models <- define_model_set(
+  A = c(C~M+D),
+  B = c(C~D),
+  C = c(C~D, P~M),
+  D = c(C~D, M~P, G~P),
+  E = c(C~D, P~M, G~P),
+  F = c(C~D, P~M+G),
+  G = c(C~D, M~P, P~G),
+  H = c(C~D, M~P),
+  I = c(C~D, M~M, G~P),
+  J = c(M~P, G~D),
+  K = c(P~M, G~D),
+  L = c(C~M+D, P~M+G),
+  .common = c(C~P+G)
 )
 
-plot_model_set(models)
+plot_model_set(models, algorithm = 'kk')
 ```
 
 ###Comparing the models
 
 Now that we have our models, data and a tree, we can compare the models using `phylo_path`
 
-Note: `ape::binaryPGLMM` is very slow. This code takes about 3 minutes to run on my machine. Therefore, I recommend making use of the `parallel` argument to speed things up. Depending on the situation, this can help a lot.
-
-```{r, eval=FALSE}
-cichlids_results <- phylo_path(models, cichlids, cichlids_tree, parallel = "SOCK")
-```
-
-```{r, echo=FALSE}
-message("15 rows were dropped because they contained NA values.")
-message("Pruned tree to drop species not included in dat.")
-cichlids_results <- phylopath:::cichlids_results
+```{r}
+(cichlids_results <- phylo_path(models, cichlids, cichlids_tree))
 ```
 
 Note that two messages are printed. This is because there are missing values in our data set that are first being removed. Also, since the tree includes species for which data is missing, the tree had to be pruned. This is done automatically with a message to the user. You should check whether the amount of data removed is correct.
+
+`phylo_path` notes that indeed all variables are binary.
 
 ```{r}
 (s <- summary(cichlids_results))
@@ -93,18 +88,15 @@ plot(s)
 
 We see that model F is the best supported model. This model notably does not include a link between monogamy and cooperative breeding, giving support to the direct benefits hypothesis.
 
+Model L, the second best model, is exactly the same as 
+
 ###Evaluating variable importance
 
 Now that we have selected F as our best model, we still have three factors that affect cooperative breeding: diet, social grouping and parental care. Which one is more important? For this we can fit the model and look at magnitude of the coefficients. In this case, since we want to use the best model we use the function `best()`. One can use `choice()` to choose any arbitrary model, or `average()` to average over several models.
 
-```{r, eval=FALSE}
+```{r}
 best_cichlids <- best(cichlids_results)
 ```
-
-```{r, echo=FALSE}
-best_cichlids <- phylopath:::best_cichlids
-```
-
 
 To see the individual coefficients and their standard errors, simply print `best_cichlids`:
 
@@ -112,10 +104,16 @@ To see the individual coefficients and their standard errors, simply print `best
 best_cichlids
 ```
 
+Or plot those:
+
+```{r}
+coef_plot(best_cichlids, error_bar = "se", reverse_order = TRUE) + ggplot2::coord_flip()
+```
+
 But we can also plot the final model:
 
 ```{r, fig.align='center', fig.width=8, fig.height=4, out.width="600px", fig.dpi = 300}
-plot(best_cichlids, algorithm = 'kk')
+plot(best_cichlids)
 ```
 
 It appears that social grouping is a slightly more important than diet and biparental care.

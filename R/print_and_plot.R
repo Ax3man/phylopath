@@ -29,10 +29,16 @@ print.phylopath <- function(x, ...) {
   cat('\tContinuous:\t', num_vars, '\n')
   cat('\tBinary:\t\t', bin_vars, '\n')
   cat('\n')
-  cat(' Evaluated for these models:', names(x$models), '\n')
+  cat(' Evaluated for these models:', names(x$model_set), '\n')
   cat('\n')
-  cat(' Containing', sum(purrr::map_dbl(x$d_sep, nrow)), 'unique phylogenetic regressions.')
+  cat(' Containing', sum(purrr::map_dbl(x$d_sep, nrow)), 'phylogenetic regressions, of which',
+      length(unique(unlist(purrr::map(x$d_sep, 'd_sep')))), 'unique')
   cat('\n')
+}
+
+show_warnings <- function(phylopath) {
+  stopifnot(inherits(phylopath, 'phylopath'))
+  phylopath$warnings
 }
 
 #' Plot a directed acyclic graph.
@@ -119,9 +125,12 @@ plot.fitted_DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size 
     ggraph::theme_graph(base_family = 'sans')
 }
 
-#' Plot path coefficients and their confidence intervals.
+#' Plot path coefficients and their confidence intervals or standard errors.
 #'
 #' @param fitted_DAG A fitted DAG, usually obtained by [best()], [average()] or [est_DAG()].
+#' @param error_bar Whether to use confidence intervals (`"ci"`) or standard errors (`"se"`) as
+#'   error bars. Will force standard errors with a warning if confidence intervals are not
+#'   available.
 #' @param reverse_order If `TRUE`, the paths are plotted in reverse order.
 #'   Particularly useful in combination with [ggplot2::coord_flip()] to create
 #'   horizontal versions of the plot.
@@ -132,17 +141,31 @@ plot.fitted_DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size 
 #' @examples
 #'   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
 #'   plot(d)
-#'   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
+#'   d_fitted <- est_DAG(d, rhino, rhino_tree, 'lambda')
 #'   plot(d_fitted)
 #'   coef_plot(d_fitted)
 #'   # to create a horizontal version, use this:
 #'   coef_plot(d_fitted, reverse_order = TRUE) + ggplot2::coord_flip()
-coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
+coef_plot <- function(fitted_DAG, error_bar = 'ci', reverse_order = FALSE) {
+  stopifnot(inherits(fitted_DAG, 'fitted_DAG'))
+  match.arg(error_bar, c('ci', 'se'), several.ok = FALSE)
+  if (error_bar == 'ci' & is.null(fitted_DAG$lower)) {
+    warning('The fitted model does not contain confidence intervals, so showing standard errors
+            instead. Fit the model with `boot` larger than 0 to get confidence intervals, or set
+            `error_bar = "se"` to avoid this warning.')
+    error_bar <- 'se'
+  }
   df <- as.data.frame(fitted_DAG$coef)
   df <- tibble::rownames_to_column(df, 'from')
   df <- tidyr::gather_(df, 'to', 'coef', colnames(fitted_DAG$coef))
-  df$lower <- c(fitted_DAG$lower)
-  df$upper <- c(fitted_DAG$upper)
+  if (error_bar == 'ci') {
+    df$lower <- c(fitted_DAG$lower)
+    df$upper <- c(fitted_DAG$upper)
+  } else {
+    df$lower <- c(fitted_DAG$coef - fitted_DAG$se)
+    df$upper <- c(fitted_DAG$coef + fitted_DAG$se)
+  }
+
   df$path <- paste(df$from, df$to, sep = ' \U2192 ')
   df <- dplyr::arrange_(df,
                         ~match(df$from, colnames(fitted_DAG$coef)),
@@ -158,13 +181,15 @@ coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
     ggplot2::geom_hline(yintercept = 0, size = 1, lty = 2) +
     ggplot2::geom_pointrange(size = 0.75) +
     ggplot2::xlab('') +
-    ggplot2::ylab('standardized regression coefficient \U00B1 CI')
+    ggplot2::ylab(ifelse(error_bar == 'ci',
+                         'standardized regression coefficient \U00B1 CI',
+                         'standardized regression coefficient \U00B1 SE'))
 }
 
 
 #' Plot several causal hypothesis at once.
 #'
-#' @param models A list of `DAG` objects, usually created with [define_model_set()].
+#' @param model_set A list of `DAG` objects, usually created with [define_model_set()].
 #' @param labels An optional set of labels to use for the nodes. This should be a named vector, of
 #'   the form `c(var1 = "label1", var2 = "label2")`.
 #'   If left at `NULL``, the variable names of the DAGs are used.
@@ -200,20 +225,20 @@ coef_plot <- function(fitted_DAG, reverse_order = FALSE) {
 #' m <- list(one = DAG(a ~ b + c + d), two = DAG(a ~ b, b ~ c, d ~ d))
 #' plot_model_set(m)
 #' plot_model_set(m, algorithm = "sugiyama")
-plot_model_set <- function(models, labels = NULL, algorithm = 'kk', text_size = 5, box_x = 12,
+plot_model_set <- function(model_set, labels = NULL, algorithm = 'kk', text_size = 5, box_x = 12,
                            box_y = 10, edge_width = 1, curvature = 0.05, rotation = 0,
                            flip_x = FALSE, flip_y = FALSE, nrow = NULL,
                            arrow = grid::arrow(type = 'closed', 15, grid::unit(10, 'points'))) {
   # Input checks
-  if (!is.list(models) | !all(purrr::map_lgl(models, ~inherits(., 'DAG')))) {
-    stop('models should be a list of DAG objects.')
+  if (!is.list(model_set) | !all(purrr::map_lgl(model_set, ~inherits(., 'DAG')))) {
+    stop('model_set should be a list of DAG objects.')
   }
-  if (is.null(names(models))) {
-    names(models) <- LETTERS[seq_along(models)]
+  if (is.null(names(model_set))) {
+    names(model_set) <- LETTERS[seq_along(model_set)]
   }
-  var_names <- lapply(models, colnames)
-  if (length(models) > 1 &
-      (stats::var(lengths(models)) != 0 |
+  var_names <- lapply(model_set, colnames)
+  if (length(model_set) > 1 &
+      (stats::var(lengths(model_set)) != 0 |
        any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0))) {
     stop('All causal models need to include the same variables. Combined, your
          models include the following variables:\n',
@@ -222,17 +247,17 @@ plot_model_set <- function(models, labels = NULL, algorithm = 'kk', text_size = 
   }
 
   # Build  single complete graph
-  result <- igraph::make_empty_graph() + igraph::vertices(row.names(models[[1]]))
-  for (i in seq_along(models)) {
-    m <- models[[i]]
+  result <- igraph::make_empty_graph() + igraph::vertices(row.names(model_set[[1]]))
+  for (i in seq_along(model_set)) {
+    m <- model_set[[i]]
     ind  <- which(m == 1)
-    from <- ind %% nrow(models[[i]])
-    to   <- (ind - from) / nrow(models[[i]]) + 1
+    from <- ind %% nrow(model_set[[i]])
+    to   <- (ind - from) / nrow(model_set[[i]]) + 1
     result <- igraph::add_edges(result, c(rbind(rownames(m)[from], colnames(m)[to])),
-                                attr = list(model = names(models)[[i]]))
+                                attr = list(model = names(model_set)[[i]]))
   }
   igraph::edge.attributes(result)$model <- factor(igraph::E(result)$model,
-                                                  names(models), names(models))
+                                                  names(model_set), names(model_set))
 
   l <- ggraph::create_layout(result, 'igraph', algorithm = algorithm)
   l <- adjust_layout(l, rotation, flip_x, flip_y)

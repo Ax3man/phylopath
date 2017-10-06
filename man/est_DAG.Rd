@@ -4,19 +4,44 @@
 \alias{est_DAG}
 \title{Add standardized path coefficients to a DAG.}
 \usage{
-est_DAG(DAG, data, cor_fun, tree)
+est_DAG(DAG, data, tree, model, method, boot = 0, ...)
 }
 \arguments{
 \item{DAG}{A directed acyclic graph, typically created with \code{DAG}.}
 
 \item{data}{A \code{data.frame} with data. If you have binary variables, make
-sure they are either character values or factors.}
+sure they are either character values or factors!}
 
-\item{cor_fun}{A function that creates a \code{corStruct} object, typically
-one of the \code{cor*} functions from the \code{ape} package, such as
-\code{corBrownian}, \code{corPagel} etc.}
+\item{tree}{A phylogenetic tree of class \code{phylo}.}
 
-\item{tree}{A phylogenetic tree of class \code{pylo}.}
+\item{model}{The evolutionary model used for the regressions on continuous
+variables. See \link[phylolm:phylolm]{phylolm::phylolm} for options and details. Defaults to
+Pagel's lambda model}
+
+\item{method}{The estimation method for the binary models. See
+\link[phylolm:phylolm]{phylolm::phylolm} for options and details. Defaults to logistic MPLE.}
+
+\item{boot}{The number of bootstrap replicates used to estimate confidence intervals.}
+
+\item{...}{Arguments passed on to \code{phylolm}:
+
+\code{lower.bound}: optional lower bound for the optimization of the phylogenetic model parameter.
+
+\code{upper.bound}: optional upper bound for the optimization of the phylogenetic model parameter.
+
+\code{starting.value}: optional starting value for the optimization of the phylogenetic model parameter.
+
+\code{measurement_error}: a logical value indicating whether there is measurement error sigma2_error (see Details).
+
+Arguments passed on to \code{phyloglm}:
+
+\code{btol}: bound on the linear predictor to bound the searching space.
+
+\code{log.alpha.bound}: bound for the log of the parameter alpha.
+
+\code{start.beta}: starting values for beta coefficients.
+
+\code{start.alpha}: starting values for alpha (phylogenetic correlation).}
 }
 \value{
 An object of class \code{fitted_DAG}.
@@ -27,6 +52,6 @@ Add standardized path coefficients to a DAG.
 \examples{
   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
   plot(d)
-  d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
+  d_fitted <- est_DAG(d, rhino, rhino_tree)
   plot(d_fitted)
 }

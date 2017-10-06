@@ -1,3 +1,15 @@
+## ---- eval=FALSE---------------------------------------------------------
+#  library(ape)
+#  my_tree <- read.tree('my_tree.tre') # For Newick format trees
+#  my_tree <- read.nexus('my_tree.nex') # For NEXUS format trees
+
+## ---- eval=FALSE---------------------------------------------------------
+#  rownames(my_data) <- my_data$species_name
+
+## ---- eval=FALSE---------------------------------------------------------
+#  my_tree$tip.label # Check the tip labels of your tree
+#  rownames(my_data) <- gsub(' ', '_', my_data$species_name_with_spaces)
+
 ## ---- include = FALSE----------------------------------------------------
 knitr::opts_chunk$set(dev = "png", fig.height = 5, fig.width = 5, dpi = 300, out.width = "450px")
 
@@ -27,7 +39,7 @@ plot(models$one)
 plot_model_set(models)
 
 ## ------------------------------------------------------------------------
-result <- phylo_path(models, data = rhino, tree = rhino_tree, 
+result <- phylo_path(models, data = rhino, tree = rhino_tree, model = 'lambda',
                      order = c('BM', 'NL', 'DD', 'LS', 'RS'))
 
 ## ------------------------------------------------------------------------
@@ -50,16 +62,16 @@ average_model <- average(result)
 plot(average_model, algorithm = 'mds', curvature = 0.1) # increase the curvature to avoid overlapping edges
 
 ## ---- fig.width = 7------------------------------------------------------
-average_model_full <- average(result, method = "full")
+average_model_full <- average(result, avg_method = "full")
 plot(average_model_full, algorithm = 'mds', curvature = 0.1)
 
 ## ------------------------------------------------------------------------
-coef_plot(best_model)
+#coef_plot(average_model)
 
 ## ---- fig.height=3.5-----------------------------------------------------
-coef_plot(average_model_full, reverse_order = TRUE) + 
-  ggplot2::coord_flip() + 
-  ggplot2::theme_bw()
+# coef_plot(average_model_full, reverse_order = TRUE) + 
+#   ggplot2::coord_flip() + 
+#   ggplot2::theme_bw()
 
 ## ------------------------------------------------------------------------
 result$d_sep$one

@@ -1,20 +1,18 @@
 #' Compare causal models in a phylogenetic context.
 #'
-#' Continious variables are modeled using [nlme::gls()] and the various
-#' correlation functions provided by [ape].
-#' Estimation of relationships between binary variables is built upon
-#' [ape::binaryPGLMM()] and stands or falls with the accuracy of that method.
-#' Model fitting using this method is particularly slow and the \code{parallel}
-#' argument can therefore be especially useful.
+#' Continious variables are modeled using [phylolm::phylolm], while binary
+#' traits are modeled using [phylolm::phyloglm].
 #'
-#' @param models A list of directed acyclic graphs. These are matrices,
+#' @param model_set A list of directed acyclic graphs. These are matrices,
 #'   typically created with \code{define_model_set}.
 #' @param data A \code{data.frame} with data. If you have binary variables, make
-#'   sure they are either character values or factors.
-#' @param tree A phylogenetic tree of class \code{pylo}.
-#' @param cor_fun A function that creates a \code{corStruct} object, typically
-#'   one of the \code{cor*} functions from the \code{ape} package, such as
-#'   \code{corBrownian}, \code{corPagel} etc.
+#'   sure they are either character values or factors!
+#' @param tree A phylogenetic tree of class \code{phylo}.
+#' @param model The evolutionary model used for the regressions on continuous
+#'   variables. See [phylolm::phylolm] for options and details. Defaults to
+#'   Pagel's lambda model
+#' @param method The estimation method for the binary models. See
+#'   [phylolm::phylolm] for options and details. Defaults to logistic MPLE.
 #' @param order Causal order of the included variable, given as a character
 #'   vector. This is used to determine which variable should be the dependent
 #'   in the dsep regression equations. If left unspecified, the order will be
@@ -27,15 +25,38 @@
 #'   A cluster is create using the \code{parallel} package.
 #' @param na.rm Should rows that contain missing values be dropped from the data
 #'   as necessary (with a message)?
-#' @param ... Any other parameters passed to `nlme::gls`, such as `method = 'ML'`.
+#' @param ...
+#'   Arguments passed on to `phylolm`:
+#'
+#'   `lower.bound`: optional lower bound for the optimization of the phylogenetic model parameter.
+#'
+#'   `upper.bound`: optional upper bound for the optimization of the phylogenetic model parameter.
+#'
+#'   `starting.value`: optional starting value for the optimization of the phylogenetic model parameter.
+#'
+#'   `measurement_error`: a logical value indicating whether there is measurement error sigma2_error (see Details).
+#'
+#'   Arguments passed on to `phyloglm`:
+#'
+#'   `btol`: bound on the linear predictor to bound the searching space.
+#'
+#'   `log.alpha.bound`: bound for the log of the parameter alpha.
+#'
+#'   `start.beta`: starting values for beta coefficients.
+#'
+#'   `start.alpha`: starting values for alpha (phylogenetic correlation).
+#'
 #'
 #' @return A phylopath object, with the following components:
 #'  \describe{
 #'   \item{d_sep}{for each model a table with separation statements and statistics.}
-#'   \item{models}{the DAGs}
+#'   \item{model_set}{the DAGs}
 #'   \item{data}{the supplied data}
 #'   \item{tree}{the supplied tree}
-#'   \item{cor_fun}{the employed correlation structure}
+#'   \item{model}{the employed model of evolution in `phylolm`}
+#'   \item{method}{the employed method in `phyloglm`}
+#'   \item{dots}{any additional arguments given, these are passed on to downstream functions}
+#'   \item{warnings}{any warnings generate by the models}
 #'   }
 #' @export
 #' @examples
@@ -49,20 +70,19 @@
 #'   # And the summary gives statistics to compare the models:
 #'   summary(p)
 #'
-phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
+phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logistic_MPLE',
                        order = NULL, parallel = NULL, na.rm = TRUE, ...) {
   # Always coerce to data.frame, as tibbles and data.tables do NOT play nice.
   data <- as.data.frame(data)
-  cor_fun <- match.fun(cor_fun)
-  tmp <- check_models_data_tree(models, data, tree, na.rm)
-  models <- tmp$models
+  tmp <- check_models_data_tree(model_set, data, tree, na.rm)
+  model_set <- tmp$model_set
   data <- tmp$data
   tree <- tmp$tree
 
   if (is.null(order)) {
-    order <- find_consensus_order(models)
+    order <- find_consensus_order(model_set)
   }
-  formulas <- purrr::map(models, find_formulas, order)
+  formulas <- lapply(model_set, find_formulas, order)
   formulas <- purrr::map(formulas,
                          ~purrr::map(.x, ~{attr(., ".Environment") <- NULL; .}))
   f_list <- unique(unlist(formulas))
@@ -70,27 +90,17 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
     cl <- parallel::makeCluster(min(c(parallel::detectCores() - 1,
                                       length(f_list))),
                                 parallel)
-    parallel::clusterExport(cl, list('gls2'), environment())
+    parallel::clusterExport(cl, list('phylo_g_lm'), environment())
     on.exit(parallel::stopCluster(cl))
   } else {
     cl <- NULL
   }
   dsep_models_runs <- pbapply::pblapply(
     f_list,
-    function(x, data, tree, cor_fun, ...) {
-      x_var <- data[[all.vars(x)[1]]]
-      if (is.character(x_var) | is.factor(x_var)) {
-        if (length(unique(x_var)) != 2) {
-          stop("Variable '", all.vars(x)[1], "' is recognized as non-numeric, but does not have",
-               " exactly two distinct values. Either it has too many categories, or only one.")
-        }
-        data[[all.vars(x)[1]]] <- as.numeric(as.factor(data[[all.vars(x)[1]]])) - 1
-        purrr::safely(ape::binaryPGLMM)(x, data = data, phy = tree)
-      } else {
-        gls2(formula = x, data = data, tree = tree, cor_fun = cor_fun, ...)
-      }
+    function(x, data, tree, model, method, ...) {
+      phylo_g_lm(x, data, tree, model, method, ...)
     },
-    data = data, tree = tree, cor_fun = cor_fun, cl = cl)
+    data = data, tree = tree, model = model, method = method, cl = cl)
   # Produce appropriate error if needed
   errors <- purrr::map(dsep_models_runs, 'error')
   purrr::map2(errors, f_list,
@@ -99,7 +109,19 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
                            Reduce(paste, deparse(f_list[[1]])),
                            '\nproduced this error:\n   ', .x),
                      call. = FALSE))
-  # Otherwise collect models and move on.
+  # Collect warnings as well, but save those for later.
+  warnings <- purrr::map(dsep_models_runs, 'warning')
+  warnings <- purrr::map2(warnings, f_list,
+                          ~if(!is.null(.x))
+                             paste('Fitting the following model:\n   ',
+                                       Reduce(paste, deparse(f_list[[1]])),
+                                       '\nproduced this/these warning(s):\n   ', .x))
+  warnings <- warnings(!sapply(warnings, is.null))
+  if (length(warnings) > 1) {
+    warning('Some models produced warnings. Use `show_warnings()` to view them.')
+  }
+
+  # Collect models.
   dsep_models <- purrr::map(dsep_models_runs, 'result')
   dsep_models <- purrr::map(formulas, ~dsep_models[match(.x, f_list)])
 
@@ -109,13 +131,13 @@ phylo_path <- function(models, data, tree, cor_fun = ape::corPagel,
     ~dplyr::data_frame(
       d_sep = as.character(.x),
       p = purrr::map_dbl(.y, get_p),
-      phylo = purrr::map_dbl(.y, ~get_phylo_param(.)[[1]]),
+      phylo_par = purrr::map_dbl(.y, get_phylo_param),
       model = .y
     )
   )
 
-  out <- list(d_sep = d_sep, models = models, data = data, tree = tree,
-              cor_fun = cor_fun)
+  out <- list(d_sep = d_sep, model_set = model_set, data = data, tree = tree,
+              model = model, method = method, dots = list(...), warnings = warnings)
   class(out) <- 'phylopath'
   return(out)
 }
@@ -125,12 +147,12 @@ summary.phylopath <- function(object, ...) {
   phylopath <- object
   stopifnot(inherits(phylopath, 'phylopath'))
   k <- sapply(phylopath$d_sep, nrow)
-  q <- sapply(phylopath$models, function(m) nrow(m) + sum(m))
+  q <- sapply(phylopath$model_set, function(m) nrow(m) + sum(m))
   C <- sapply(phylopath$d_sep, function(x) C_stat(x$p))
   p <- C_p(C, k)
   IC <- CICc(C, q, nrow(phylopath$data))
 
-  d <- data.frame(model = names(phylopath$models), k = k, q = q, C = C, p = p,
+  d <- data.frame(model = names(phylopath$model_set), k = k, q = q, C = C, p = p,
                   CICc = IC, stringsAsFactors = FALSE)
   d <- d[order(d$CICc), ]
   d$delta_CICc <- d$CICc - d$CICc[1]
@@ -144,6 +166,8 @@ summary.phylopath <- function(object, ...) {
 #' analysis.
 #'
 #' @param phylopath An object of class \code{phylopath}.
+#' @param ... Arguments to pass to `phylolm` and `phyloglm`. If you specified options in the orignal
+#'   [phylo_path] call you don't need to specify them again.
 #'
 #' @return An object of class \code{fitted_DAG}.
 #' @export
@@ -158,18 +182,25 @@ summary.phylopath <- function(object, ...) {
 #'   # Plot to show the weighted graph:
 #'   plot(best_model)
 #'
-best <- function(phylopath) {
+best <- function(phylopath, ...) {
   stopifnot(inherits(phylopath, 'phylopath'))
+  dots <- combine_dots(phylopath$dots, ...)
+
   b <- summary(phylopath)[1, 'model']
-  best_model <- phylopath$models[[b]]
-  est_DAG(best_model, phylopath$data, phylopath$cor_fun, phylopath$tree)
+  best_model <- phylopath$model_set[[b]]
+  do.call(
+    est_DAG,
+    c(list(best_model, phylopath$data, phylopath$tree, phylopath$model, phylopath$method), dots)
+  )
 }
 
 #' Extract and estimate an arbitrary model from a phylogenetic path analysis.
 #'
 #' @param phylopath An object of class \code{phylopath}.
 #' @param choice A character string of the name of the model to be chosen, or
-#'   the index in \code{models}.
+#'   the index in \code{model_set}.
+#' @param ... Arguments to pass to `phylolm` and `phyloglm`. If you specified options in the orignal
+#'   [phylo_path] call you don't need to specify them again.
 #'
 #' @return An object of class \code{fitted_DAG}.
 #' @export
@@ -184,10 +215,15 @@ best <- function(phylopath) {
 #'   # Plot to show the weighted graph:
 #'   plot(my_model)
 #'
-choice <- function(phylopath, choice) {
+choice <- function(phylopath, choice, ...) {
   stopifnot(inherits(phylopath, 'phylopath'))
-  est_DAG(phylopath$models[[choice]], phylopath$data, phylopath$cor_fun,
-          phylopath$tree)
+  dots <- combine_dots(phylopath$dots, ...)
+
+  do.call(
+    est_DAG,
+    c(list(phylopath$model_set[[choice]], phylopath$data, phylopath$tree, phylopath$model,
+           phylopath$method), dots)
+  )
 }
 
 #' Extract and average the best supported models from a phylogenetic path
@@ -197,6 +233,9 @@ choice <- function(phylopath, choice) {
 #' @param cut_off The CICc cut-off used to select the best models. Use
 #'   `Inf` to average over all models. Use the [best()] function to
 #'   only use the top model, or [choice()] to select any single model.
+#' @param ... Arguments to pass to [phylolm::phylolm] and [phylolm::phyloglm]. If you specified
+#'   options in the orignal [phylo_path] call you don't need to specify them again.
+#'
 #' @inheritParams average_DAGs
 #'
 #' @return An object of class `fitted_DAG`.
@@ -231,13 +270,24 @@ choice <- function(phylopath, choice) {
 #'   coef_plot(average(p, method = 'full'))
 #'   }
 #'
-average <- function(phylopath, cut_off = 2, method = 'conditional', ...) {
+average <- function(phylopath, cut_off = 2, avg_method = 'conditional', ...) {
   stopifnot(inherits(phylopath, 'phylopath'))
+  dots <- combine_dots(phylopath$dots, ...)
+
   d <- summary(phylopath)
   b <- d[d$delta_CICc < cut_off, ]
-  best_models <- lapply(phylopath$models[b$model], est_DAG, phylopath$data,
-                        phylopath$cor_fun, phylopath$tree)
-  average <- average_DAGs(best_models, b$w, method, ...)
+
+  best_models <- lapply(
+    phylopath$model_set[b$model],
+    function(x) {
+      do.call(
+        est_DAG,
+        c(list(DAG = x, data = phylopath$data, tree = phylopath$tree, model = phylopath$model,
+               method = phylopath$method), dots)
+      )
+    }
+  )
+  average <- average_DAGs(best_models, b$w, avg_method)
   class(average$coef) <- c('matrix', 'DAG')
   return(average)
 }

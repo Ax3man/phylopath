@@ -4,21 +4,25 @@
 \alias{phylo_path}
 \title{Compare causal models in a phylogenetic context.}
 \usage{
-phylo_path(models, data, tree, cor_fun = ape::corPagel, order = NULL,
-  parallel = NULL, na.rm = TRUE, ...)
+phylo_path(model_set, data, tree, model = "lambda",
+  method = "logistic_MPLE", order = NULL, parallel = NULL, na.rm = TRUE,
+  ...)
 }
 \arguments{
-\item{models}{A list of directed acyclic graphs. These are matrices,
+\item{model_set}{A list of directed acyclic graphs. These are matrices,
 typically created with \code{define_model_set}.}
 
 \item{data}{A \code{data.frame} with data. If you have binary variables, make
-sure they are either character values or factors.}
+sure they are either character values or factors!}
 
-\item{tree}{A phylogenetic tree of class \code{pylo}.}
+\item{tree}{A phylogenetic tree of class \code{phylo}.}
 
-\item{cor_fun}{A function that creates a \code{corStruct} object, typically
-one of the \code{cor*} functions from the \code{ape} package, such as
-\code{corBrownian}, \code{corPagel} etc.}
+\item{model}{The evolutionary model used for the regressions on continuous
+variables. See \link[phylolm:phylolm]{phylolm::phylolm} for options and details. Defaults to
+Pagel's lambda model}
+
+\item{method}{The estimation method for the binary models. See
+\link[phylolm:phylolm]{phylolm::phylolm} for options and details. Defaults to logistic MPLE.}
 
 \item{order}{Causal order of the included variable, given as a character
 vector. This is used to determine which variable should be the dependent
@@ -35,25 +39,42 @@ A cluster is create using the \code{parallel} package.}
 \item{na.rm}{Should rows that contain missing values be dropped from the data
 as necessary (with a message)?}
 
-\item{...}{Any other parameters passed to \code{nlme::gls}, such as \code{method = 'ML'}.}
+\item{...}{Arguments passed on to \code{phylolm}:
+
+\code{lower.bound}: optional lower bound for the optimization of the phylogenetic model parameter.
+
+\code{upper.bound}: optional upper bound for the optimization of the phylogenetic model parameter.
+
+\code{starting.value}: optional starting value for the optimization of the phylogenetic model parameter.
+
+\code{measurement_error}: a logical value indicating whether there is measurement error sigma2_error (see Details).
+
+Arguments passed on to \code{phyloglm}:
+
+\code{btol}: bound on the linear predictor to bound the searching space.
+
+\code{log.alpha.bound}: bound for the log of the parameter alpha.
+
+\code{start.beta}: starting values for beta coefficients.
+
+\code{start.alpha}: starting values for alpha (phylogenetic correlation).}
 }
 \value{
 A phylopath object, with the following components:
 \describe{
 \item{d_sep}{for each model a table with separation statements and statistics.}
-\item{models}{the DAGs}
+\item{model_set}{the DAGs}
 \item{data}{the supplied data}
 \item{tree}{the supplied tree}
-\item{cor_fun}{the employed correlation structure}
+\item{model}{the employed model of evolution in \code{phylolm}}
+\item{method}{the employed method in \code{phyloglm}}
+\item{dots}{any additional arguments given, these are passed on to downstream functions}
+\item{warnings}{any warnings generate by the models}
 }
 }
 \description{
-Continious variables are modeled using \code{\link[nlme:gls]{nlme::gls()}} and the various
-correlation functions provided by \link{ape}.
-Estimation of relationships between binary variables is built upon
-\code{\link[ape:binaryPGLMM]{ape::binaryPGLMM()}} and stands or falls with the accuracy of that method.
-Model fitting using this method is particularly slow and the \code{parallel}
-argument can therefore be especially useful.
+Continious variables are modeled using \link[phylolm:phylolm]{phylolm::phylolm}, while binary
+traits are modeled using \link[phylolm:phyloglm]{phylolm::phyloglm}.
 }
 \examples{
   #see vignette('intro_to_phylopath') for more details

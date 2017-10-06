@@ -9,10 +9,10 @@ DAG(..., order = TRUE)
 \arguments{
 \item{...}{a sequence of model formulae}
 
-\item{order}{logical, defaulting to \code{TRUE}. If \link{TRUE} the nodes of the DAG
-are permuted according to the topological order. If \link{FALSE} the nodes are
+\item{order}{logical, defaulting to \code{TRUE}. If \code{TRUE} the nodes of the DAG
+are permuted according to the topological order. If \code{FALSE} the nodes are
 in the order they first appear in the model formulae (from left to right).
-For use in the \link{phylopath} package, this should always be kept to \link{TRUE},
+For use in the \code{phylopath} package, this should always be kept to \code{TRUE},
 but the argument is available to avoid potential problems with masking the
 function from other packages.}
 }
