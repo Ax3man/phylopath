@@ -4,15 +4,17 @@
 \alias{plot.fitted_DAG}
 \title{Plot a directed acyclic graph with path coefficients.}
 \usage{
-\method{plot}{fitted_DAG}(x, labels = NULL, algorithm = "sugiyama",
-  text_size = 6, box_x = 12, box_y = 8, edge_width = 1.25,
-  curvature = 0.02, rotation = 0, flip_x = FALSE, flip_y = FALSE,
-  arrow = grid::arrow(type = "closed", 18, grid::unit(15, "points")),
-  colors = c("firebrick", "navy"), show.legend = TRUE, width_const = NULL,
-  ...)
+\method{plot}{fitted_DAG}(x, type = "width", labels = NULL,
+  algorithm = "sugiyama", manual_layout = NULL, text_size = 6,
+  box_x = 12, box_y = 8, edge_width = 1.25, curvature = 0.02,
+  rotation = 0, flip_x = FALSE, flip_y = FALSE, arrow = grid::arrow(type
+  = "closed", 18, grid::unit(15, "points")), colors = c("firebrick", "navy"),
+  show.legend = TRUE, width_const = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{fitted_DAG}.}
+
+\item{type}{How to express the weight of the path. Either \code{"width"}, or \code{"color"}.}
 
 \item{labels}{An optional set of labels to use for the nodes. This should be a named vector, of
 the form \code{c(var1 = "label1", var2 = "label2")}.
@@ -21,6 +23,11 @@ If left at `NULL``, the variable names of the DAGs are used.}
 \item{algorithm}{A layout algorithm from \code{igraph}, see
 \code{\link[ggraph:create_layout]{ggraph::create_layout()}} and \code{\link[ggraph:create_layout.igraph]{ggraph::create_layout.igraph()}}. By default,
 uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.}
+
+\item{manual_layout}{Alteratively, precisely define the layout yourself, by providing a
+\code{data.frame} that at least has a column \code{name} with all variable names, and columns \code{x} and \code{y}
+with positions to be plotted. Setting this parameter overrides \code{algorithm} but other changes,
+such as \code{rotation} and \code{flip}s will still be applied.}
 
 \item{text_size}{Size of the node label text.}
 

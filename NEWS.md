@@ -24,6 +24,17 @@ phylopath 0.3.1.9000
 
 * Added `plot()` method for `phylopath.summary` objects, that shows the weights
   and p-values for the different models.
+  
+* `coef_plot()` gained `error_bar`, `order_by`, `from` and `to` arguments. The 
+  first allows the user to choose between confidence invervals and standard 
+  errors, the second to order the paths by several methods, and the last two
+  can be used to select only certain paths.
+  
+* Plotting methods of causal models now support a manual layout.
+
+* Plotting of fitted DAG's now uses edge width instead of color to indicate, 
+  the standardized regression coefficient strength, but this can be reverted 
+  using the `type` argument.
 
 * Added a `define_model_set()` convenience function for building models, that 
   avoids repeated calls to `DAG()` and has an argument to supply paths that are 

@@ -53,14 +53,28 @@ show_warnings <- function(phylopath) {
 #' @export
 #'
 #' @examples
-#'   plot(DAG(a ~ b + c + d))
-plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, box_x = 12, box_y = 8,
-                     edge_width = 1.5, curvature = 0.02, rotation = 0, flip_x = FALSE,
-                     flip_y = FALSE,
+#'   d <- DAG(a ~ b + c + d)
+#'   plot(d)
+#'
+#'   # Plot with manually defined positions:
+#'   ml <- data.frame(
+#'     name = c('a', 'b', 'c', 'd'),
+#'     x = c(1, 1, 2, 2),
+#'     y = c(1, 2, 1, 2)
+#'   )
+#'   plot(d, manual_layout = ml)
+#'
+plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', manual_layout = NULL, text_size = 6,
+                     box_x = 12, box_y = 8, edge_width = 1.5, curvature = 0.02, rotation = 0,
+                     flip_x = FALSE, flip_y = FALSE,
                      arrow = grid::arrow(type = 'closed', 18, grid::unit(15, 'points')), ...) {
   g <- igraph::graph_from_adjacency_matrix(x, weighted = TRUE)
 
   l <- ggraph::create_layout(g, 'igraph', algorithm = algorithm)
+  if (!is.null(manual_layout)) {
+    l$x <- manual_layout$x[match(l$name, manual_layout$name)]
+    l$y <- manual_layout$y[match(l$name, manual_layout$name)]
+  }
   l <- adjust_layout(l, rotation, flip_x, flip_y)
   l <- combine_with_labels(l, labels)
 
@@ -75,6 +89,7 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, bo
 #' Plot a directed acyclic graph with path coefficients.
 #'
 #' @param x An object of class `fitted_DAG`.
+#' @param type How to express the weight of the path. Either `"width"`, or `"color"`.
 #' @param algorithm A layout algorithm from \code{igraph}, see
 #'   [ggraph::create_layout()] and [ggraph::create_layout.igraph()]. By default,
 #'   uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.
@@ -91,46 +106,75 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, bo
 #'   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
 #'   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
 #'   plot(d_fitted)
-plot.fitted_DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size = 6, box_x = 12,
-                            box_y = 8, edge_width = 1.25, curvature = 0.02, rotation = 0,
-                            flip_x = FALSE, flip_y = FALSE,
+plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiyama',
+                            manual_layout = NULL, text_size = 6, box_x = 12, box_y = 8,
+                            edge_width = 1.25, curvature = 0.02, rotation = 0, flip_x = FALSE,
+                            flip_y = FALSE,
                             arrow = grid::arrow(type = 'closed', 18, grid::unit(15, 'points')),
                             colors = c('firebrick', 'navy'), show.legend = TRUE,
                             width_const = NULL, ...) {
   if (!is.null(width_const)) {
     warning('width_const has been deprecated and is ignored.', call. = FALSE)
   }
+  type <- match.arg(type, c('width', 'color', 'colour'), FALSE)
+  if (type == 'colour') type <- 'color'
 
   g <- igraph::graph_from_adjacency_matrix(x$coef, weighted = TRUE)
   l <- ggraph::create_layout(g, 'igraph', algorithm = algorithm)
+  if (!is.null(manual_layout)) {
+    l$x <- manual_layout$x[match(l$name, manual_layout$name)]
+    l$y <- manual_layout$y[match(l$name, manual_layout$name)]
+  }
   l <- adjust_layout(l, rotation, flip_x, flip_y)
   l <- combine_with_labels(l, labels)
 
-  ggplot2::ggplot(l) +
-    ggraph::geom_edge_arc(ggplot2::aes_(colour = ~weight, label = ~round(weight, 2)),
-                          edge_width = edge_width,
-                          curvature = curvature, arrow = arrow,
-                          end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
-                          start_cap = ggraph::rectangle(box_x, box_y, 'mm'),
-                          show.legend = show.legend,
-                          linejoin = c('bevel'),
-                          angle_calc = 'along',
-                          label_dodge = grid::unit(10, 'points')) +
-    ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
-    ggraph::scale_edge_color_gradient2('standardized\npath coefficient',
-                                       low = colors[1], high = colors[2],
-                                       limits = c(-max(abs(igraph::E(g)$weight)),
-                                                  max(abs(igraph::E(g)$weight))),
-                                       guide = ggraph::guide_edge_colorbar()) +
-    ggraph::theme_graph(base_family = 'sans')
+  if (type == 'width') {
+    ggplot2::ggplot(l) +
+      ggraph::geom_edge_arc(
+        ggplot2::aes_(width = ~abs(weight), color = ~weight > 0, label = ~round(weight, 2)),
+        curvature = curvature, arrow = arrow, end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+        start_cap = ggraph::rectangle(box_x, box_y, 'mm'), show.legend = show.legend,
+        linejoin = c('bevel'), angle_calc = 'along', label_dodge = grid::unit(10, 'points')) +
+      ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
+      ggraph::scale_edge_width_continuous(limits = c(0, max(igraph::E(g)$weight)), range = c(0, 2),
+                                          guide = 'none') +
+      ggraph::scale_edge_color_manual(name = NULL,
+                                      values = c('FALSE' = colors[2], 'TRUE' = colors[1]),
+                                      labels = c('negative', 'positive')) +
+      ggraph::theme_graph(base_family = 'sans')
+  }
+
+  if (type == 'color') {
+    ggplot2::ggplot(l) +
+      ggraph::geom_edge_arc(ggplot2::aes_(colour = ~weight, label = ~round(weight, 2)),
+                            edge_width = edge_width,
+                            curvature = curvature, arrow = arrow,
+                            end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+                            start_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+                            show.legend = show.legend,
+                            linejoin = c('bevel'),
+                            angle_calc = 'along',
+                            label_dodge = grid::unit(10, 'points')) +
+      ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
+      ggraph::scale_edge_color_gradient2('standardized\npath coefficient',
+                                         low = colors[1], high = colors[2],
+                                         limits = c(-max(abs(igraph::E(g)$weight)),
+                                                    max(abs(igraph::E(g)$weight))),
+                                         guide = ggraph::guide_edge_colorbar()) +
+      ggraph::theme_graph(base_family = 'sans')
+  }
 }
 
 #' Plot path coefficients and their confidence intervals or standard errors.
 #'
 #' @param fitted_DAG A fitted DAG, usually obtained by [best()], [average()] or [est_DAG()].
 #' @param error_bar Whether to use confidence intervals (`"ci"`) or standard errors (`"se"`) as
-#'   error bars. Will force standard errors with a warning if confidence intervals are not
+#'   error bars. Will force standard errors with a message if confidence intervals are not
 #'   available.
+#' @param order_by By `"default"`, the paths are ordered as in the the model that is supplied.
+#'   Usually this is in the order that was established by `[phylo_path()]` for all combined graphs.
+#'   This can be change to `"causal"` to do a reordering based on the model at hand, or to
+#'   `"strength"` to order them by the standardized regression coefficient.
 #' @param reverse_order If `TRUE`, the paths are plotted in reverse order.
 #'   Particularly useful in combination with [ggplot2::coord_flip()] to create
 #'   horizontal versions of the plot.
@@ -146,11 +190,13 @@ plot.fitted_DAG <- function(x, labels = NULL, algorithm = 'sugiyama', text_size 
 #'   coef_plot(d_fitted)
 #'   # to create a horizontal version, use this:
 #'   coef_plot(d_fitted, reverse_order = TRUE) + ggplot2::coord_flip()
-coef_plot <- function(fitted_DAG, error_bar = 'ci', reverse_order = FALSE) {
+coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from = NULL, to = NULL,
+                      reverse_order = FALSE) {
   stopifnot(inherits(fitted_DAG, 'fitted_DAG'))
-  match.arg(error_bar, c('ci', 'se'), several.ok = FALSE)
+  error_bar <- match.arg(error_bar, c('ci', 'se'), several.ok = FALSE)
+  order_by <- match.arg(order_by, c('default', 'causal', 'strength'), FALSE)
   if (error_bar == 'ci' & is.null(fitted_DAG$lower)) {
-    warning('The fitted model does not contain confidence intervals, so showing standard errors
+    message('The fitted model does not contain confidence intervals, so showing standard errors
             instead. Fit the model with `boot` larger than 0 to get confidence intervals, or set
             `error_bar = "se"` to avoid this warning.')
     error_bar <- 'se'
@@ -167,9 +213,36 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', reverse_order = FALSE) {
   }
 
   df$path <- paste(df$from, df$to, sep = ' \U2192 ')
-  df <- dplyr::arrange_(df,
-                        ~match(df$from, colnames(fitted_DAG$coef)),
-                        ~match(df$to, colnames(fitted_DAG$coef)))
+
+  # Do the ordering of paths:
+  if (order_by == 'default') {
+    df <- dplyr::arrange_(df,
+                          ~match(df$from, colnames(fitted_DAG$coef)),
+                          ~match(df$to, colnames(fitted_DAG$coef)))
+  }
+  if (order_by == 'causal') {
+    ordered_DAG <- fitted_DAG$coef > 0
+    ordered_DAG[, ] <- as.numeric(ordered_DAG)
+    order <- colnames(ggm::topSort(ordered_DAG))
+    df <- dplyr::arrange_(df,
+                          ~match(df$from, order),
+                          ~match(df$to, order))
+  }
+  if (order_by == 'strength') {
+    df <- dplyr::arrange_(df, ~coef)
+  }
+  # Do the filtering of paths:
+  if (!is.null(from)) {
+    # make sure the variable is unambiguous
+    from_var <- from
+    df <- dplyr::filter_(df, ~from %in% from_var)
+  }
+  if (!is.null(to)) {
+    # make sure the variable is unambiguous
+    to_var <- to
+    df <- dplyr::filter_(df, ~to %in% to_var)
+  }
+
   if (reverse_order) {
     df$path <- factor(df$path, levels = rev(df$path))
   } else {
@@ -198,6 +271,10 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', reverse_order = FALSE) {
 #'   layout algorithm. Another good option is `"sugiyama"`, which is
 #'   designed to minimize edge crossing in DAGs. However, it can often plot
 #'   nodes too close together.
+#' @param manual_layout Alteratively, precisely define the layout yourself, by providing a
+#'   `data.frame` that at least has a column `name` with all variable names, and columns `x` and `y`
+#'   with positions to be plotted. Setting this parameter overrides `algorithm` but other changes,
+#'   such as `rotation` and `flip`s will still be applied.
 #' @param text_size Size of the node label text.
 #' @param box_x To avoid the arrows colliding with the nodes, specify the
 #'   rectangular dimensions of an invisible box around each node. If you have
@@ -225,9 +302,9 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', reverse_order = FALSE) {
 #' m <- list(one = DAG(a ~ b + c + d), two = DAG(a ~ b, b ~ c, d ~ d))
 #' plot_model_set(m)
 #' plot_model_set(m, algorithm = "sugiyama")
-plot_model_set <- function(model_set, labels = NULL, algorithm = 'kk', text_size = 5, box_x = 12,
-                           box_y = 10, edge_width = 1, curvature = 0.05, rotation = 0,
-                           flip_x = FALSE, flip_y = FALSE, nrow = NULL,
+plot_model_set <- function(model_set, labels = NULL, algorithm = 'kk', manual_layout = NULL,
+                           text_size = 5, box_x = 12, box_y = 10, edge_width = 1, curvature = 0.05,
+                           rotation = 0, flip_x = FALSE, flip_y = FALSE, nrow = NULL,
                            arrow = grid::arrow(type = 'closed', 15, grid::unit(10, 'points'))) {
   # Input checks
   if (!is.list(model_set) | !all(purrr::map_lgl(model_set, ~inherits(., 'DAG')))) {
@@ -260,6 +337,10 @@ plot_model_set <- function(model_set, labels = NULL, algorithm = 'kk', text_size
                                                   names(model_set), names(model_set))
 
   l <- ggraph::create_layout(result, 'igraph', algorithm = algorithm)
+  if (!is.null(manual_layout)) {
+    l$x <- manual_layout$x[match(l$name, manual_layout$name)]
+    l$y <- manual_layout$y[match(l$name, manual_layout$name)]
+  }
   l <- adjust_layout(l, rotation, flip_x, flip_y)
   l <- combine_with_labels(l, labels)
 

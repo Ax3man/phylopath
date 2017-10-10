@@ -4,10 +4,11 @@
 \alias{plot_model_set}
 \title{Plot several causal hypothesis at once.}
 \usage{
-plot_model_set(model_set, labels = NULL, algorithm = "kk", text_size = 5,
-  box_x = 12, box_y = 10, edge_width = 1, curvature = 0.05,
-  rotation = 0, flip_x = FALSE, flip_y = FALSE, nrow = NULL,
-  arrow = grid::arrow(type = "closed", 15, grid::unit(10, "points")))
+plot_model_set(model_set, labels = NULL, algorithm = "kk",
+  manual_layout = NULL, text_size = 5, box_x = 12, box_y = 10,
+  edge_width = 1, curvature = 0.05, rotation = 0, flip_x = FALSE,
+  flip_y = FALSE, nrow = NULL, arrow = grid::arrow(type = "closed", 15,
+  grid::unit(10, "points")))
 }
 \arguments{
 \item{model_set}{A list of \code{DAG} objects, usually created with \code{\link[=define_model_set]{define_model_set()}}.}
@@ -21,6 +22,11 @@ If left at `NULL``, the variable names of the DAGs are used.}
 layout algorithm. Another good option is \code{"sugiyama"}, which is
 designed to minimize edge crossing in DAGs. However, it can often plot
 nodes too close together.}
+
+\item{manual_layout}{Alteratively, precisely define the layout yourself, by providing a
+\code{data.frame} that at least has a column \code{name} with all variable names, and columns \code{x} and \code{y}
+with positions to be plotted. Setting this parameter overrides \code{algorithm} but other changes,
+such as \code{rotation} and \code{flip}s will still be applied.}
 
 \item{text_size}{Size of the node label text.}
 
