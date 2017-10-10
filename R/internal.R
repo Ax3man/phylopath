@@ -93,17 +93,19 @@ set_to_formula <- function(x) {
 find_formulas <- function(d, order) {
   s <- ggm::basiSet(d)
   s <- lapply(s, function(x) {
-    path1 <- ggm::findPath(d, which(rownames(d) == x[1]), which(rownames(d) == x[2]))
-    path2 <- ggm::findPath(d, which(rownames(d) == x[2]), which(rownames(d) == x[1]))
-    if (!is.null(path1) & is.null(path2)) {
+    # define whether there are existing paths between the two nodes in both directions.
+    path1 <- !is.null(ggm::findPath(d, which(rownames(d) == x[1]), which(rownames(d) == x[2])))
+    path2 <- !is.null(ggm::findPath(d, which(rownames(d) == x[2]), which(rownames(d) == x[1])))
+    if (path1 & !path2) {
       # the first vertex is upstream, so we do not re-order
       return(x)
     }
-    if ((!is.null(path2) & is.null(path1)) | (!is.null(path1) & !is.null(path2))) {
-      # these conditions should not occur
+    if ((path2 & !path1) | (path1 & path2)) {
+      # these conditions should not occur, the first means basiSet is returning the wrong order,
+      # the second should only occur if there are cycles.
       stop('If you get this error, please contact the maintainer.')
     }
-    if (is.null(path1) & is.null(path2)) {
+    if (!path1 & !path2) {
       # check whether the order is according to `order`
       if (which(order == x[1]) < which(order == x[2])) {
         return(x)
