@@ -22,6 +22,13 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
            .call = FALSE)
     }
   }
+  # Check tree
+  if (inherits(tree, 'multiPhylo')) {
+    stop('You are passing several trees (in a `multiPhylo` object). Please only pass one `phylo` object.')
+  }
+  if (!inherits(tree, 'phylo')) {
+    stop('The tree needs to be of class `phylo`.')
+  }
   # Check NAs and if models and tree line up
   if (anyNA(data)) {
     if (na.rm) {
