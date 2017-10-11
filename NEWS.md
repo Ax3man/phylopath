@@ -17,7 +17,8 @@ phylopath 0.3.1.9000
 
 * `phylo_path` and all related methods now deal automatically with both 
   continuous and binary data. All separate binary functions and methods have
-  disappeared as they are no longer needed.
+  disappeared as they are no longer needed. Mixing of binary and continious
+  data in the same models is now allowed.
   
 * The variable order in d-seperation statements now better follows the causal
   flow of the DAG.
