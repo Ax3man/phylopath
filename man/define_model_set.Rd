@@ -19,9 +19,9 @@ A list of models, each of class \code{matrix} and \code{DAG}.
 \description{
 This is a convenience function to quickly and clearly define a set of causal
 models. Supply a list of formulas for each model, using either \code{c()}. Formulas
-should be of the form \code{parent ~ child} and describe each path in your model.
+should be of the form \code{child ~ parent} and describe each path in your model.
 Multiple children of a single parent can be combined into a single formula:
-\code{parent ~ child1 + child2}.
+\code{child ~ parent1 + parent2}.
 }
 \details{
 This function uses \code{\link[ggm:DAG]{ggm::DAG()}}.

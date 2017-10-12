@@ -7,9 +7,9 @@
 #' create models for use with the `phylopath` package.
 #'
 #' Supply a formulas for the model as arguments. Formulas should be of the
-#' form `parent ~ child`` and describe each path in your model. Multiple
+#' form `child ~ parent`` and describe each path in your model. Multiple
 #' children of a single parent can be combined into a single formula:
-#' `parent ~ child1 + child2`. Finally, an isolate (unconnected variable) can
+#' `child ~ parent1 + parent2`. Finally, an isolate (unconnected variable) can
 #' be included as being connected to itself: `isolate ~ isolate`.
 #'
 #' @param order logical, defaulting to `TRUE`. If `TRUE` the nodes of the DAG
@@ -40,9 +40,9 @@ DAG <- function(..., order = TRUE) {
 #'
 #' This is a convenience function to quickly and clearly define a set of causal
 #' models. Supply a list of formulas for each model, using either `c()`. Formulas
-#' should be of the form `parent ~ child` and describe each path in your model.
+#' should be of the form `child ~ parent` and describe each path in your model.
 #' Multiple children of a single parent can be combined into a single formula:
-#' `parent ~ child1 + child2`.
+#' `child ~ parent1 + parent2`.
 #'
 #' This function uses [ggm::DAG()].
 #'
