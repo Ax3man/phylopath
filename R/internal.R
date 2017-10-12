@@ -92,6 +92,9 @@ set_to_formula <- function(x) {
 
 find_formulas <- function(d, order) {
   s <- ggm::basiSet(d)
+  if (is.null(s)) {
+    stop('One or some of your models are fully connected, and cannot be tested.')
+  }
   s <- lapply(s, function(x) {
     # define whether there are existing paths between the two nodes in both directions.
     path1 <- !is.null(ggm::findPath(d, which(rownames(d) == x[1]), which(rownames(d) == x[2])))
