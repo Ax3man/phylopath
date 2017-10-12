@@ -70,6 +70,6 @@ Plot a directed acyclic graph with path coefficients.
 }
 \examples{
   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
-  d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
+  d_fitted <- est_DAG(d, rhino, rhino_tree, 'lambda')
   plot(d_fitted)
 }

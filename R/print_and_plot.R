@@ -104,7 +104,7 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', manual_layout = N
 #'
 #' @examples
 #'   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
-#'   d_fitted <- est_DAG(d, rhino, ape::corBrownian, rhino_tree)
+#'   d_fitted <- est_DAG(d, rhino, rhino_tree, 'lambda')
 #'   plot(d_fitted)
 plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiyama',
                             manual_layout = NULL, text_size = 6, box_x = 12, box_y = 8,
@@ -129,7 +129,7 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
   l <- combine_with_labels(l, labels)
 
   if (type == 'width') {
-    ggplot2::ggplot(l) +
+    p <- ggplot2::ggplot(l) +
       ggraph::geom_edge_arc(
         ggplot2::aes_(width = ~abs(weight), color = ~weight > 0, label = ~round(weight, 2)),
         curvature = curvature, arrow = arrow, end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
@@ -145,7 +145,7 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
   }
 
   if (type == 'color') {
-    ggplot2::ggplot(l) +
+    p <- ggplot2::ggplot(l) +
       ggraph::geom_edge_arc(ggplot2::aes_(colour = ~weight, label = ~round(weight, 2)),
                             edge_width = edge_width,
                             curvature = curvature, arrow = arrow,
@@ -163,6 +163,7 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
                                          guide = ggraph::guide_edge_colorbar()) +
       ggraph::theme_graph(base_family = 'sans')
   }
+  return(p)
 }
 
 #' Plot path coefficients and their confidence intervals or standard errors.
