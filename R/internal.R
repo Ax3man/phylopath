@@ -57,13 +57,19 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
 
 find_consensus_order <- function(model_set) {
   # If the fully combined model is acyclic, then we use that.
-  full_model <- sign(Reduce('+', model_set))
+  model_set_same_order <- lapply(model_set, function(x) {
+    x[rownames(model_set[[1]]), colnames(model_set[[1]])]
+  } )
+  full_model <- sign(Reduce('+', model_set_same_order))
   if (ggm::isAcyclic(full_model)) {
     return(rownames(ggm::topSort(full_model)))
   }
   # Otherwise we find the most common orderings and use those.
+  # Make sure all models are ordered:
+  model_set <- lapply(model_set, ggm::topSort)
   vars <- lapply(model_set, row.names)
   combs <- as.data.frame(t(utils::combn(vars[[1]], 2)), stringsAsFactors = FALSE)
+  names(combs) <- c('node1', 'node2')
   combs$count <- 0
   for (i in seq_along(vars)) {
     v <- apply(combs, 1, function(x) {
@@ -71,13 +77,17 @@ find_consensus_order <- function(model_set) {
     } )
     combs$count <- combs$count + v
   }
+
+  # If node1 is commonly ordered above node2, leave as is, otherwise swap them around
   combs <- dplyr::mutate_(combs,
-                          V1 = ~ifelse(count > q, V1, V2),
-                          V2 = ~ifelse(count > q, V2, V1))
-  combs <- dplyr::group_by_(combs, ~V1)
+                          tmp = ~node1,
+                          node1 = ~ifelse(count > 0.5 * n(), node1, node2),
+                          node2 = ~ifelse(count > 0.5 * n(), node2, tmp))
+  # Now we order the nodes by how many nodes they are above, this should go from n:1
+  combs <- dplyr::group_by_(combs, ~node1)
   combs <- dplyr::mutate_(combs, n = ~n())
   combs <- dplyr::arrange_(combs, ~desc(n))
-  res <- unlist(c(unique(combs$V1), utils::tail(combs, 1)[, 2]))
+  res <- unlist(c(unique(combs$node1), utils::tail(combs, 1)[, 'node2']))
   names(res) <- NULL
   res
 }
