@@ -131,7 +131,7 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
   if (type == 'width') {
     p <- ggplot2::ggplot(l) +
       ggraph::geom_edge_arc(
-        ggplot2::aes_(width = ~abs(weight), color = ~weight > 0, label = ~round(weight, 2)),
+        ggplot2::aes_(width = ~abs(weight), color = ~weight < 0, label = ~round(weight, 2)),
         curvature = curvature, arrow = arrow, end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
         start_cap = ggraph::rectangle(box_x, box_y, 'mm'), show.legend = show.legend,
         linejoin = c('bevel'), angle_calc = 'along', label_dodge = grid::unit(10, 'points')) +
@@ -140,7 +140,7 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
                                           guide = 'none') +
       ggraph::scale_edge_color_manual(name = NULL,
                                       values = c('FALSE' = colors[2], 'TRUE' = colors[1]),
-                                      labels = c('negative', 'positive')) +
+                                      labels = c('positive', 'negative')) +
       ggraph::theme_graph(base_family = 'sans')
   }
 
