@@ -131,8 +131,7 @@ Importantly, when using PGLS, we need to be consistent in which variables are us
 By default, `phylo_path` uses Pagel's “lambda” model of evolution (specified here for clarity), but if you want, for example, to use a simple Brownian motion model, you can supply `model = 'BM'` instead.
 
 ```{r}
-result <- phylo_path(models, data = rhino, tree = rhino_tree, model = 'lambda',
-                     order = c('BM', 'NL', 'DD', 'LS', 'RS'))
+result <- phylo_path(models, data = rhino, tree = rhino_tree, model = 'lambda')
 ```
 
 The result we end up with is a `phylo_path` object. Simply printing it gives us a quick summary of what is in the object. In this case we end up with five continuous variables, nine causal models and 21 unique regressions.
@@ -152,8 +151,6 @@ And plotting that summary gives us a quick overview of the support for each mode
 ```{r}
 plot(s)
 ```
-
-The ranking of the models obtained here is identical as the worked example in the book chapter. The estimates differ slightly however, since we are using `phylolm` whereas the chapter was using `caper::pgls`. (Also there is one or two small mistakes in the book chapter analysis.)
 
 ###Selecting and fitting a final model
 
