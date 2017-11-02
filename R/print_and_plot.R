@@ -179,6 +179,8 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
 #' @param reverse_order If `TRUE`, the paths are plotted in reverse order.
 #'   Particularly useful in combination with [ggplot2::coord_flip()] to create
 #'   horizontal versions of the plot.
+#' @param from Only show path coefficients from these nodes. Supply as a character vector.
+#' @param to Only show path coefficients to these nodes. Supply as a character vector.
 #'
 #' @return A `ggplot` object.
 #' @export

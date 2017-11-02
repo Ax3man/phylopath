@@ -86,7 +86,7 @@ define_model_set <- function(..., .common = NULL) {
 #' @examples
 #'   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
 #'   plot(d)
-#'   d_fitted <- est_DAG(d, rhino, rhino_tree)
+#'   d_fitted <- est_DAG(d, rhino, rhino_tree, 'lambda')
 #'   plot(d_fitted)
 est_DAG <- function(DAG, data, tree, model, method, boot = 0, ...) {
   stopifnot(inherits(DAG, 'DAG'))
