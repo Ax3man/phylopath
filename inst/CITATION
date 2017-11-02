@@ -1,6 +1,5 @@
 citHeader("To cite the 'phylopath' package in publications use:")
 
-year <- 2017
 vers <- paste("R package version", meta$Version)
 
 bibentry(bibtype = "Article",
@@ -14,12 +13,11 @@ bibentry(bibtype = "Article",
          doi = "10.1111/j.1558-5646.2012.01790.x",
          key = "phylopath-methods-paper")
 
-bibentry(
-     bibtype = "Misc",
-     title = "phylopath: Perform phylogenetic path analysis",
-     author = person("Wouter", "van der Bijl"),
-     year = year,
-     note = vers,
-     url = "https://github.com/Ax3man/phylopath",
-     key = "phylopath-package"
-   )
+bibentry(bibtype = "Article",
+        title = "phylopath: Easy phylogenetic path analysis in R.",
+        author = person("Wouter", "van der Bijl"),
+        journal = "bioRxiv",
+        year = 2017,
+        note = vers,
+        doi = "10.1101/212068",
+        key = "phylopath-package")
