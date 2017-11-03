@@ -6,9 +6,9 @@ reference:
   - title: "Top level functions"
     desc: "Use these functions to describe, fit, select and average your models."
     contents:
+      - define_model_set
       - DAG
       - phylo_path
-      - phylo_path_binary
       - average
       - best
       - choice
@@ -22,7 +22,6 @@ reference:
     desc: "Use these functions for finer control. These are mostly for internal use."
     contents:
       - est_DAG
-      - est_DAG_binary
       - average_DAGs
   - title: "Included datasets"
     contents:
@@ -30,6 +29,8 @@ reference:
       - rhino_tree
       - cichlids
       - cichlids_tree
+      - red_list
+      - red_list_tree
 
 
 navbar:

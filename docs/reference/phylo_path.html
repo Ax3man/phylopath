@@ -93,33 +93,41 @@
     </div>
 
     
-    <p>Compare causal models in a phylogenetic context.</p>
+    <p>Continuous variables are modeled using <a href='http://www.rdocumentation.org/packages/phylolm/topics/phylolm'>phylolm::phylolm</a>, while binary
+traits are modeled using <a href='http://www.rdocumentation.org/packages/phylolm/topics/phyloglm'>phylolm::phyloglm</a>.</p>
     
 
-    <pre class="usage"><span class='fu'>phylo_path</span>(<span class='no'>models</span>, <span class='no'>data</span>, <span class='no'>tree</span>, <span class='kw'>cor_fun</span> <span class='kw'>=</span> <span class='kw pkg'>ape</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/ape/topics/corPagel'>corPagel</a></span>, <span class='kw'>order</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>phylo_path</span>(<span class='no'>model_set</span>, <span class='no'>data</span>, <span class='no'>tree</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"lambda"</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"logistic_MPLE"</span>, <span class='kw'>order</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>models</th>
+      <th>model_set</th>
       <td><p>A list of directed acyclic graphs. These are matrices,
-typically created with <code>DAG</code>.</p></td>
+typically created with <code>define_model_set</code>.</p></td>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>A <code>data.frame</code> with data.</p></td>
+      <td><p>A <code>data.frame</code> with data. If you have binary variables, make
+sure they are either character values or factors!</p></td>
     </tr>
     <tr>
       <th>tree</th>
-      <td><p>A phylogenetic tree of class <code>pylo</code>.</p></td>
+      <td><p>A phylogenetic tree of class <code>phylo</code>.</p></td>
     </tr>
     <tr>
-      <th>cor_fun</th>
-      <td><p>A function that creates a <code>corStruct</code> object, typically
-one of the <code>cor*</code> functions from the <code>ape</code> package, such as
-<code>corBrownian</code>, <code>corPagel</code> etc.</p></td>
+      <th>model</th>
+      <td><p>The evolutionary model used for the regressions on continuous
+variables. See <a href='http://www.rdocumentation.org/packages/phylolm/topics/phylolm'>phylolm::phylolm</a> for options and details. Defaults to
+Pagel's lambda model</p></td>
+    </tr>
+    <tr>
+      <th>method</th>
+      <td><p>The estimation method for the binary models. See
+<a href='http://www.rdocumentation.org/packages/phylolm/topics/phylolm'>phylolm::phylolm</a> for options and details. Defaults to logistic MPLE.</p></td>
     </tr>
     <tr>
       <th>order</th>
@@ -142,17 +150,41 @@ A cluster is create using the <code>parallel</code> package.</p></td>
       <td><p>Should rows that contain missing values be dropped from the data
 as necessary (with a message)?</p></td>
     </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Arguments passed on to <code>phylolm</code>:
+
+<code>lower.bound</code>: optional lower bound for the optimization of the phylogenetic model parameter.
+
+<code>upper.bound</code>: optional upper bound for the optimization of the phylogenetic model parameter.
+
+<code>starting.value</code>: optional starting value for the optimization of the phylogenetic model parameter.
+
+<code>measurement_error</code>: a logical value indicating whether there is measurement error sigma2_error (see Details).</p>
+<p>Arguments passed on to <code>phyloglm</code>:
+
+<code>btol</code>: bound on the linear predictor to bound the searching space.
+
+<code>log.alpha.bound</code>: bound for the log of the parameter alpha.
+
+<code>start.beta</code>: starting values for beta coefficients.
+
+<code>start.alpha</code>: starting values for alpha (phylogenetic correlation).</p></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A phylopath object, with the following components:</p><dl class='dl-horizontal'>
-  <dt>d_sep</dt><dd><p>for each model a table with separation statements and statistics.</p></dd>
-  <dt>models</dt><dd><p>the DAGs</p></dd>
-  <dt>data</dt><dd><p>the supplied data</p></dd>
-  <dt>tree</dt><dd><p>the supplied tree</p></dd>
-  <dt>cor_fun</dt><dd><p>the employed correlation structure</p></dd>
-  </dl>
+<dt>d_sep</dt><dd><p>for each model a table with separation statements and statistics.</p></dd>
+<dt>model_set</dt><dd><p>the DAGs</p></dd>
+<dt>data</dt><dd><p>the supplied data</p></dd>
+<dt>tree</dt><dd><p>the supplied tree</p></dd>
+<dt>model</dt><dd><p>the employed model of evolution in <code>phylolm</code></p></dd>
+<dt>method</dt><dd><p>the employed method in <code>phyloglm</code></p></dd>
+<dt>dots</dt><dd><p>any additional arguments given, these are passed on to downstream functions</p></dd>
+<dt>warnings</dt><dd><p>any warnings generate by the models</p></dd>
+</dl>
 
     
 
@@ -162,15 +194,16 @@ as necessary (with a message)?</p></td>
                      <span class='kw'>B</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>LS</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>))
   <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>phylo_path</span>(<span class='no'>candidates</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>)</div><div class='output co'>#&gt;    |                                                  | 0 % ~calculating     |++++++++++                                        | 20% ~00s             |++++++++++++++++++++                              | 40% ~00s             |++++++++++++++++++++++++++++++                    | 60% ~00s             |++++++++++++++++++++++++++++++++++++++++         | 80% ~00s             |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed = 00s</div><div class='input'>
   <span class='co'># Printing p gives some general information:</span>
-  <span class='no'>p</span></div><div class='output co'>#&gt; 
-#&gt; A phylogenetic path analysis
+  <span class='no'>p</span></div><div class='output co'>#&gt; A phylogenetic path analysis, on the variables:
+#&gt; 	Continuous:	 BM NL DD LS 
+#&gt; 	Binary:		  
 #&gt; 
-#&gt;   Evaluated for these models: A B 
+#&gt;  Evaluated for these models: A B 
 #&gt; 
-#&gt;   Containing 6 phylogenetic regressions.</div><div class='input'>  <span class='co'># And the summary gives statistics to compare the models:</span>
+#&gt;  Containing 6 phylogenetic regressions, of which 5 unique</div><div class='input'>  <span class='co'># And the summary gives statistics to compare the models:</span>
   <span class='fu'>summary</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt;   model k q      C     p   CICc delta_CICc l w
-#&gt; 1     A 3 7  4.736 0.578 19.953      0.000 1 1
-#&gt; 2     B 3 7 24.116 0.000 39.334     19.381 0 0</div><div class='input'>
+#&gt; 1     A 3 7  2.652 0.851 17.869      0.000 1 1
+#&gt; 2     B 3 7 22.114 0.001 37.332     19.463 0 0</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

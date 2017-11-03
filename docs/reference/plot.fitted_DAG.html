@@ -97,12 +97,12 @@
     
 
     <pre class="usage"><span class='co'># S3 method for fitted_DAG</span>
-<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>algorithm</span> <span class='kw'>=</span> <span class='st'>"sugiyama"</span>,
-  <span class='kw'>text_size</span> <span class='kw'>=</span> <span class='fl'>6</span>, <span class='kw'>box_x</span> <span class='kw'>=</span> <span class='fl'>12</span>, <span class='kw'>box_y</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>edge_width</span> <span class='kw'>=</span> <span class='fl'>1.25</span>,
-  <span class='kw'>curvature</span> <span class='kw'>=</span> <span class='fl'>0.02</span>, <span class='kw'>rotation</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>flip_x</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>flip_y</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>arrow</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/grid/topics/arrow'>arrow</a></span>(<span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"closed"</span>, <span class='fl'>18</span>, <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>15</span>, <span class='st'>"points"</span>)),
-  <span class='kw'>colors</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"firebrick"</span>, <span class='st'>"navy"</span>), <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>width_const</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>...</span>)</pre>
+<span class='fu'>plot</span>(<span class='no'>x</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"width"</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>algorithm</span> <span class='kw'>=</span> <span class='st'>"sugiyama"</span>, <span class='kw'>manual_layout</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>text_size</span> <span class='kw'>=</span> <span class='fl'>6</span>,
+  <span class='kw'>box_x</span> <span class='kw'>=</span> <span class='fl'>12</span>, <span class='kw'>box_y</span> <span class='kw'>=</span> <span class='fl'>8</span>, <span class='kw'>edge_width</span> <span class='kw'>=</span> <span class='fl'>1.25</span>, <span class='kw'>curvature</span> <span class='kw'>=</span> <span class='fl'>0.02</span>,
+  <span class='kw'>rotation</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='kw'>flip_x</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>flip_y</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>arrow</span> <span class='kw'>=</span> <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/grid/topics/arrow'>arrow</a></span>(<span class='kw'>type</span>
+  <span class='kw'>=</span> <span class='st'>"closed"</span>, <span class='fl'>18</span>, <span class='kw pkg'>grid</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/grid/topics/unit'>unit</a></span>(<span class='fl'>15</span>, <span class='st'>"points"</span>)), <span class='kw'>colors</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"firebrick"</span>, <span class='st'>"navy"</span>),
+  <span class='kw'>show.legend</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>width_const</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -112,16 +112,27 @@
       <td><p>An object of class <code>fitted_DAG</code>.</p></td>
     </tr>
     <tr>
+      <th>type</th>
+      <td><p>How to express the weight of the path. Either <code>"width"</code>, or <code>"color"</code>.</p></td>
+    </tr>
+    <tr>
       <th>labels</th>
       <td><p>An optional set of labels to use for the nodes. This should be a named vector, of
 the form <code>c(var1 = "label1", var2 = "label2")</code>.
-If left at <code>NULL</code>, the variable names of the DAGs are used.</p></td>
+If left at `NULL``, the variable names of the DAGs are used.</p></td>
     </tr>
     <tr>
       <th>algorithm</th>
       <td><p>A layout algorithm from <code>igraph</code>, see
-<code><a href='http://www.rdocumentation.org/packages/ggraph/topics/ggraph'>create_layout</a></code> and <code><a href='http://www.rdocumentation.org/packages/ggraph/topics/ggraph'>create_layout.igraph</a></code>. By default,
+<code><a href='http://www.rdocumentation.org/packages/ggraph/topics/ggraph'>ggraph::create_layout()</a></code> and <code><a href='http://www.rdocumentation.org/packages/ggraph/topics/ggraph'>ggraph::create_layout.igraph()</a></code>. By default,
 uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.</p></td>
+    </tr>
+    <tr>
+      <th>manual_layout</th>
+      <td><p>Alternatively, precisely define the layout yourself, by providing a
+<code>data.frame</code> that at least has a column <code>name</code> with all variable names, and columns <code>x</code> and <code>y</code>
+with positions to be plotted. Setting this parameter overrides <code>algorithm</code> but other changes,
+such as <code>rotation</code> and <code>flip</code>s will still be applied.</p></td>
     </tr>
     <tr>
       <th>text_size</th>
@@ -189,7 +200,7 @@ obvious colors to use, but are better to be avoided because of color blind users
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>  <span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span> + <span class='no'>LS</span>)
-  <span class='no'>d_fitted</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='est_DAG.html'>est_DAG</a></span>(<span class='no'>d</span>, <span class='no'>rhino</span>, <span class='kw pkg'>ape</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/ape/topics/corBrownian'>corBrownian</a></span>, <span class='no'>rhino_tree</span>)
+  <span class='no'>d_fitted</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='est_DAG.html'>est_DAG</a></span>(<span class='no'>d</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>, <span class='st'>'lambda'</span>)
   <span class='fu'>plot</span>(<span class='no'>d_fitted</span>)</div><div class='img'><img src='plot.fitted_DAG-1.png' alt='' width='700' height='432.632880098887' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

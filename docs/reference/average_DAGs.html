@@ -97,7 +97,7 @@
     
 
     <pre class="usage"><span class='fu'>average_DAGs</span>(<span class='no'>fitted_DAGs</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>, <span class='fu'>length</span>(<span class='no'>coef</span>)),
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"conditional"</span>, <span class='no'>...</span>)</pre>
+  <span class='kw'>avg_method</span> <span class='kw'>=</span> <span class='st'>"conditional"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -105,7 +105,7 @@
     <tr>
       <th>fitted_DAGs</th>
       <td><p>A list of <code>fitted_DAG</code> objects containing
-coefficients and standard errors, usually obtained by using <code>est_DAG</code>
+coefficients and standard errors, usually obtained by using <code><a href='est_DAG.html'>est_DAG()</a></code>
 on several DAGs.</p></td>
     </tr>
     <tr>
@@ -113,7 +113,7 @@ on several DAGs.</p></td>
       <td><p>A vector of associated model weights.</p></td>
     </tr>
     <tr>
-      <th>method</th>
+      <th>avg_method</th>
       <td><p>Either <code>"full"</code> or <code>"conditional"</code>. The methods
 differ in how they deal with averaging a path coefficient where the path is
 absent in some of the models. The full method sets the coefficient (and the
@@ -121,19 +121,19 @@ variance) for the missing paths to zero, meaning paths that are missing in
 some models will shrink towards zero. The conditional method only averages
 over models where the path appears, making it more sensitive to small
 effects. Following von Hardenberg &amp; Gonzalez-Voyer 2013, conditional
-averaging is set as the default. Also see <a href='http://www.rdocumentation.org/packages/MuMIn/topics/model.avg'>model.avg</a>.</p></td>
+averaging is set as the default. Also see <code><a href='http://www.rdocumentation.org/packages/MuMIn/topics/model.avg'>MuMIn::model.avg()</a></code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional arguments passed to <a href='http://www.rdocumentation.org/packages/MuMIn/topics/par.avg'>par.avg</a>.</p>
-<p>For details on the error calculations, see <a href='http://www.rdocumentation.org/packages/MuMIn/topics/par.avg'>par.avg</a>.</p></td>
+      <td><p>Additional arguments passed to <code><a href='http://www.rdocumentation.org/packages/MuMIn/topics/par.avg'>MuMIn::par.avg()</a></code>.</p>
+<p>For details on the error calculations, see <code><a href='http://www.rdocumentation.org/packages/MuMIn/topics/par.avg'>MuMIn::par.avg()</a></code>.</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>An object of class <code>fitted_DAG</code>, including standard errors and
-  confidence intervals.</p>
+confidence intervals.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
@@ -143,7 +143,8 @@ averaging is set as the default. Also see <a href='http://www.rdocumentation.org
   <span class='co'># make sure the DAGs make sense and contain the same variables!</span>
   <span class='no'>candidates</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='kw'>A</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>),
                      <span class='kw'>B</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>LS</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>))
-  <span class='no'>fit_cand</span> <span class='kw'>&lt;-</span> <span class='fu'>lapply</span>(<span class='no'>candidates</span>, <span class='no'>est_DAG</span>, <span class='no'>rhino</span>, <span class='kw pkg'>ape</span><span class='kw ns'>::</span><span class='no'><a href='http://www.rdocumentation.org/packages/ape/topics/corPagel'>corPagel</a></span>, <span class='no'>rhino_tree</span>)
+  <span class='no'>fit_cand</span> <span class='kw'>&lt;-</span> <span class='fu'>lapply</span>(<span class='no'>candidates</span>, <span class='no'>est_DAG</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>,
+                     <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>'lambda'</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>'logistic_MPLE'</span>)
   <span class='no'>ave_cand</span> <span class='kw'>&lt;-</span> <span class='fu'>average_DAGs</span>(<span class='no'>fit_cand</span>)
   <span class='fu'><a href='coef_plot.html'>coef_plot</a></span>(<span class='no'>ave_cand</span>)</div><div class='img'><img src='average_DAGs-1.png' alt='' width='700' height='432.632880098887' /></div></pre>
   </div>

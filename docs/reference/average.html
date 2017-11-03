@@ -99,24 +99,23 @@ analysis.</h1>
 analysis.</p>
     
 
-    <pre class="usage"><span class='fu'>average</span>(<span class='no'>phylopath</span>, <span class='kw'>cut_off</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"conditional"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>average</span>(<span class='no'>phylopath</span>, <span class='kw'>cut_off</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>avg_method</span> <span class='kw'>=</span> <span class='st'>"conditional"</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>phylopath</th>
-      <td><p>An object of class <code>phylopath</code> or
-<code>phylopath_binary</code>.</p></td>
+      <td><p>An object of class <code>phylopath</code>.</p></td>
     </tr>
     <tr>
       <th>cut_off</th>
       <td><p>The CICc cut-off used to select the best models. Use
-<code>Inf</code> to average over all models. Use the <code>best</code> function to
-only use the top model, or <code>choice</code> to select any single model.</p></td>
+<code>Inf</code> to average over all models. Use the <code><a href='best.html'>best()</a></code> function to
+only use the top model, or <code><a href='choice.html'>choice()</a></code> to select any single model.</p></td>
     </tr>
     <tr>
-      <th>method</th>
+      <th>avg_method</th>
       <td><p>Either <code>"full"</code> or <code>"conditional"</code>. The methods
 differ in how they deal with averaging a path coefficient where the path is
 absent in some of the models. The full method sets the coefficient (and the
@@ -124,12 +123,12 @@ variance) for the missing paths to zero, meaning paths that are missing in
 some models will shrink towards zero. The conditional method only averages
 over models where the path appears, making it more sensitive to small
 effects. Following von Hardenberg &amp; Gonzalez-Voyer 2013, conditional
-averaging is set as the default. Also see <a href='http://www.rdocumentation.org/packages/MuMIn/topics/model.avg'>model.avg</a>.</p></td>
+averaging is set as the default. Also see <code><a href='http://www.rdocumentation.org/packages/MuMIn/topics/model.avg'>MuMIn::model.avg()</a></code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional arguments passed to <a href='http://www.rdocumentation.org/packages/MuMIn/topics/par.avg'>par.avg</a>.</p>
-<p>For details on the error calculations, see <a href='http://www.rdocumentation.org/packages/MuMIn/topics/par.avg'>par.avg</a>.</p></td>
+      <td><p>Arguments to pass to <a href='http://www.rdocumentation.org/packages/phylolm/topics/phylolm'>phylolm::phylolm</a> and <a href='http://www.rdocumentation.org/packages/phylolm/topics/phyloglm'>phylolm::phyloglm</a>. If you specified
+options in the original <a href='phylo_path.html'>phylo_path</a> call you don't need to specify them again.</p></td>
     </tr>
     </table>
     
@@ -143,9 +142,9 @@ averaging is set as the default. Also see <a href='http://www.rdocumentation.org
     <span class='kw'>A</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>, <span class='no'>RS</span> ~ <span class='no'>BM</span> + <span class='no'>NL</span>),
     <span class='kw'>B</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>BM</span> + <span class='no'>RS</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>)
   )
-  <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='phylo_path.html'>phylo_path</a></span>(<span class='no'>candidates</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>)</div><div class='output co'>#&gt;    |                                                  | 0 % ~calculating     |++++++                                            | 11% ~01s             |++++++++++++                                      | 22% ~01s             |+++++++++++++++++                                 | 33% ~01s             |+++++++++++++++++++++++                           | 44% ~00s             |++++++++++++++++++++++++++++                      | 56% ~00s             |++++++++++++++++++++++++++++++++++                | 67% ~00s             |+++++++++++++++++++++++++++++++++++++++           | 78% ~00s             |+++++++++++++++++++++++++++++++++++++++++++++     | 89% ~00s             |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed = 01s</div><div class='input'>  <span class='fu'>summary</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt;   model k  q     C     p   CICc delta_CICc     l     w
-#&gt; 1     B 6  9 8.148 0.773 28.148      0.000 1.000 0.628
-#&gt; 2     A 5 10 6.721 0.752 29.193      1.045 0.593 0.372</div><div class='input'>
+  <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='phylo_path.html'>phylo_path</a></span>(<span class='no'>candidates</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>)</div><div class='output co'>#&gt;    |                                                  | 0 % ~calculating     |++++++                                            | 11% ~01s             |++++++++++++                                      | 22% ~02s             |+++++++++++++++++                                 | 33% ~01s             |+++++++++++++++++++++++                           | 44% ~01s             |++++++++++++++++++++++++++++                      | 56% ~00s             |++++++++++++++++++++++++++++++++++                | 67% ~00s             |+++++++++++++++++++++++++++++++++++++++           | 78% ~00s             |+++++++++++++++++++++++++++++++++++++++++++++     | 89% ~00s             |++++++++++++++++++++++++++++++++++++++++++++++++++| 100% elapsed = 01s</div><div class='input'>  <span class='fu'>summary</span>(<span class='no'>p</span>)</div><div class='output co'>#&gt;   model k  q     C     p   CICc delta_CICc    l     w
+#&gt; 1     B 6  9 7.192 0.845 27.192       0.00 1.00 0.508
+#&gt; 2     A 5 10 4.780 0.905 27.252       0.06 0.97 0.492</div><div class='input'>
   <span class='co'># Models A and B have similar support, so we may decide to take</span>
   <span class='co'># their average.</span>
 
@@ -153,9 +152,9 @@ averaging is set as the default. Also see <a href='http://www.rdocumentation.org
   <span class='co'># Print the average model to see coefficients, se and ci:</span>
   <span class='no'>avg_model</span></div><div class='output co'>#&gt; $coef
 #&gt;            RS BM        NL        DD        LS
-#&gt; RS  0.0000000  0 0.5272990 0.0000000 0.0000000
-#&gt; BM -0.4147735  0 0.4503421 0.0000000 0.4988607
-#&gt; NL  0.8766997  0 0.0000000 0.6206986 0.0000000
+#&gt; RS  0.0000000  0 0.5280685 0.0000000 0.0000000
+#&gt; BM -0.4090362  0 0.4460859 0.0000000 0.4973937
+#&gt; NL  0.8743998  0 0.0000000 0.6285344 0.0000000
 #&gt; DD  0.0000000  0 0.0000000 0.0000000 0.0000000
 #&gt; LS  0.0000000  0 0.0000000 0.0000000 0.0000000
 #&gt; attr(,"class")
@@ -163,27 +162,27 @@ averaging is set as the default. Also see <a href='http://www.rdocumentation.org
 #&gt; 
 #&gt; $se
 #&gt;            RS BM         NL         DD         LS
-#&gt; RS 0.00000000  0 0.05721587 0.00000000 0.00000000
-#&gt; BM 0.09201749  0 0.07642599 0.00000000 0.08954569
-#&gt; NL 0.09467253  0 0.00000000 0.08116661 0.00000000
+#&gt; RS 0.00000000  0 0.05726520 0.00000000 0.00000000
+#&gt; BM 0.09167814  0 0.07911298 0.00000000 0.08934185
+#&gt; NL 0.09436255  0 0.00000000 0.08006703 0.00000000
 #&gt; DD 0.00000000  0 0.00000000 0.00000000 0.00000000
 #&gt; LS 0.00000000  0 0.00000000 0.00000000 0.00000000
 #&gt; 
 #&gt; $lower
-#&gt;            RS BM       NL       DD        LS
-#&gt; RS  0.0000000  0 0.415158 0.000000 0.0000000
-#&gt; BM -0.5951245  0 0.300550 0.000000 0.3233544
-#&gt; NL  0.6911450  0 0.000000 0.461615 0.0000000
-#&gt; DD  0.0000000  0 0.000000 0.000000 0.0000000
-#&gt; LS  0.0000000  0 0.000000 0.000000 0.0000000
+#&gt;            RS BM        NL        DD        LS
+#&gt; RS  0.0000000  0 0.4158308 0.0000000 0.0000000
+#&gt; BM -0.5887220  0 0.2910274 0.0000000 0.3222869
+#&gt; NL  0.6894526  0 0.0000000 0.4716059 0.0000000
+#&gt; DD  0.0000000  0 0.0000000 0.0000000 0.0000000
+#&gt; LS  0.0000000  0 0.0000000 0.0000000 0.0000000
 #&gt; 
 #&gt; $upper
-#&gt;            RS BM        NL        DD       LS
-#&gt; RS  0.0000000  0 0.6394401 0.0000000 0.000000
-#&gt; BM -0.2344225  0 0.6001343 0.0000000 0.674367
-#&gt; NL  1.0622545  0 0.0000000 0.7797823 0.000000
-#&gt; DD  0.0000000  0 0.0000000 0.0000000 0.000000
-#&gt; LS  0.0000000  0 0.0000000 0.0000000 0.000000
+#&gt;            RS BM        NL        DD        LS
+#&gt; RS  0.0000000  0 0.6403062 0.0000000 0.0000000
+#&gt; BM -0.2293503  0 0.6011445 0.0000000 0.6725005
+#&gt; NL  1.0593470  0 0.0000000 0.7854629 0.0000000
+#&gt; DD  0.0000000  0 0.0000000 0.0000000 0.0000000
+#&gt; LS  0.0000000  0 0.0000000 0.0000000 0.0000000
 #&gt; 
 #&gt; attr(,"class")
 #&gt; [1] "fitted_DAG"</div><div class='input'>

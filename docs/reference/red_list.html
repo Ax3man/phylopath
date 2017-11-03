@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Cichlid phylogeny. — cichlids_tree â€¢ phylopath</title>
+<title>Data on brain size, life history and vulnerability to extinction — red_list â€¢ phylopath</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -89,26 +89,31 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Cichlid phylogeny.</h1>
+    <h1>Data on brain size, life history and vulnerability to extinction</h1>
     </div>
 
     
-    <p>The phylogenetic tree of cichlid species that accompanies the <code>cichlids</code>
-dataset. The phylogeny is based on five nuclear genes and three
-mitochondrial genes.</p>
+    <p>A dataset with continuous variables affecting the conservation <code>Status</code> of
+mammalian species (the IUCN red list of threatened species).</p>
     
 
-    <pre class="usage"><span class='no'>cichlids_tree</span></pre>
+    <pre class="usage"><span class='no'>red_list</span></pre>
         
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
-    <p>An object of class <code>phylo</code> of length 4.</p>
+    <p>An object of class <code>data.frame</code> with 474 rows and 7 columns.</p>
     
     <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
 
-    <p>Dey, C.J., O'Connor, C.M., Wilkinson, H., Shultz, S., Balshine, S. &amp;
-Fitzpatrick, J.L. 2017. Direct benefits and evolutionary transitions to
-complex societies. Nat Ecol Evol 1: 137.</p>
+    <p>Gonzalez-Voyer A, Gonzalez-Suarez M, Vila C, Revilla E (2016) Larger
+brain size indirectly increases vulnerability to extinction in mammals.
+Evolution 70:1364-1375. doi: 10.1111/evo.12943</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>It includes the following variables: brain size (<code>Br</code>), body size (<code>B</code>),
+gestation period (<code>G</code>), litter size (<code>L</code>), weening age (<code>W</code>), population
+density (<code>P</code>) and vulnerability to extinction (<code>Status</code>).</p>
     
 
   </div>
@@ -119,6 +124,8 @@ complex societies. Nat Ecol Evol 1: 137.</p>
       <li><a href="#format">Format</a></li>
 
       <li><a href="#source">Source</a></li>
+
+      <li><a href="#details">Details</a></li>
           </ul>
 
   </div>

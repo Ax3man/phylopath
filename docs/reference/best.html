@@ -99,7 +99,7 @@ analysis.</h1>
 analysis.</p>
     
 
-    <pre class="usage"><span class='fu'>best</span>(<span class='no'>phylopath</span>)</pre>
+    <pre class="usage"><span class='fu'>best</span>(<span class='no'>phylopath</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -107,6 +107,11 @@ analysis.</p>
     <tr>
       <th>phylopath</th>
       <td><p>An object of class <code>phylopath</code>.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Arguments to pass to <a href='http://www.rdocumentation.org/packages/phylolm/topics/phylolm'>phylolm::phylolm</a> and <a href='http://www.rdocumentation.org/packages/phylolm/topics/phyloglm'>phylolm::phyloglm</a>. If you specified
+options in the original <a href='phylo_path.html'>phylo_path</a> call you don't need to specify them again.</p></td>
     </tr>
     </table>
     
@@ -122,31 +127,17 @@ analysis.</p>
   <span class='co'># Print the best model to see coefficients, se and ci:</span>
   <span class='no'>best_model</span></div><div class='output co'>#&gt; $coef
 #&gt;    BM        NL        DD        LS
-#&gt; BM  0 0.4300372 0.0000000 0.4988607
-#&gt; NL  0 0.0000000 0.6206986 0.0000000
+#&gt; BM  0 0.4303443 0.0000000 0.4973937
+#&gt; NL  0 0.0000000 0.6285344 0.0000000
 #&gt; DD  0 0.0000000 0.0000000 0.0000000
 #&gt; LS  0 0.0000000 0.0000000 0.0000000
 #&gt; 
 #&gt; $se
 #&gt;    BM         NL         DD         LS
-#&gt; BM  0 0.08880353 0.00000000 0.08954569
-#&gt; NL  0 0.00000000 0.08116661 0.00000000
+#&gt; BM  0 0.08868688 0.00000000 0.08934185
+#&gt; NL  0 0.00000000 0.08006703 0.00000000
 #&gt; DD  0 0.00000000 0.00000000 0.00000000
 #&gt; LS  0 0.00000000 0.00000000 0.00000000
-#&gt; 
-#&gt; $lower
-#&gt;    BM        NL        DD        LS
-#&gt; BM  0 0.2538095 0.0000000 0.3211602
-#&gt; NL  0 0.0000000 0.4596261 0.0000000
-#&gt; DD  0 0.0000000 0.0000000 0.0000000
-#&gt; LS  0 0.0000000 0.0000000 0.0000000
-#&gt; 
-#&gt; $upper
-#&gt;    BM       NL        DD        LS
-#&gt; BM  0 0.606265 0.0000000 0.6765612
-#&gt; NL  0 0.000000 0.7817711 0.0000000
-#&gt; DD  0 0.000000 0.0000000 0.0000000
-#&gt; LS  0 0.000000 0.0000000 0.0000000
 #&gt; 
 #&gt; attr(,"class")
 #&gt; [1] "fitted_DAG"</div><div class='input'>  <span class='co'># Plot to show the weighted graph:</span>

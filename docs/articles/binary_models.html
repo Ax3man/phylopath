@@ -69,7 +69,7 @@
       <h1>Comparing causal models of binary traits using phylopath</h1>
                         <h4 class="author">Wouter van der Bijl</h4>
             
-            <h4 class="date">2017-08-09</h4>
+            <h4 class="date">2017-11-03</h4>
           </div>
 
     
@@ -79,12 +79,9 @@
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
 <p>This vignette gives a short example of how PPA can be applied to binary data sets using <code>phylopath</code>. A longer example with more explanation of the code can be found in the other vignette, “intro to phylopath”.</p>
-<p><strong>Important notes</strong>:</p>
-<ul>
-<li><p>There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses <code><a href="http://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">ape::binaryPGLMM</a></code>, written by Anthony Ives. Read <code><a href="http://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">?ape::binaryPGLMM</a></code> for more information. <code>phylopath</code>’s accuracy is directly dependent on the accuracy of that method, and if you don’t trust <code><a href="http://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">ape::binaryPGLMM</a></code> you should not trust <code>phylo_path_binary</code>.</p></li>
-<li><p>This method does not allow for the specification of different models of evolution, as <code><a href="http://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">ape::binaryPGLMM</a></code> does not support it. Since it is unclear to me whether it makes sense to mix different models of evolution while evaluating a single causal model, it is currently not possible to have causal models with mixed variable types. That is, for <code>phylo_path</code> all variables are expected to be continuous and for <code>phylo_path_binary</code> all variables should be binary.</p></li>
-</ul>
-<p>If you have useful opinions or information on these points, feel free to contact me.</p>
+<p><strong>Important note</strong>:</p>
+<p>There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses <code><a href="http://www.rdocumentation.org/packages/phylolm/topics/phyloglm">phylolm::phyloglm</a></code>, written by Lam Si Tung Ho, Robert Lachlan, Rachel Feldman and Cécile Ané. <code>phylopath</code>’s accuracy is directly dependent on the accuracy of that functions, and if you don’t trust <code>phyloglm</code> you should not trust binary models used in <code>phylo_path</code>.</p>
+<p>If you have useful opinions or information on this point, feel free to contact me.</p>
 </div>
 <div id="example-analysis" class="section level1">
 <h1 class="hasAnchor">
@@ -115,77 +112,91 @@
 <p>Following the paper in question, we define 12 putative causal models.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(phylopath)
 
-models &lt;-<span class="st"> </span><span class="kw">list</span>(
-  <span class="dt">A =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>M <span class="op">+</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G <span class="op">+</span><span class="st"> </span>D),
-  <span class="dt">B =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G <span class="op">+</span><span class="st"> </span>D,      M <span class="op">~</span><span class="st"> </span>M),
-  <span class="dt">C =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G <span class="op">+</span><span class="st"> </span>D,                P <span class="op">~</span><span class="st"> </span>M),
-  <span class="dt">D =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G <span class="op">+</span><span class="st"> </span>D,      M <span class="op">~</span><span class="st"> </span>P,               G <span class="op">~</span><span class="st"> </span>P),
-  <span class="dt">E =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G <span class="op">+</span><span class="st"> </span>D,                P <span class="op">~</span><span class="st"> </span>M,     G <span class="op">~</span><span class="st"> </span>P),
-  <span class="dt">F =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G <span class="op">+</span><span class="st"> </span>D,                P <span class="op">~</span><span class="st"> </span>M <span class="op">+</span><span class="st"> </span>G),
-  <span class="dt">G =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G <span class="op">+</span><span class="st"> </span>D,      M <span class="op">~</span><span class="st"> </span>P,    P <span class="op">~</span><span class="st"> </span>G),
-  <span class="dt">H =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G <span class="op">+</span><span class="st"> </span>D,      M <span class="op">~</span><span class="st"> </span>P),
-  <span class="dt">I =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G <span class="op">+</span><span class="st"> </span>D,      M <span class="op">~</span><span class="st"> </span>M,               G <span class="op">~</span><span class="st"> </span>P),
-  <span class="dt">J =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G,          M <span class="op">~</span><span class="st"> </span>P,               G <span class="op">~</span><span class="st"> </span>D),
-  <span class="dt">K =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G,                    P <span class="op">~</span><span class="st"> </span>M,     G <span class="op">~</span><span class="st"> </span>D),
-  <span class="dt">L =</span> <span class="kw"><a href="../reference/DAG.html">DAG</a></span>(C <span class="op">~</span><span class="st"> </span>M <span class="op">+</span><span class="st"> </span>P <span class="op">+</span><span class="st"> </span>G <span class="op">+</span><span class="st"> </span>D,            P <span class="op">~</span><span class="st"> </span>M <span class="op">+</span><span class="st"> </span>G)
+models &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_model_set.html">define_model_set</a></span>(
+  <span class="dt">A =</span> <span class="kw">c</span>(C<span class="op">~</span>M<span class="op">+</span>D),
+  <span class="dt">B =</span> <span class="kw">c</span>(C<span class="op">~</span>D),
+  <span class="dt">C =</span> <span class="kw">c</span>(C<span class="op">~</span>D, P<span class="op">~</span>M),
+  <span class="dt">D =</span> <span class="kw">c</span>(C<span class="op">~</span>D, M<span class="op">~</span>P, G<span class="op">~</span>P),
+  <span class="dt">E =</span> <span class="kw">c</span>(C<span class="op">~</span>D, P<span class="op">~</span>M, G<span class="op">~</span>P),
+  <span class="dt">F =</span> <span class="kw">c</span>(C<span class="op">~</span>D, P<span class="op">~</span>M<span class="op">+</span>G),
+  <span class="dt">G =</span> <span class="kw">c</span>(C<span class="op">~</span>D, M<span class="op">~</span>P, P<span class="op">~</span>G),
+  <span class="dt">H =</span> <span class="kw">c</span>(C<span class="op">~</span>D, M<span class="op">~</span>P),
+  <span class="dt">I =</span> <span class="kw">c</span>(C<span class="op">~</span>D, M<span class="op">~</span>M, G<span class="op">~</span>P),
+  <span class="dt">J =</span> <span class="kw">c</span>(M<span class="op">~</span>P, G<span class="op">~</span>D),
+  <span class="dt">K =</span> <span class="kw">c</span>(P<span class="op">~</span>M, G<span class="op">~</span>D),
+  <span class="dt">L =</span> <span class="kw">c</span>(C<span class="op">~</span>M<span class="op">+</span>D, P<span class="op">~</span>M<span class="op">+</span>G),
+  <span class="dt">.common =</span> <span class="kw">c</span>(C<span class="op">~</span>P<span class="op">+</span>G)
 )
 
-<span class="kw"><a href="../reference/plot_model_set.html">plot_model_set</a></span>(models)</code></pre></div>
+<span class="kw"><a href="../reference/plot_model_set.html">plot_model_set</a></span>(models, <span class="dt">algorithm =</span> <span class="st">'kk'</span>)</code></pre></div>
 <p><img src="binary_models_files/figure-html/unnamed-chunk-1-1.png" width="960" height="600px" style="display: block; margin: auto;"></p>
 </div>
 <div id="comparing-the-models" class="section level3">
 <h3 class="hasAnchor">
 <a href="#comparing-the-models" class="anchor"></a>Comparing the models</h3>
-<p>Now that we have our models, data and a tree, we can compare the models using <code>phylo_path_binary</code></p>
-<p>Note: <code><a href="http://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">ape::binaryPGLMM</a></code> is very slow. This code takes about 3 minutes to run on my machine. Therefore, I recommend making use of the <code>parallel</code> argument to speed things up. Depending on the situation, this can help a lot.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cichlids_results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/phylo_path_binary.html">phylo_path_binary</a></span>(models, cichlids, cichlids_tree, <span class="dt">parallel =</span> <span class="st">"SOCK"</span>)</code></pre></div>
+<p>Now that we have our models, data and a tree, we can compare the models using <code>phylo_path</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(cichlids_results &lt;-<span class="st"> </span><span class="kw"><a href="../reference/phylo_path.html">phylo_path</a></span>(models, cichlids, cichlids_tree))</code></pre></div>
 <pre><code>## 15 rows were dropped because they contained NA values.</code></pre>
 <pre><code>## Pruned tree to drop species not included in dat.</code></pre>
+<pre><code>## A phylogenetic path analysis, on the variables:
+##  Continuous:   
+##  Binary:      G P D M C 
+## 
+##  Evaluated for these models: A B C D E F G H I J K L 
+## 
+##  Containing 67 phylogenetic regressions, of which 22 unique</code></pre>
 <p>Note that two messages are printed. This is because there are missing values in our data set that are first being removed. Also, since the tree includes species for which data is missing, the tree had to be pruned. This is done automatically with a message to the user. You should check whether the amount of data removed is correct.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(cichlids_results)</code></pre></div>
+<p><code>phylo_path</code> notes that indeed all variables are binary.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">(s &lt;-<span class="st"> </span><span class="kw">summary</span>(cichlids_results))</code></pre></div>
 <pre><code>##    model k  q      C     p   CICc delta_CICc     l     w
-## 1      F 5 10  7.099 0.716 32.215      0.000 1.000 0.541
-## 2      L 4 11  6.777 0.561 35.062      2.847 0.241 0.130
-## 3      G 5 10 10.105 0.431 35.221      3.006 0.223 0.120
-## 4      D 5 10 10.233 0.420 35.349      3.134 0.209 0.113
-## 5      E 5 10 10.922 0.364 36.038      3.822 0.148 0.080
-## 6      C 6  9 19.313 0.081 41.404      9.188 0.010 0.005
-## 7      H 6  9 19.648 0.074 41.739      9.523 0.009 0.005
-## 8      J 6  9 21.219 0.047 43.310     11.095 0.004 0.002
-## 9      I 6  9 22.158 0.036 44.249     12.033 0.002 0.001
-## 10     K 6  9 22.419 0.033 44.510     12.295 0.002 0.001
-## 11     B 7  8 28.200 0.013 47.400     15.185 0.001 0.000
-## 12     A 6  9 27.878 0.006 49.969     17.753 0.000 0.000</code></pre>
+## 1      F 5 10  7.949 0.634 33.065      0.000 1.000 0.511
+## 2      L 4 11  6.661 0.574 34.947      1.882 0.390 0.200
+## 3      G 5 10 10.938 0.362 36.055      2.990 0.224 0.115
+## 4      E 5 10 11.630 0.311 36.747      3.682 0.159 0.081
+## 5      D 5 10 11.734 0.303 36.850      3.785 0.151 0.077
+## 6      C 6  9 18.907 0.091 40.997      7.932 0.019 0.010
+## 7      H 6  9 20.527 0.058 42.618      9.553 0.008 0.004
+## 8      I 6  9 23.599 0.023 45.690     12.625 0.002 0.001
+## 9      K 6  9 25.364 0.013 47.455     14.390 0.001 0.000
+## 10     J 6  9 25.852 0.011 47.943     14.878 0.001 0.000
+## 11     B 7  8 28.776 0.011 47.976     14.911 0.001 0.000
+## 12     A 6  9 27.488 0.007 49.579     16.514 0.000 0.000</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(s)</code></pre></div>
+<p><img src="binary_models_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
 <p>We see that model F is the best supported model. This model notably does not include a link between monogamy and cooperative breeding, giving support to the direct benefits hypothesis.</p>
+<p>Model L, the second best model, is exactly the same as</p>
 </div>
 <div id="evaluating-variable-importance" class="section level3">
 <h3 class="hasAnchor">
 <a href="#evaluating-variable-importance" class="anchor"></a>Evaluating variable importance</h3>
 <p>Now that we have selected F as our best model, we still have three factors that affect cooperative breeding: diet, social grouping and parental care. Which one is more important? For this we can fit the model and look at magnitude of the coefficients. In this case, since we want to use the best model we use the function <code><a href="../reference/best.html">best()</a></code>. One can use <code><a href="../reference/choice.html">choice()</a></code> to choose any arbitrary model, or <code><a href="../reference/average.html">average()</a></code> to average over several models.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">best_cichlids &lt;-<span class="st"> </span><span class="kw"><a href="../reference/best.html">best</a></span>(cichlid_results)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">best_cichlids &lt;-<span class="st"> </span><span class="kw"><a href="../reference/best.html">best</a></span>(cichlids_results)</code></pre></div>
 <p>To see the individual coefficients and their standard errors, simply print <code>best_cichlids</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">best_cichlids</code></pre></div>
 <pre><code>## $coef
-##   M D G        P        C
-## M 0 0 0 3.165581 0.000000
-## D 0 0 0 0.000000 5.366627
-## G 0 0 0 2.452958 6.840557
-## P 0 0 0 0.000000 5.494507
-## C 0 0 0 0.000000 0.000000
+##   G M        P D        C
+## G 0 0 2.244975 0 4.492803
+## M 0 0 2.879175 0 0.000000
+## P 0 0 0.000000 0 3.416613
+## D 0 0 0.000000 0 3.416323
+## C 0 0 0.000000 0 0.000000
 ## 
 ## $se
-##   M D G         P        C
-## M 0 0 0 0.9212517 0.000000
-## D 0 0 0 0.0000000 3.388728
-## G 0 0 0 0.8482509 2.131857
-## P 0 0 0 0.0000000 2.581734
-## C 0 0 0 0.0000000 0.000000
+##   G M         P D        C
+## G 0 0 0.8132303 0 1.201226
+## M 0 0 0.8602750 0 0.000000
+## P 0 0 0.0000000 0 1.349823
+## D 0 0 0.0000000 0 1.377503
+## C 0 0 0.0000000 0 0.000000
 ## 
 ## attr(,"class")
-## [1] "binary_fitted_DAG" "fitted_DAG"</code></pre>
+## [1] "fitted_DAG"</code></pre>
+<p>Or plot those:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/coef_plot.html">coef_plot</a></span>(best_cichlids, <span class="dt">error_bar =</span> <span class="st">"se"</span>, <span class="dt">reverse_order =</span> <span class="ot">TRUE</span>) <span class="op">+</span><span class="st"> </span>ggplot2<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/ggplot2/topics/coord_flip">coord_flip</a></span>()</code></pre></div>
+<p><img src="binary_models_files/figure-html/unnamed-chunk-6-1.png" width="672"></p>
 <p>But we can also plot the final model:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(best_cichlids, <span class="dt">algorithm =</span> <span class="st">'kk'</span>)</code></pre></div>
-<p><img src="binary_models_files/figure-html/unnamed-chunk-8-1.png" width="600px" style="display: block; margin: auto;"></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">plot</span>(best_cichlids)</code></pre></div>
+<p><img src="binary_models_files/figure-html/unnamed-chunk-7-1.png" width="600px" style="display: block; margin: auto;"></p>
 <p>It appears that social grouping is a slightly more important than diet and biparental care.</p>
 </div>
 </div>

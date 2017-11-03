@@ -94,6 +94,22 @@
     </div>
 
     <div class="contents">
+    <div id="phylopath-1-0-0" class="section level2">
+<h2 class="hasAnchor">
+<a href="#phylopath-1-0-0" class="anchor"></a>phylopath 1.0.0</h2>
+<ul>
+<li><p>Citation info now points to the <a href="https://www.biorxiv.org/content/early/2017/10/31/212068">bioRxiv paper</a>.</p></li>
+<li><p>All modeling functions now completely rely on the <code>phylolm</code> package, and no longer use <code>ape</code>. This is a major change, that will possibly change the outcomes of some of your existing analyses (as can happen when chaning the modeling package). There are, however, several good reasons to make this change, which I think make it worth the trouble. Firstly, the package is much faster for large trees, and this effect is compounded in <code>phylopath</code> because one may have to fit a few dozen models. Secondly, I think it is important to have confidence intervals around the regression coefficients, and those were not available for <code><a href="http://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">ape::binaryPGLMM</a></code>. Thirdly, <code>phylolm</code> makes it easy to use a larger variety of models of evolution, including two versions of OU and early burst, which can be simply set using the <code>model</code> parameter. Lastly, the <code>phylolm()</code> and <code>phyloglm()</code> functions give more uniform results, which makes it easier to code for situation where you may use both.</p></li>
+<li><p><code>phylo_path</code> and all related methods now deal automatically with both continuous and binary data. All separate binary functions and methods have disappeared as they are no longer needed. Mixing of binary and continious data in the same models is now allowed.</p></li>
+<li><p>The variable order in d-seperation statements now better follows the causal flow of the DAG.</p></li>
+<li><p>Added <code>plot()</code> method for <code>phylopath.summary</code> objects, that shows the weights and p-values for the different models.</p></li>
+<li><p><code><a href="../reference/coef_plot.html">coef_plot()</a></code> gained <code>error_bar</code>, <code>order_by</code>, <code>from</code> and <code>to</code> arguments. The first allows the user to choose between confidence invervals and standard errors, the second to order the paths by several methods, and the last two can be used to select only certain paths.</p></li>
+<li><p>Plotting methods of causal models now support a manual layout.</p></li>
+<li><p>Plotting of fitted DAG’s now uses edge width instead of color to indicate, the standardized regression coefficient strength, but this can be reverted using the <code>type</code> argument.</p></li>
+<li><p>Added a <code><a href="../reference/define_model_set.html">define_model_set()</a></code> convenience function for building models, that avoids repeated calls to <code><a href="../reference/DAG.html">DAG()</a></code> and has an argument to supply paths that are shared between all your models. It is not needed to specify isolate variables. Old code using <code><a href="../reference/DAG.html">DAG()</a></code> continues to work as normal.</p></li>
+<li><p>Added support for additional arguments passed to <code>gls</code> from <code>phylo_path</code>. This can be helpful, for example, for setting the fitting method to maximum likelihood (<code>method = "ML"</code>).</p></li>
+</ul>
+</div>
     <div id="phylopath-0-3-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#phylopath-0-3-1" class="anchor"></a>phylopath 0.3.1</h2>
@@ -102,7 +118,7 @@
 <a href="#bugfixes" class="anchor"></a>Bugfixes:</h4>
 <ul>
 <li><p>The package broke due to an update of <code>purrr</code>, but has now been fixed (reported by Christoph Liedtke, @hcliedtke).</p></li>
-<li><p>The package depends on a recent version of <code>nlme</code>, but this wasn’t specified. All package versions of dependencies are now defined. (reported by @ManuelaGonzalez)</p></li>
+<li><p>The package depends on a recent version of <code>nlme</code>, but this wasn’t specified. All package versions of dependencies are now defined (reported by @ManuelaGonzalez).</p></li>
 </ul>
 </div>
 </div>
@@ -110,9 +126,9 @@
 <h2 class="hasAnchor">
 <a href="#phylopath-0-3-0" class="anchor"></a>phylopath 0.3.0</h2>
 <ul>
-<li><p>Added support for completely binary models, that are fitted with <code><a href="http://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">ape::binaryPGLMM</a></code>. Use <code><a href="../reference/phylo_path_binary.html">phylo_path_binary()</a></code> to compare models. <code><a href="../reference/average.html">average()</a></code>, <code><a href="../reference/best.html">best()</a></code> and <code>choose()</code> are now S3 generics and will handle both continious and binary versions. Usage is designed to be as close to the continious version as possible. <code><a href="../reference/est_DAG_binary.html">est_DAG_binary()</a></code> powers the binary S3 methods.</p></li>
+<li><p>Added support for completely binary models, that are fitted with <code><a href="http://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">ape::binaryPGLMM</a></code>. Use <code>phylo_path_binary()</code> to compare models. <code><a href="../reference/average.html">average()</a></code>, <code><a href="../reference/best.html">best()</a></code> and <code><a href="../reference/choice.html">choice()</a></code> are now S3 generics and will handle both continuous and binary versions. Usage is designed to be as close to the continuous version as possible. <code>est_DAG_binary()</code> powers the binary S3 methods.</p></li>
 <li><p>All plot functions that used <code>DiagrammeR</code> now use <code>ggraph</code> instead. This gives much more control over the positioning of the nodes, and allows to plot multiple models at once. Exporting plots also becomes much easier.</p></li>
-<li><p>You can now plot a list of causal models with <code><a href="../reference/plot_model_set.html">plot_model_set()</a></code>. This creates a facetted plot where all nodes are kept in the same location, which makes it easier to spot how models are different.</p></li>
+<li><p>You can now plot a list of causal models with <code><a href="../reference/plot_model_set.html">plot_model_set()</a></code>. This creates a faceted plot where all nodes are kept in the same location, which makes it easier to spot how models are different.</p></li>
 </ul>
 </div>
     <div id="phylopath-0-2-3" class="section level2">
@@ -164,6 +180,7 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#phylopath-1-0-0">1.0.0</a></li>
         <li><a href="#phylopath-0-3-1">0.3.1</a></li>
         <li><a href="#phylopath-0-3-0">0.3.0</a></li>
         <li><a href="#phylopath-0-2-3">0.2.3</a></li>
