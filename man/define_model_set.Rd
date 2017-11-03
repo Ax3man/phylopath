@@ -7,7 +7,7 @@
 define_model_set(..., .common = NULL)
 }
 \arguments{
-\item{...}{Named arugments, which each are a lists of formulas defining the
+\item{...}{Named arguments, which each are a lists of formulas defining the
 paths of a causal model.}
 
 \item{.common}{A list of formulas that contain causal paths that are common

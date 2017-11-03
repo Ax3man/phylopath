@@ -46,7 +46,7 @@ DAG <- function(..., order = TRUE) {
 #'
 #' This function uses [ggm::DAG()].
 #'
-#' @param ... Named arugments, which each are a lists of formulas defining the
+#' @param ... Named arguments, which each are a lists of formulas defining the
 #'   paths of a causal model.
 #' @param .common A list of formulas that contain causal paths that are common
 #'   to each model.

@@ -1,6 +1,6 @@
 #' Compare causal models in a phylogenetic context.
 #'
-#' Continious variables are modeled using [phylolm::phylolm], while binary
+#' Continuous variables are modeled using [phylolm::phylolm], while binary
 #' traits are modeled using [phylolm::phyloglm].
 #'
 #' @param model_set A list of directed acyclic graphs. These are matrices,
@@ -166,8 +166,8 @@ summary.phylopath <- function(object, ...) {
 #' analysis.
 #'
 #' @param phylopath An object of class \code{phylopath}.
-#' @param ... Arguments to pass to `phylolm` and `phyloglm`. If you specified options in the orignal
-#'   [phylo_path] call you don't need to specify them again.
+#' @param ... Arguments to pass to [phylolm::phylolm] and [phylolm::phyloglm]. If you specified
+#'   options in the original [phylo_path] call you don't need to specify them again.
 #'
 #' @return An object of class \code{fitted_DAG}.
 #' @export
@@ -199,8 +199,8 @@ best <- function(phylopath, ...) {
 #' @param phylopath An object of class \code{phylopath}.
 #' @param choice A character string of the name of the model to be chosen, or
 #'   the index in \code{model_set}.
-#' @param ... Arguments to pass to `phylolm` and `phyloglm`. If you specified options in the orignal
-#'   [phylo_path] call you don't need to specify them again.
+#' @param ... Arguments to pass to [phylolm::phylolm] and [phylolm::phyloglm]. If you specified
+#'   options in the original [phylo_path] call you don't need to specify them again.
 #'
 #' @return An object of class \code{fitted_DAG}.
 #' @export
@@ -234,7 +234,7 @@ choice <- function(phylopath, choice, ...) {
 #'   `Inf` to average over all models. Use the [best()] function to
 #'   only use the top model, or [choice()] to select any single model.
 #' @param ... Arguments to pass to [phylolm::phylolm] and [phylolm::phyloglm]. If you specified
-#'   options in the orignal [phylo_path] call you don't need to specify them again.
+#'   options in the original [phylo_path] call you don't need to specify them again.
 #'
 #' @inheritParams average_DAGs
 #'

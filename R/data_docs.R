@@ -46,14 +46,14 @@
 #'   complex societies. Nat Ecol Evol 1: 137.
 "cichlids_tree"
 
-#' Data on brain size, life history and vulneratbility to extinction
+#' Data on brain size, life history and vulnerability to extinction
 #'
-#' A dataset with continious variables affecting the conservation `Status` of
+#' A dataset with continuous variables affecting the conservation `Status` of
 #' mammalian species (the IUCN red list of threatened species).
 #'
 #' It includes the following variables: brain size (`Br`), body size (`B`),
 #' gestation period (`G`), litter size (`L`), weening age (`W`), population
-#' density (`P`) and vulneratibilty to extinction (`Status`).
+#' density (`P`) and vulnerability to extinction (`Status`).
 #'
 #' @source Gonzalez-Voyer A, Gonzalez-Suarez M, Vila C, Revilla E (2016) Larger
 #'   brain size indirectly increases vulnerability to extinction in mammals.
@@ -63,7 +63,7 @@
 #' Mammalian phylogeny
 #'
 #' This is the accompanying phylogeny for the red_list data set. It is based
-#' on the updated mamalian supertree by Bininda-Emonds et al. 2007 & Fritz
+#' on the updated mammalian supertree by Bininda-Emonds et al. 2007 & Fritz
 #' et al. 2009.
 #'
 #' @source Gonzalez-Voyer, A. Gonzalez-Suarez M. Vila C. and Revilla E. 2016.

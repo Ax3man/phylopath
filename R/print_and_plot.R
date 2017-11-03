@@ -274,7 +274,7 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
 #'   layout algorithm. Another good option is `"sugiyama"`, which is
 #'   designed to minimize edge crossing in DAGs. However, it can often plot
 #'   nodes too close together.
-#' @param manual_layout Alteratively, precisely define the layout yourself, by providing a
+#' @param manual_layout Alternatively, precisely define the layout yourself, by providing a
 #'   `data.frame` that at least has a column `name` with all variable names, and columns `x` and `y`
 #'   with positions to be plotted. Setting this parameter overrides `algorithm` but other changes,
 #'   such as `rotation` and `flip`s will still be applied.

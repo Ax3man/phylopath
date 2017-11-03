@@ -23,7 +23,7 @@ layout algorithm. Another good option is \code{"sugiyama"}, which is
 designed to minimize edge crossing in DAGs. However, it can often plot
 nodes too close together.}
 
-\item{manual_layout}{Alteratively, precisely define the layout yourself, by providing a
+\item{manual_layout}{Alternatively, precisely define the layout yourself, by providing a
 \code{data.frame} that at least has a column \code{name} with all variable names, and columns \code{x} and \code{y}
 with positions to be plotted. Setting this parameter overrides \code{algorithm} but other changes,
 such as \code{rotation} and \code{flip}s will still be applied.}

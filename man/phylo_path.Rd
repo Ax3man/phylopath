@@ -73,7 +73,7 @@ A phylopath object, with the following components:
 }
 }
 \description{
-Continious variables are modeled using \link[phylolm:phylolm]{phylolm::phylolm}, while binary
+Continuous variables are modeled using \link[phylolm:phylolm]{phylolm::phylolm}, while binary
 traits are modeled using \link[phylolm:phyloglm]{phylolm::phyloglm}.
 }
 \examples{

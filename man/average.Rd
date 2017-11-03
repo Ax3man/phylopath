@@ -24,7 +24,7 @@ effects. Following von Hardenberg & Gonzalez-Voyer 2013, conditional
 averaging is set as the default. Also see \code{\link[MuMIn:model.avg]{MuMIn::model.avg()}}.}
 
 \item{...}{Arguments to pass to \link[phylolm:phylolm]{phylolm::phylolm} and \link[phylolm:phyloglm]{phylolm::phyloglm}. If you specified
-options in the orignal \link{phylo_path} call you don't need to specify them again.}
+options in the original \link{phylo_path} call you don't need to specify them again.}
 }
 \value{
 An object of class \code{fitted_DAG}.

@@ -23,7 +23,7 @@ red_list_tree
 }
 \description{
 This is the accompanying phylogeny for the red_list data set. It is based
-on the updated mamalian supertree by Bininda-Emonds et al. 2007 & Fritz
+on the updated mammalian supertree by Bininda-Emonds et al. 2007 & Fritz
 et al. 2009.
 }
 \keyword{datasets}

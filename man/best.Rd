@@ -10,8 +10,8 @@ best(phylopath, ...)
 \arguments{
 \item{phylopath}{An object of class \code{phylopath}.}
 
-\item{...}{Arguments to pass to \code{phylolm} and \code{phyloglm}. If you specified options in the orignal
-\link{phylo_path} call you don't need to specify them again.}
+\item{...}{Arguments to pass to \link[phylolm:phylolm]{phylolm::phylolm} and \link[phylolm:phyloglm]{phylolm::phyloglm}. If you specified
+options in the original \link{phylo_path} call you don't need to specify them again.}
 }
 \value{
 An object of class \code{fitted_DAG}.
