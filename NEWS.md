@@ -1,5 +1,7 @@
-phylopath 0.3.1.9000
+phylopath 1.0.0
 --------------------------------------------------------------------------------
+
+* Citation info now points to the [bioRxiv paper](https://www.biorxiv.org/content/early/2017/10/31/212068).
 
 * All modeling functions now completely rely on the `phylolm` package, and no 
   longer use `ape`. This is a major change, that will possibly change the 

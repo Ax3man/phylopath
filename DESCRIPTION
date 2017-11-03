@@ -1,7 +1,7 @@
 Package: phylopath
 Type: Package
 Title: Perform Phylogenetic Path Analysis
-Version: 0.3.1
+Version: 1.0.0
 Authors@R: person("Wouter", "van der Bijl",
                   email = "wouter.van.der.bijl@zoologi.su.se",
                   role = c("aut", "cre"))
@@ -23,7 +23,7 @@ Imports:
     ggraph (>= 1.0.0),
     igraph (>= 1.0.1),
     MuMIn (>= 1.15.6),
-    parallel (>= 3.4.1),
+    parallel,
     pbapply (>= 1.3-2),
     phylolm (>= 2.5),
     purrr (>= 0.2.3),

@@ -8,7 +8,7 @@
 \source{
 Gonzalez-Voyer A, Gonzalez-Suarez M, Vila C, Revilla E (2016) Larger
 brain size indirectly increases vulnerability to extinction in mammals.
-Evolution 70:1364–1375. doi: 10.1111/evo.12943
+Evolution 70:1364-1375. doi: 10.1111/evo.12943
 }
 \usage{
 red_list
