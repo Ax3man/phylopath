@@ -10,7 +10,7 @@
 
 ## CRAN check:
 
-There is currently errors on r-oldrel builds because of a version dependency for the parallel
+There are currently errors on r-oldrel builds because of a version dependency for the parallel
 package. I've removed the specific version dependency, so these errors should dissapear with this
 release.
 
