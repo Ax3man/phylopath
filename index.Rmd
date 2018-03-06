@@ -12,14 +12,14 @@ knitr::opts_chunk$set(dev = "png", fig.height = 7, fig.width = 7, dpi = 300, out
 
 #Easy phylogenetic path analysis in R
 
-Use the `phylopath` package for an easy to use framework to perform PPA. It builds on the popular package for phylogenetic analysis `ape`.
+Use the `phylopath` package for an easy to use framework to perform phylogenetic path analysis (PPA).
 
 PPA can be used to compare support for competing causal models of trait evolution, while taking shared ancesty into account. All you need is:
 1. A clear set of models to test.
 2. A data set of species with trait values.
 3. A phylogeny of your species.
 
-For a complete worked example, click "Get Started" above.
+For a complete worked example, click "Get Started" above, or see the [bioRxiv paper](doi.org/10.1101/212068).
 
 This method was developed by Von Hardenberg and Gonzalez-Voyer. See `citation()` for info on correct citations.
 
@@ -48,3 +48,8 @@ result <- phylo_path(models, data = rhino, tree = rhino_tree,
 plot(choice(result, 'five'), rotation = 10, curvature = -0.05, flip_x = TRUE)
 ```
 
+The following published papers use `phylopath`:
+
+* Liao, W. B., Huang, Y., Zeng, Y., Zhong, M. J., Luo, Y. and Lüpold, S. (2018), Ejaculate evolution in external fertilizers: Influenced by sperm competition or sperm limitation?. Evolution, 72: 4–17. [doi:10.1111/evo.13372](doi:10.1111/evo.13372)
+
+Send me a message to add yours to the list.
