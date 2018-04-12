@@ -54,4 +54,6 @@ The following published papers use `phylopath`:
 
 * Lin Zhang, Kun Guo, Guang-Zheng Zhang, Long-Hui Lin and Xiang Ji (2018), Evolutionary transitions in body plan and reproductive mode alter maintenance metabolism in squamates. BMC Evo Biol, 18:45. [doi:10.1186/s12862-018-1166-5](https://doi.org/10.1186/s12862-018-1166-5)
 
+* Xin Yu, Mao Jun Zhong, Da Yong Li, Long Jin, Wen Bo Liao and Alexander Kotrschal (2018). Large‐brained frogs mature later and live longer. Evolution. [doi:10.1111/evo.13478](https://doi.org/10.1111/evo.13478).
+
 Send me a message to add yours to the list.
