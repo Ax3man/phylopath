@@ -8,8 +8,8 @@
 <title>Perform Phylogenetic Path Analysis • phylopath</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><meta property="og:title" content="Perform Phylogenetic Path Analysis">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script><meta property="og:title" content="Perform Phylogenetic Path Analysis">
 <meta property="og:description" content="A comprehensive and easy to use R implementation of confirmatory
     phylogenetic path analysis as described by Von Hardenberg and Gonzalez-Voyer
     (2012) &lt;doi:10.1111/j.1558-5646.2012.01790.x&gt;.">
@@ -83,12 +83,15 @@
 <a href="#easy-phylogenetic-path-analysis-in-r" class="anchor"></a>Easy phylogenetic path analysis in R</h1></div>
 <p>Use the <code>phylopath</code> package for an easy to use framework to perform phylogenetic path analysis (PPA).</p>
 <p>PPA can be used to compare support for competing causal models of trait evolution, while taking shared ancesty into account. All you need is: 1. A clear set of models to test. 2. A data set of species with trait values. 3. A phylogeny of your species.</p>
-<p>For a complete worked example, click “Get Started” above, or see the <a href="doi.org/10.1101/212068">bioRxiv paper</a>.</p>
+<p>For a complete worked example, click “Get Started” above, or see the <a href="https://doi.org/10.7717/peerj.4718">PeerJ paper</a>.</p>
 <p>This method was developed by Von Hardenberg and Gonzalez-Voyer. See <code>citation()</code> for info on correct citations.</p>
 <p><img src="index_files/figure-html/unnamed-chunk-2-1.png" width="600px" style="display: block; margin: auto;"></p>
 <p><img src="index_files/figure-html/unnamed-chunk-3-1.png" width="600px" style="display: block; margin: auto;"></p>
 <p>The following published papers use <code>phylopath</code>:</p>
+<p><em>2018</em></p>
 <ul>
+<li><p>Sol, D., Maspons, J., Gonzalez-Voyer, A., Morales-Castilla, I., Garamszegi, L.Z. &amp; Møller, A.P. Behav Ecol Sociobiol (2018) 72: 59. <a href="https://doi.org/10.1007/s00265-018-2463-0">doi:10.1007/s00265-018-2463-0</a>. <em>Uncredited.</em></p></li>
+<li><p>Basset, Y., Dahl, C., Ctvrtecka, R., <em>et al.</em> A cross‐continental comparison of assemblages of seed‐ and fruit‐feeding insects in tropical rain forests: Faunal composition and rates of attack. J Biogeogr. 2018;00:1–13. <a href="https://doi.org/10.1111/jbi.13211">doi:10.1111/jbi.13211</a></p></li>
 <li><p>Liao, W. B., Huang, Y., Zeng, Y., Zhong, M. J., Luo, Y. and Lüpold, S. (2018), Ejaculate evolution in external fertilizers: Influenced by sperm competition or sperm limitation? Evolution, 72: 4–17. <a href="https://doi.org/10.1111/evo.13372">doi:10.1111/evo.13372</a></p></li>
 <li><p>Lin Zhang, Kun Guo, Guang-Zheng Zhang, Long-Hui Lin and Xiang Ji (2018), Evolutionary transitions in body plan and reproductive mode alter maintenance metabolism in squamates. BMC Evo Biol, 18:45. <a href="https://doi.org/10.1186/s12862-018-1166-5">doi:10.1186/s12862-018-1166-5</a></p></li>
 <li><p>Xin Yu, Mao Jun Zhong, Da Yong Li, Long Jin, Wen Bo Liao and Alexander Kotrschal (2018). Large‐brained frogs mature later and live longer. Evolution. <a href="https://doi.org/10.1111/evo.13478">doi:10.1111/evo.13478</a>.</p></li>

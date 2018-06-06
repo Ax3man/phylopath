@@ -19,7 +19,7 @@ PPA can be used to compare support for competing causal models of trait evolutio
 2. A data set of species with trait values.
 3. A phylogeny of your species.
 
-For a complete worked example, click "Get Started" above, or see the [bioRxiv paper](doi.org/10.1101/212068).
+For a complete worked example, click "Get Started" above, or see the [PeerJ paper](https://doi.org/10.7717/peerj.4718).
 
 This method was developed by Von Hardenberg and Gonzalez-Voyer. See `citation()` for info on correct citations.
 
@@ -49,6 +49,12 @@ plot(choice(result, 'five'), rotation = 10, curvature = -0.05, flip_x = TRUE)
 ```
 
 The following published papers use `phylopath`:
+
+*2018*
+
+* Sol, D., Maspons, J., Gonzalez-Voyer, A., Morales-Castilla, I., Garamszegi, L.Z. & Møller, A.P.  Behav Ecol Sociobiol (2018) 72: 59. [doi:10.1007/s00265-018-2463-0](https://doi.org/10.1007/s00265-018-2463-0). _Uncredited._
+
+* Basset, Y., Dahl, C., Ctvrtecka, R., _et al._ A cross‐continental comparison of assemblages of seed‐ and fruit‐feeding insects in tropical rain forests: Faunal composition and rates of attack. J Biogeogr. 2018;00:1–13. [doi:10.1111/jbi.13211](https://doi.org/10.1111/jbi.13211)
 
 * Liao, W. B., Huang, Y., Zeng, Y., Zhong, M. J., Luo, Y. and Lüpold, S. (2018), Ejaculate evolution in external fertilizers: Influenced by sperm competition or sperm limitation? Evolution, 72: 4–17. [doi:10.1111/evo.13372](https://doi.org/10.1111/evo.13372)
 
