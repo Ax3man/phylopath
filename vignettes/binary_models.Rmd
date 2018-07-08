@@ -15,7 +15,7 @@ This vignette gives a short example of how PPA can be applied to binary data set
 
 **Important note**: 
 
-There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses `phylolm::phyloglm`, written by Lam Si Tung Ho, Robert Lachlan, Rachel Feldman and Cécile Ané. `phylopath`'s accuracy is directly dependent on the accuracy of that functions, and if you don't trust `phyloglm` you should not trust binary models used in `phylo_path`.
+There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses `phylolm::phyloglm`, written by Lam Si Tung Ho, Robert Lachlan, Rachel Feldman and Cécile Ané. `phylopath`'s accuracy is directly dependent on the accuracy of that function, and if you don't trust `phyloglm` you should not trust binary models used in `phylo_path`.
 
 If you have useful opinions or information on this point, feel free to contact me.
 

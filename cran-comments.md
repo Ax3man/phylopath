@@ -1,6 +1,6 @@
 ## Test environments
-* local Windows 10 install (x86_64-w64-mingw32/x64), R 3.4.2
-* Development version using winbuilder r73242
+* local Windows 10 install (x86_64-w64-mingw32/x64), R 3.5.1
+* Development version using winbuilder r74950
 
 ## Local R CMD check results
 0 errors | 0 warnings | 0 notes
@@ -10,9 +10,7 @@
 
 ## CRAN check:
 
-There are currently errors on r-oldrel builds because of a version dependency for the parallel
-package. I've removed the specific version dependency, so these errors should dissapear with this
-release.
+Currently failing because ggraph no longer exports guide_train.edge_colourbar. This release aims to fix this issue.
 
 ## Downstream dependencies
 The package does not have downstream dependencies.
