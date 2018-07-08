@@ -259,7 +259,3 @@ combine_dots <- function(old_dots, ...) {
   new_dots <- list(...)
   c(new_dots, old_dots[!(names(old_dots) %in% names(new_dots))])
 }
-
-#' @importFrom ggraph guide_train.edge_colourbar
-#' @export
-ggraph::guide_train.edge_colourbar
