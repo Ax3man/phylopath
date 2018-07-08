@@ -1,6 +1,8 @@
 # phylopath
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/phylopath)](https://cran.r-project.org/package=phylopath) [![Research software impact](http://depsy.org/api/package/cran/phylopath/badge.svg)](http://depsy.org/package/r/phylopath) [![Cran downloads](http://cranlogs.r-pkg.org/badges/grand-total/phylopath)](http://cran.rstudio.com/web/packages/phylopath/index.html)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/phylopath)](https://cran.r-project.org/package=phylopath) [![Cran downloads](http://cranlogs.r-pkg.org/badges/grand-total/phylopath)](http://cran.rstudio.com/web/packages/phylopath/index.html) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+
+This package implements phylogenetic path analysis in R.
 
 Install the package using:
 
