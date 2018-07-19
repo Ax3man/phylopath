@@ -36,7 +36,9 @@ print.phylopath <- function(x, ...) {
   cat('\n')
 }
 
-show_warnings <- function(phylopath) {
+#' @export
+show_warnings <- function(phylopath = NULL) {
+  if (is.null(phylopath)) phylopat <- .Last.value
   stopifnot(inherits(phylopath, 'phylopath'))
   phylopath$warnings
 }
