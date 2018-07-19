@@ -106,7 +106,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
   purrr::map2(errors, f_list,
               ~if(!is.null(.x))
                 stop(paste('Fitting the following model:\n   ',
-                           Reduce(paste, deparse(f_list[[1]])),
+                           Reduce(paste, deparse(.y)),
                            '\nproduced this error:\n   ', .x),
                      call. = FALSE))
   # Collect warnings as well, but save those for later.
@@ -114,7 +114,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
   warnings <- purrr::map2(warnings, f_list,
                           ~if(!is.null(.x))
                              paste('Fitting the following model:\n   ',
-                                       Reduce(paste, deparse(f_list[[1]])),
+                                       Reduce(paste, deparse(.y)),
                                        '\nproduced this/these warning(s):\n   ', .x))
   warnings <- warnings(!sapply(warnings, is.null))
   if (length(warnings) > 1) {
