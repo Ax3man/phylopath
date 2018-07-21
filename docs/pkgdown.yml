@@ -1,0 +1,7 @@
+pandoc: 1.19.2.1
+pkgdown: 1.1.0
+pkgdown_sha: ~
+articles:
+  binary_models: binary_models.html
+  intro_to_phylopath: intro_to_phylopath.html
+

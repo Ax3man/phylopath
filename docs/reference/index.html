@@ -18,13 +18,22 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Function reference" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +56,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">phylopath</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">phylopath</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.1.9000</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -79,6 +92,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -86,168 +100,164 @@
       
       </header>
 
-      <div class="row">
-  <div class="col-md-9">
+<div class="row">
+  <div class="contents col-md-9">
     <div class="page-header">
-      <h1>
-        Reference
-        <small>version&nbsp;1.0.0</small>
-      </h1>
+      <h1>Reference</h1>
     </div>
 
-    <div class="contents">
-      <table class="ref-index">
+    <table class="ref-index">
 
-      <colgroup>
-        <col class="alias" />
-        <col class="title" />
-      </colgroup>
+    <colgroup>
+      
+      <col class="alias" />
+      <col class="title" />
+    </colgroup>
 
-      <tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-top-level-functions" class="hasAnchor"><a href="#section-top-level-functions" class="anchor"></a>Top level functions</h2>
-            <p class="section-desc"><p>Use these functions to describe, fit, select and average your models.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="define_model_set.html">define_model_set</a></code> </p>
-          </td>
-          <td><p>Define a model set.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="DAG.html">DAG</a></code> </p>
-          </td>
-          <td><p>Directed acyclic graphs (DAGs)</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="phylo_path.html">phylo_path</a></code> </p>
-          </td>
-          <td><p>Compare causal models in a phylogenetic context.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="average.html">average</a></code> </p>
-          </td>
-          <td><p>Extract and average the best supported models from a phylogenetic path
+    <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-top-level-functions" class="hasAnchor"><a href="#section-top-level-functions" class="anchor"></a>Top level functions</h2>
+          <p class="section-desc"><p>Use these functions to describe, fit, select and average your models.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="define_model_set.html">define_model_set()</a></code> </p>
+        </td>
+        <td><p>Define a model set.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="DAG.html">DAG()</a></code> </p>
+        </td>
+        <td><p>Directed acyclic graphs (DAGs)</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="phylo_path.html">phylo_path()</a></code> </p>
+        </td>
+        <td><p>Compare causal models in a phylogenetic context.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="average.html">average()</a></code> </p>
+        </td>
+        <td><p>Extract and average the best supported models from a phylogenetic path
 analysis.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="best.html">best</a></code> </p>
-          </td>
-          <td><p>Extract and estimate the best supported model from a phylogenetic path
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="best.html">best()</a></code> </p>
+        </td>
+        <td><p>Extract and estimate the best supported model from a phylogenetic path
 analysis.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="choice.html">choice</a></code> </p>
-          </td>
-          <td><p>Extract and estimate an arbitrary model from a phylogenetic path analysis.</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-plotting" class="hasAnchor"><a href="#section-plotting" class="anchor"></a>Plotting</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plot.DAG.html">plot</a></code> </p>
-          </td>
-          <td><p>Plot a directed acyclic graph.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plot.fitted_DAG.html">plot</a></code> </p>
-          </td>
-          <td><p>Plot a directed acyclic graph with path coefficients.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="plot_model_set.html">plot_model_set</a></code> </p>
-          </td>
-          <td><p>Plot several causal hypothesis at once.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="coef_plot.html">coef_plot</a></code> </p>
-          </td>
-          <td><p>Plot path coefficients and their confidence intervals or standard errors.</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-low-level-functions" class="hasAnchor"><a href="#section-low-level-functions" class="anchor"></a>Low level functions</h2>
-            <p class="section-desc"><p>Use these functions for finer control. These are mostly for internal use.</p></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="est_DAG.html">est_DAG</a></code> </p>
-          </td>
-          <td><p>Add standardized path coefficients to a DAG.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="average_DAGs.html">average_DAGs</a></code> </p>
-          </td>
-          <td><p>Perform model averaging on a list of DAGs.</p></td>
-        </tr>
-      </tbody><tbody>
-        <tr>
-          <th colspan="2">
-            <h2 id="section-included-datasets" class="hasAnchor"><a href="#section-included-datasets" class="anchor"></a>Included datasets</h2>
-            <p class="section-desc"></p>
-          </th>
-        </tr>
-        <tr>
-          <!--  -->
-          <td>
-            <p><code><a href="rhino.html">rhino</a></code> </p>
-          </td>
-          <td><p>Rhinogrades traits.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="rhino_tree.html">rhino_tree</a></code> </p>
-          </td>
-          <td><p>Rhinogrades phylogeny.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cichlids.html">cichlids</a></code> </p>
-          </td>
-          <td><p>Cichlid traits and the evolution of cooperative breeding.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="cichlids_tree.html">cichlids_tree</a></code> </p>
-          </td>
-          <td><p>Cichlid phylogeny.</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="red_list.html">red_list</a></code> </p>
-          </td>
-          <td><p>Data on brain size, life history and vulnerability to extinction</p></td>
-        </tr><tr>
-          <!--  -->
-          <td>
-            <p><code><a href="red_list_tree.html">red_list_tree</a></code> </p>
-          </td>
-          <td><p>Mammalian phylogeny</p></td>
-        </tr>
-      </tbody>
-      </table>
-    </div>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="choice.html">choice()</a></code> </p>
+        </td>
+        <td><p>Extract and estimate an arbitrary model from a phylogenetic path analysis.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-plotting" class="hasAnchor"><a href="#section-plotting" class="anchor"></a>Plotting</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="plot.DAG.html">plot(<i>&lt;DAG&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plot a directed acyclic graph.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot.fitted_DAG.html">plot(<i>&lt;fitted_DAG&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plot a directed acyclic graph with path coefficients.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot_model_set.html">plot_model_set()</a></code> </p>
+        </td>
+        <td><p>Plot several causal hypothesis at once.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="coef_plot.html">coef_plot()</a></code> </p>
+        </td>
+        <td><p>Plot path coefficients and their confidence intervals or standard errors.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-low-level-functions" class="hasAnchor"><a href="#section-low-level-functions" class="anchor"></a>Low level functions</h2>
+          <p class="section-desc"><p>Use these functions for finer control. These are mostly for internal use.</p></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="est_DAG.html">est_DAG()</a></code> </p>
+        </td>
+        <td><p>Add standardized path coefficients to a DAG.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="average_DAGs.html">average_DAGs()</a></code> </p>
+        </td>
+        <td><p>Perform model averaging on a list of DAGs.</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-included-datasets" class="hasAnchor"><a href="#section-included-datasets" class="anchor"></a>Included datasets</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      <tr>
+        
+        <td>
+          <p><code><a href="rhino.html">rhino</a></code> </p>
+        </td>
+        <td><p>Rhinogrades traits.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rhino_tree.html">rhino_tree</a></code> </p>
+        </td>
+        <td><p>Rhinogrades phylogeny.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cichlids.html">cichlids</a></code> </p>
+        </td>
+        <td><p>Cichlid traits and the evolution of cooperative breeding.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="cichlids_tree.html">cichlids_tree</a></code> </p>
+        </td>
+        <td><p>Cichlid phylogeny.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="red_list.html">red_list</a></code> </p>
+        </td>
+        <td><p>Data on brain size, life history and vulnerability to extinction</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="red_list_tree.html">red_list_tree</a></code> </p>
+        </td>
+        <td><p>Mammalian phylogeny</p></td>
+      </tr>
+    </tbody>
+    </table>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -267,11 +277,14 @@ analysis.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+

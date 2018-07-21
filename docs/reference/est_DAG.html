@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add standardized path coefficients to a DAG. � est_DAG • phylopath</title>
+<title>Add standardized path coefficients to a DAG. — est_DAG • phylopath</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -18,13 +18,25 @@
 <!-- Font Awesome icons -->
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 
+<!-- clipboard.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script>
+
+<!-- sticky kit -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
-<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-  
-  
+
+
+
+<meta property="og:title" content="Add standardized path coefficients to a DAG. — est_DAG" />
+
+<meta property="og:description" content="Add standardized path coefficients to a DAG." />
+<meta name="twitter:card" content="summary" />
+
+
+
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -47,8 +59,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">phylopath</a>
+      <span class="navbar-brand">
+        <a class="navbar-link" href="../index.html">phylopath</a>
+        <span class="label label-default" data-toggle="tooltip" data-placement="bottom" title="Released package">1.0.1.9000</span>
+      </span>
     </div>
+
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
@@ -79,6 +95,7 @@
   </a>
 </li>
       </ul>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -86,19 +103,23 @@
       
       </header>
 
-      <div class="row">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Add standardized path coefficients to a DAG.</h1>
+    
+    <div class="hidden name"><code>est_DAG.Rd</code></div>
     </div>
 
+    <div class="ref-description">
     
     <p>Add standardized path coefficients to a DAG.</p>
     
+    </div>
 
     <pre class="usage"><span class='fu'>est_DAG</span>(<span class='no'>DAG</span>, <span class='no'>data</span>, <span class='no'>tree</span>, <span class='no'>model</span>, <span class='no'>method</span>, <span class='kw'>boot</span> <span class='kw'>=</span> <span class='fl'>0</span>, <span class='no'>...</span>)</pre>
     
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
@@ -131,24 +152,16 @@ Pagel's lambda model</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Arguments passed on to <code>phylolm</code>:
-
-<code>lower.bound</code>: optional lower bound for the optimization of the phylogenetic model parameter.
-
-<code>upper.bound</code>: optional upper bound for the optimization of the phylogenetic model parameter.
-
-<code>starting.value</code>: optional starting value for the optimization of the phylogenetic model parameter.
-
-<code>measurement_error</code>: a logical value indicating whether there is measurement error sigma2_error (see Details).</p>
-<p>Arguments passed on to <code>phyloglm</code>:
-
-<code>btol</code>: bound on the linear predictor to bound the searching space.
-
-<code>log.alpha.bound</code>: bound for the log of the parameter alpha.
-
-<code>start.beta</code>: starting values for beta coefficients.
-
-<code>start.alpha</code>: starting values for alpha (phylogenetic correlation).</p></td>
+      <td><p>Arguments passed on to <code>phylolm</code>:</p>
+<p><code>lower.bound</code>: optional lower bound for the optimization of the phylogenetic model parameter.</p>
+<p><code>upper.bound</code>: optional upper bound for the optimization of the phylogenetic model parameter.</p>
+<p><code>starting.value</code>: optional starting value for the optimization of the phylogenetic model parameter.</p>
+<p><code>measurement_error</code>: a logical value indicating whether there is measurement error sigma2_error (see Details).</p>
+<p>Arguments passed on to <code>phyloglm</code>:</p>
+<p><code>btol</code>: bound on the linear predictor to bound the searching space.</p>
+<p><code>log.alpha.bound</code>: bound for the log of the parameter alpha.</p>
+<p><code>start.beta</code>: starting values for beta coefficients.</p>
+<p><code>start.alpha</code>: starting values for alpha (phylogenetic correlation).</p></td>
     </tr>
     </table>
     
@@ -159,8 +172,8 @@ Pagel's lambda model</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>  <span class='no'>d</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span> + <span class='no'>LS</span>)
-  <span class='fu'>plot</span>(<span class='no'>d</span>)</div><div class='img'><img src='est_DAG-1.png' alt='' width='700' height='432.632880098887' /></div><div class='input'>  <span class='no'>d_fitted</span> <span class='kw'>&lt;-</span> <span class='fu'>est_DAG</span>(<span class='no'>d</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>, <span class='st'>'lambda'</span>)
-  <span class='fu'>plot</span>(<span class='no'>d_fitted</span>)</div><div class='img'><img src='est_DAG-2.png' alt='' width='700' height='432.632880098887' /></div></pre>
+  <span class='fu'>plot</span>(<span class='no'>d</span>)</div><div class='img'><img src='est_DAG-1.png' alt='' width='700' height='433' /></div><div class='input'>  <span class='no'>d_fitted</span> <span class='kw'>&lt;-</span> <span class='fu'>est_DAG</span>(<span class='no'>d</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>, <span class='st'>'lambda'</span>)
+  <span class='fu'>plot</span>(<span class='no'>d_fitted</span>)</div><div class='img'><img src='est_DAG-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -181,11 +194,14 @@ Pagel's lambda model</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+  <p>Site built with <a href="http://pkgdown.r-lib.org/">pkgdown</a>.</p>
 </div>
 
       </footer>
    </div>
 
+  
+
   </body>
 </html>
+
