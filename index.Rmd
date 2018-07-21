@@ -52,14 +52,16 @@ The following published papers use `phylopath`:
 
 *2018*
 
-* Sol, D., Maspons, J., Gonzalez-Voyer, A., Morales-Castilla, I., Garamszegi, L.Z. & Møller, A.P.  Behav Ecol Sociobiol (2018) 72: 59. [doi:10.1007/s00265-018-2463-0](https://doi.org/10.1007/s00265-018-2463-0). _Uncredited._
+* Braga, M. P., Araujo, S. B. L., Agosta, S., Brooks, D., Hoberg, E., Nylin, S., Janz, N. & Boeger, W. A. Host use dynamics in a heterogeneous fitness landscape generates oscillations in host range and diversification. _Evolution_. [doi:10.1111/evo.13557](https://doi.org/10.1111/evo.13557).
 
-* Basset, Y., Dahl, C., Ctvrtecka, R., _et al._ A cross‐continental comparison of assemblages of seed‐ and fruit‐feeding insects in tropical rain forests: Faunal composition and rates of attack. J Biogeogr. 2018;00:1–13. [doi:10.1111/jbi.13211](https://doi.org/10.1111/jbi.13211)
+* Sol, D., Maspons, J., Gonzalez-Voyer, A., Morales-Castilla, I., Garamszegi, L.Z. & Møller, A.P. Risk-taking behavior, urbanization and the pace of life in birds. _Behav Ecol Sociobiol_ (2018) 72: 59. [doi:10.1007/s00265-018-2463-0](https://doi.org/10.1007/s00265-018-2463-0). _Uncredited._
 
-* Liao, W. B., Huang, Y., Zeng, Y., Zhong, M. J., Luo, Y. and Lüpold, S. (2018), Ejaculate evolution in external fertilizers: Influenced by sperm competition or sperm limitation? Evolution, 72: 4–17. [doi:10.1111/evo.13372](https://doi.org/10.1111/evo.13372)
+* Basset, Y., Dahl, C., Ctvrtecka, R., _et al._ A cross‐continental comparison of assemblages of seed‐ and fruit‐feeding insects in tropical rain forests: Faunal composition and rates of attack. _J Biogeogr._ 2018;00:1–13. [doi:10.1111/jbi.13211](https://doi.org/10.1111/jbi.13211)
 
-* Lin Zhang, Kun Guo, Guang-Zheng Zhang, Long-Hui Lin and Xiang Ji (2018), Evolutionary transitions in body plan and reproductive mode alter maintenance metabolism in squamates. BMC Evo Biol, 18:45. [doi:10.1186/s12862-018-1166-5](https://doi.org/10.1186/s12862-018-1166-5)
+* Liao, W. B., Huang, Y., Zeng, Y., Zhong, M. J., Luo, Y. and Lüpold, S. (2018), Ejaculate evolution in external fertilizers: Influenced by sperm competition or sperm limitation? _Evolution_, 72: 4–17. [doi:10.1111/evo.13372](https://doi.org/10.1111/evo.13372)
 
-* Xin Yu, Mao Jun Zhong, Da Yong Li, Long Jin, Wen Bo Liao and Alexander Kotrschal (2018). Large‐brained frogs mature later and live longer. Evolution. [doi:10.1111/evo.13478](https://doi.org/10.1111/evo.13478).
+* Lin Zhang, Kun Guo, Guang-Zheng Zhang, Long-Hui Lin and Xiang Ji (2018), Evolutionary transitions in body plan and reproductive mode alter maintenance metabolism in squamates. _BMC Evo Biol_, 18:45. [doi:10.1186/s12862-018-1166-5](https://doi.org/10.1186/s12862-018-1166-5)
+
+* Xin Yu, Mao Jun Zhong, Da Yong Li, Long Jin, Wen Bo Liao and Alexander Kotrschal (2018). Large‐brained frogs mature later and live longer. _Evolution._ [doi:10.1111/evo.13478](https://doi.org/10.1111/evo.13478).
 
 Send me a message to add yours to the list.
