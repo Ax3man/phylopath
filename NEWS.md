@@ -1,3 +1,10 @@
+phylopath 1.0.0.9000 (dev)
+--------------------------------------------------------------------------------
+
+* Fixed bug that would return the wrong model in some error messages.
+
+* Improved reporting of warnings.
+
 phylopath 1.0.0
 --------------------------------------------------------------------------------
 
