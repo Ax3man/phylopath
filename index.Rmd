@@ -52,7 +52,9 @@ The following published papers use `phylopath`:
 
 *2018*
 
-* Liedtke, H. C., Gower, D. J., Wilkinson, M. & Gomez-Mestre, I. Macroevolutionary shift in the size of amphibian genomes and the role of life history and climate. _Nature Eco Evo_. 2018.  [doi:10.1038/s41559-018-0674-4](https://doi.org/10.1038/s41559-018-0674-4)
+* Kennedy, J. D., Borregaard, M. K., Marki, P. Z., Machac, A., Fjeldså, J., and Rahbek, C. Expansion in geographical and morphological space drives continued lineage diversification in a global passerine radiation. _Proceedings B_ 2018: 285. [doi:10.1098/rspb.2018.2181](https://doi.org/10.1098/rspb.2018.2181).
+
+* Liedtke, H. C., Gower, D. J., Wilkinson, M. & Gomez-Mestre, I. Macroevolutionary shift in the size of amphibian genomes and the role of life history and climate. _Nature Eco Evo_. 2018.  [doi:10.1038/s41559-018-0674-4](https://doi.org/10.1038/s41559-018-0674-4).
 
 * Murali, G., Merilaita, S. & Kodandaramaiah, U. Grab my tail: Evolution of dazzle stripes and colourful tails in lizards. _J Evol Biol_ (2018). [doi:10.1111/jeb.13364](https://doi.org/10.1111/jeb.13364).
 
