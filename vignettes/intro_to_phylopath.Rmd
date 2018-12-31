@@ -50,7 +50,7 @@ Please be aware that some `data.frame` extensions like `data.table`s (used by th
 
 ### Models of evolution
 
-You can set different models of evolution just like in `phylolm`, using the `model` parameter. By default `phylopath` uses Pagel's lambda. This model of evolution only applies when fitting regressions to continious variables. The following modelse of evolution are available (per `?phylolm::phylolm`):
+You can set different models of evolution just like in `phylolm`, using the `model` parameter. By default `phylopath` uses Pagel's lambda. This model of evolution only applies when fitting regressions to continuous variables. The following models of evolution are available (per `?phylolm::phylolm`):
 
 * `"BM"`: Brownian motion model.
 * `"OUfixedRoot"`: the Ornstein-Uhlenbeck model with an ancestral state to be estimated at the root.
@@ -122,7 +122,7 @@ plot_model_set(models)
 
 ###Evaluating the model set
 
-Now that we have the model set, we can perform the path analysis using the `phylo_path` function. For this we will need a data set, included in this package as `rhino`, as well as a phylogenetic tree, `rhino_tree`. The package will take care of finding the d-seperation statements and fitting the necessary models.
+Now that we have the model set, we can perform the path analysis using the `phylo_path` function. For this we will need a data set, included in this package as `rhino`, as well as a phylogenetic tree, `rhino_tree`. The package will take care of finding the d-separation statements and fitting the necessary models.
 
 Importantly, when using PGLS, we need to be consistent in which variables are used as independent and dependent variables in the analysis. If one has a specific idea about which variables are to be considered as up- and down-stream, then you can use the `order` argument to give the ordering (from up to down). In this case, we supply the ordering to mimic the choices made by the chapter authors. Alternatively, you can choose to not supply an order, and the function will try to make a sensible order by itself. If the combination of all causal models is itself a DAG, the ordering of that model will be used, otherwise the ordering will be constructed by consensus (i.e. the most common ordering is chosen).
 

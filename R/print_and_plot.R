@@ -38,7 +38,7 @@ print.phylopath <- function(x, ...) {
 
 #' Print out warnings from a phylopath analysis.
 #'
-#' Use this function after running `phylo_path()` to conviniently print any generated warnings
+#' Use this function after running `phylo_path()` to conveniently print any generated warnings
 #' to the screen. You can either provide no arguments, which will only work if you run it directly
 #' after the analysis, or you have to provide the `phylopath` object manually.
 #'

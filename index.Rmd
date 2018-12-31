@@ -14,7 +14,7 @@ knitr::opts_chunk$set(dev = "png", fig.height = 7, fig.width = 7, dpi = 300, out
 
 Use the `phylopath` package for an easy to use framework to perform phylogenetic path analysis (PPA).
 
-PPA can be used to compare support for competing causal models of trait evolution, while taking shared ancesty into account. All you need is:
+PPA can be used to compare support for competing causal models of trait evolution, while taking shared ancestry into account. All you need is:
 1. A clear set of models to test.
 2. A data set of species with trait values.
 3. A phylogeny of your species.
