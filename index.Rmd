@@ -52,6 +52,8 @@ The following published papers use `phylopath`:
 
 *2018*
 
+* Santini, L., González‐Suáre, M., Russo, D., Gonzalez-Voyer, A., Von Hardenberg, A. & Ancilotto, L. One strategy does not fit all: determinants of urban adaptation in mammals. _Ecol Lett_ 2018. [doi:10.1111/ele.13199](https://doi.org/10.1111/ele.13199).
+
 * Kennedy, J. D., Borregaard, M. K., Marki, P. Z., Machac, A., Fjeldså, J., and Rahbek, C. Expansion in geographical and morphological space drives continued lineage diversification in a global passerine radiation. _Proceedings B_ 2018: 285. [doi:10.1098/rspb.2018.2181](https://doi.org/10.1098/rspb.2018.2181).
 
 * Liedtke, H. C., Gower, D. J., Wilkinson, M. & Gomez-Mestre, I. Macroevolutionary shift in the size of amphibian genomes and the role of life history and climate. _Nature Eco Evo_. 2018.  [doi:10.1038/s41559-018-0674-4](https://doi.org/10.1038/s41559-018-0674-4).
