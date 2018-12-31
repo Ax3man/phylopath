@@ -1,9 +1,17 @@
-phylopath 1.0.0.9000 (dev)
+phylopath 1.0.2
+--------------------------------------------------------------------------------
+
+* Prepare for dplyr 0.8.0 release.
+
+phylopath 1.0.1
 --------------------------------------------------------------------------------
 
 * Fixed bug that would return the wrong model in some error messages.
 
-* Improved reporting of warnings.
+* Improved reporting of warnings, and a `show_warnings()` function has been 
+  added.
+
+* Citation info now points to the [PeerJ paper](https://doi.org/10.7717/peerj.4718).
 
 phylopath 1.0.0
 --------------------------------------------------------------------------------
