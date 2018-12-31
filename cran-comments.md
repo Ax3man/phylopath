@@ -8,7 +8,8 @@
 ## winbuilder Dev results
 0 errors | 0 warnings | 1 note
 
-New maintainer note; I have moved to a new university and have a new email.
+The note concerns the flagging of a new maintainer; I have moved to a new 
+university and have a new email.
 
 ## CRAN check:
 
