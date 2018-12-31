@@ -7,9 +7,10 @@
 \method{plot}{fitted_DAG}(x, type = "width", labels = NULL,
   algorithm = "sugiyama", manual_layout = NULL, text_size = 6,
   box_x = 12, box_y = 8, edge_width = 1.25, curvature = 0.02,
-  rotation = 0, flip_x = FALSE, flip_y = FALSE, arrow = grid::arrow(type
-  = "closed", 18, grid::unit(15, "points")), colors = c("firebrick", "navy"),
-  show.legend = TRUE, width_const = NULL, ...)
+  rotation = 0, flip_x = FALSE, flip_y = FALSE,
+  arrow = grid::arrow(type = "closed", 18, grid::unit(15, "points")),
+  colors = c("firebrick", "navy"), show.legend = TRUE,
+  width_const = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{fitted_DAG}.}

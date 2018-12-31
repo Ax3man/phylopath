@@ -4,8 +4,8 @@
 \alias{coef_plot}
 \title{Plot path coefficients and their confidence intervals or standard errors.}
 \usage{
-coef_plot(fitted_DAG, error_bar = "ci", order_by = "default", from = NULL,
-  to = NULL, reverse_order = FALSE)
+coef_plot(fitted_DAG, error_bar = "ci", order_by = "default",
+  from = NULL, to = NULL, reverse_order = FALSE)
 }
 \arguments{
 \item{fitted_DAG}{A fitted DAG, usually obtained by \code{\link[=best]{best()}}, \code{\link[=average]{average()}} or \code{\link[=est_DAG]{est_DAG()}}.}
