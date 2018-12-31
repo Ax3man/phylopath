@@ -81,12 +81,12 @@ find_consensus_order <- function(model_set) {
   # If node1 is commonly ordered above node2, leave as is, otherwise swap them around
   combs <- dplyr::mutate_(combs,
                           tmp = ~node1,
-                          node1 = ~ifelse(count > 0.5 * n(), node1, node2),
-                          node2 = ~ifelse(count > 0.5 * n(), node2, tmp))
+                          node1 = ~ifelse(count > 0.5 * dplyr::n(), node1, node2),
+                          node2 = ~ifelse(count > 0.5 * dplyr::n(), node2, tmp))
   # Now we order the nodes by how many nodes they are above, this should go from n:1
   combs <- dplyr::group_by_(combs, ~node1)
-  combs <- dplyr::mutate_(combs, n = ~n())
-  combs <- dplyr::arrange_(combs, ~desc(n))
+  combs <- dplyr::mutate_(combs, n = ~dplyr::n())
+  combs <- dplyr::arrange_(combs, ~dplyr::desc(n))
   res <- unlist(c(unique(combs$node1), utils::tail(combs, 1)[, 'node2']))
   names(res) <- NULL
   res
