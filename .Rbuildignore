@@ -1,3 +1,4 @@
+^CRAN-RELEASE$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^vignettes/intro_to_phylopath\.html$
