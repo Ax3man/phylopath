@@ -10,7 +10,7 @@ show_warnings(phylopath = NULL)
 \item{phylopath}{A \code{phylopath} object of which the warnings should be printed.}
 }
 \description{
-Use this function after running \code{phylo_path()} to conviniently print any generated warnings
+Use this function after running \code{phylo_path()} to conveniently print any generated warnings
 to the screen. You can either provide no arguments, which will only work if you run it directly
 after the analysis, or you have to provide the \code{phylopath} object manually.
 }
