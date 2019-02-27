@@ -11,7 +11,9 @@ vignette: >
 
 ## Some starting notes
 
-If you are unfamiliar with phylogenetic comparative methods in general, I'd advise you learn more simple methods first. If you are comfortable with phylogenetic methods, but not with phylogenetic path analysis (PPA) in particular, you should have a look at the example below together with the wonderful book chapter by Gonzalez-Voyer and Von Hardenberg.
+If you are unfamiliar with phylogenetic comparative methods in general, I'd advise you learn more simple methods first. If you are comfortable with phylogenetic methods, but not with phylogenetic path analysis (PPA) in particular, you should have a look at the example below together with the wonderful [book chapter](http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf) by Gonzalez-Voyer and Von Hardenberg.
+
+If you're just looking for how to use the package, the [PeerJ paper](https://doi.org/10.7717/peerj.4718) and these vignettes are what you are looking for.
 
 ### Starting up
 
@@ -75,7 +77,7 @@ You can find this book chapter [online](http://www.consevol.org/pdf/Books/Chapte
 
 Specifically, we recreate the Rhinogrades example here. The data used has been included in this package.
 
-###Specifying the model set
+### Specifying the model set
 
 Following figure 8.7, we first create all 9 causal models using the `define_model_set` function. This function uses regression equations (or `formula`s) to express the hypothesized relationships in the models.  Formulas should be of the form `parent ~ child` and describe each path in your model. Multiple children of a single parent can be combined into a single formula: `parent ~ child1 + child2`. Use `.common` to include paths that should appear in all your models.
 
@@ -120,7 +122,7 @@ Or better yet, plot all of the models at once:
 plot_model_set(models)
 ```
 
-###Evaluating the model set
+### Evaluating the model set
 
 Now that we have the model set, we can perform the path analysis using the `phylo_path` function. For this we will need a data set, included in this package as `rhino`, as well as a phylogenetic tree, `rhino_tree`. The package will take care of finding the d-separation statements and fitting the necessary models.
 
@@ -152,7 +154,7 @@ And plotting that summary gives us a quick overview of the support for each mode
 plot(s)
 ```
 
-###Selecting and fitting a final model
+### Selecting and fitting a final model
 
 To view the best ranked model, we can use `best`. This returns a DAG with standardized regression coefficients, as well as a matrix of standard errors. These can be obtained for any particular model we looked at by using the `choice` function.
 

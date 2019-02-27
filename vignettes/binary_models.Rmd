@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-#Introduction
+# Introduction
 
 This vignette gives a short example of how PPA can be applied to binary data sets using `phylopath`. A longer example with more explanation of the code can be found in the other vignette, "intro to phylopath".
 
@@ -19,9 +19,9 @@ There has been some discussion concerning how to best perform logistic regressio
 
 If you have useful opinions or information on this point, feel free to contact me.
 
-#Example analysis
+# Example analysis
 
-###Data and hypotheses
+### Data and hypotheses
 
 This recreates the analysis from the following paper:
 
@@ -43,7 +43,7 @@ It contains five variables:
 
 Under the indirect fitness hypothesis, monogamy is expected to be a major driver of cooperative breeding, while group living, biparental care and diet type may be important contributors towards a direct benefits scenario.
 
-###Defining the causal models
+### Defining the causal models
 
 Following the paper in question, we define 12 putative causal models.
 
@@ -69,7 +69,7 @@ models <- define_model_set(
 plot_model_set(models, algorithm = 'kk')
 ```
 
-###Comparing the models
+### Comparing the models
 
 Now that we have our models, data and a tree, we can compare the models using `phylo_path`
 
@@ -90,7 +90,7 @@ We see that model F is the best supported model. This model notably does not inc
 
 Model L, the second best model, is exactly the same as 
 
-###Evaluating variable importance
+### Evaluating variable importance
 
 Now that we have selected F as our best model, we still have three factors that affect cooperative breeding: diet, social grouping and parental care. Which one is more important? For this we can fit the model and look at magnitude of the coefficients. In this case, since we want to use the best model we use the function `best()`. One can use `choice()` to choose any arbitrary model, or `average()` to average over several models.
 
