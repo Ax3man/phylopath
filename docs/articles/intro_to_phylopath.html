@@ -77,7 +77,7 @@
       <h1>Introduction to phylogenetic path analysis with phylopath</h1>
                         <h4 class="author">Wouter van der Bijl</h4>
             
-            <h4 class="date">2018-12-31</h4>
+            <h4 class="date">2019-02-26</h4>
       
       
       <div class="hidden name"><code>intro_to_phylopath.Rmd</code></div>
@@ -89,21 +89,22 @@
 <div id="some-starting-notes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#some-starting-notes" class="anchor"></a>Some starting notes</h2>
-<p>If you are unfamiliar with phylogenetic comparative methods in general, I’d advise you learn more simple methods first. If you are comfortable with phylogenetic methods, but not with phylogenetic path analysis (PPA) in particular, you should have a look at the example below together with the wonderful book chapter by Gonzalez-Voyer and Von Hardenberg.</p>
+<p>If you are unfamiliar with phylogenetic comparative methods in general, I’d advise you learn more simple methods first. If you are comfortable with phylogenetic methods, but not with phylogenetic path analysis (PPA) in particular, you should have a look at the example below together with the wonderful <a href="http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf">book chapter</a> by Gonzalez-Voyer and Von Hardenberg.</p>
+<p>If you’re just looking for how to use the package, the <a href="https://doi.org/10.7717/peerj.4718">PeerJ paper</a> and these vignettes are what you are looking for.</p>
 <div id="starting-up" class="section level3">
 <h3 class="hasAnchor">
 <a href="#starting-up" class="anchor"></a>Starting up</h3>
 <p>This package follows the general approach to phylogenetic methods as used by the package <code>phylolm</code> (this package is used for model fitting “under the hood”). This means in particular that you line up your phylogenetic tree and data by assigning the tip labels as the row names of your data.frame. (Please note that this is the same for <code>ape</code>, but different from the approach of <code>caper::pgls</code> where you create a comparative data object.)</p>
 <p>Your phylogenetic tree needs to be a <code>phylo</code> object, and many tree files can be read into R using the <code>ape</code> package (which is installed automatically with <code>phylopath</code>). For example:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ape)</a>
-<a class="sourceLine" id="cb1-2" title="2">my_tree &lt;-<span class="st"> </span><span class="kw">read.tree</span>(<span class="st">'my_tree.tre'</span>) <span class="co"># For Newick format trees</span></a>
-<a class="sourceLine" id="cb1-3" title="3">my_tree &lt;-<span class="st"> </span><span class="kw">read.nexus</span>(<span class="st">'my_tree.nex'</span>) <span class="co"># For NEXUS format trees</span></a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ape)</a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">my_tree &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ape/topics/read.tree">read.tree</a></span>(<span class="st">'my_tree.tre'</span>) <span class="co"># For Newick format trees</span></a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">my_tree &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/ape/topics/read.nexus">read.nexus</a></span>(<span class="st">'my_tree.nex'</span>) <span class="co"># For NEXUS format trees</span></a></code></pre></div>
 <p>More info on reading trees can be found <a href="https://www.r-phylo.org/wiki/HowTo/InputtingTrees">on the r-phylo wiki</a>.</p>
 <p>If you have a column in your data that contain the species names, you have to set those names are rownames, e.g. like this:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(my_data) &lt;-<span class="st"> </span>my_data<span class="op">$</span>species_name</a></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(my_data) &lt;-<span class="st"> </span>my_data<span class="op">$</span>species_name</a></code></pre></div>
 <p>Often, tree tip labels don’t have spaces between the genus and species names but underscores (<code>_</code>). If this is the case for you, but you have names with species in your data, you need to replace those spaces. For example:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">my_tree<span class="op">$</span>tip.label <span class="co"># Check the tip labels of your tree</span></a>
-<a class="sourceLine" id="cb3-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(my_data) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">' '</span>, <span class="st">'_'</span>, my_data<span class="op">$</span>species_name_with_spaces)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">my_tree<span class="op">$</span>tip.label <span class="co"># Check the tip labels of your tree</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colnames">rownames</a></span>(my_data) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/grep">gsub</a></span>(<span class="st">' '</span>, <span class="st">'_'</span>, my_data<span class="op">$</span>species_name_with_spaces)</a></code></pre></div>
 <p>Please be aware that some <code>data.frame</code> extensions like <code>data.table</code>s (used by the <code>data.table</code> package) and <code>tibble</code>s (used by the tidyverse packages) do <em>not</em> support rownames, and cannot be used. You can coerce those back to normal <code>data.frames</code> using <code>my_data &lt;- as.data.frame(my_data)</code>.</p>
 <p><code>phylopath</code> makes it’s best attempt at helping you out with your data and tree. That means in particular that:</p>
 <ul>
@@ -115,7 +116,7 @@
 <div id="models-of-evolution" class="section level3">
 <h3 class="hasAnchor">
 <a href="#models-of-evolution" class="anchor"></a>Models of evolution</h3>
-<p>You can set different models of evolution just like in <code>phylolm</code>, using the <code>model</code> parameter. By default <code>phylopath</code> uses Pagel’s lambda. This model of evolution only applies when fitting regressions to continious variables. The following modelse of evolution are available (per <code><a href="https://www.rdocumentation.org/packages/phylolm/topics/phylolm">?phylolm::phylolm</a></code>):</p>
+<p>You can set different models of evolution just like in <code>phylolm</code>, using the <code>model</code> parameter. By default <code>phylopath</code> uses Pagel’s lambda. This model of evolution only applies when fitting regressions to continuous variables. The following models of evolution are available (per <code><a href="https://www.rdocumentation.org/packages/phylolm/topics/phylolm">?phylolm::phylolm</a></code>):</p>
 <ul>
 <li>
 <code>"BM"</code>: Brownian motion model.</li>
@@ -147,25 +148,27 @@
 </blockquote>
 <p>You can find this book chapter <a href="http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf">online</a>. For an introduction to the methodology, as well as the data, see the wonderful book chapter.</p>
 <p>Specifically, we recreate the Rhinogrades example here. The data used has been included in this package.</p>
-<p>###Specifying the model set</p>
+<div id="specifying-the-model-set" class="section level3">
+<h3 class="hasAnchor">
+<a href="#specifying-the-model-set" class="anchor"></a>Specifying the model set</h3>
 <p>Following figure 8.7, we first create all 9 causal models using the <code>define_model_set</code> function. This function uses regression equations (or <code>formula</code>s) to express the hypothesized relationships in the models. Formulas should be of the form <code>parent ~ child</code> and describe each path in your model. Multiple children of a single parent can be combined into a single formula: <code>parent ~ child1 + child2</code>. Use <code>.common</code> to include paths that should appear in all your models.</p>
 <p>This is usually the hardest part of the analysis, both in thinking and in coding. Make sure you have a reasonable set of models that describe the different hypotheses that you want to compare. I’d advise against just trying to run all combinations you can think of. As for the coding, double-check the outcome is actually what you wanted (use the plots below), typos are easily made!</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(phylopath)</a>
-<a class="sourceLine" id="cb4-2" title="2"></a>
-<a class="sourceLine" id="cb4-3" title="3">models &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_model_set.html">define_model_set</a></span>(</a>
-<a class="sourceLine" id="cb4-4" title="4">  <span class="dt">one   =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(RS <span class="op">~</span><span class="st"> </span>DD),</a>
-<a class="sourceLine" id="cb4-5" title="5">  <span class="dt">two   =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(DD <span class="op">~</span><span class="st"> </span>NL, RS <span class="op">~</span><span class="st"> </span>LS <span class="op">+</span><span class="st"> </span>DD),</a>
-<a class="sourceLine" id="cb4-6" title="6">  <span class="dt">three =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(RS <span class="op">~</span><span class="st"> </span>NL),</a>
-<a class="sourceLine" id="cb4-7" title="7">  <span class="dt">four  =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(RS <span class="op">~</span><span class="st"> </span>BM <span class="op">+</span><span class="st"> </span>NL),</a>
-<a class="sourceLine" id="cb4-8" title="8">  <span class="dt">five  =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(RS <span class="op">~</span><span class="st"> </span>BM <span class="op">+</span><span class="st"> </span>NL <span class="op">+</span><span class="st"> </span>DD),</a>
-<a class="sourceLine" id="cb4-9" title="9">  <span class="dt">six   =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(NL <span class="op">~</span><span class="st"> </span>RS, RS <span class="op">~</span><span class="st"> </span>BM),</a>
-<a class="sourceLine" id="cb4-10" title="10">  <span class="dt">seven =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(NL <span class="op">~</span><span class="st"> </span>RS, RS <span class="op">~</span><span class="st"> </span>LS <span class="op">+</span><span class="st"> </span>BM),</a>
-<a class="sourceLine" id="cb4-11" title="11">  <span class="dt">eight =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(NL <span class="op">~</span><span class="st"> </span>RS),</a>
-<a class="sourceLine" id="cb4-12" title="12">  <span class="dt">nine  =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(NL <span class="op">~</span><span class="st"> </span>RS, RS <span class="op">~</span><span class="st"> </span>LS),</a>
-<a class="sourceLine" id="cb4-13" title="13">  <span class="dt">.common =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(LS <span class="op">~</span><span class="st"> </span>BM, NL <span class="op">~</span><span class="st"> </span>BM, DD <span class="op">~</span><span class="st"> </span>NL)</a>
-<a class="sourceLine" id="cb4-14" title="14">)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(phylopath)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3">models &lt;-<span class="st"> </span><span class="kw"><a href="../reference/define_model_set.html">define_model_set</a></span>(</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4">  <span class="dt">one   =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(RS <span class="op">~</span><span class="st"> </span>DD),</a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">  <span class="dt">two   =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(DD <span class="op">~</span><span class="st"> </span>NL, RS <span class="op">~</span><span class="st"> </span>LS <span class="op">+</span><span class="st"> </span>DD),</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6">  <span class="dt">three =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(RS <span class="op">~</span><span class="st"> </span>NL),</a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">  <span class="dt">four  =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(RS <span class="op">~</span><span class="st"> </span>BM <span class="op">+</span><span class="st"> </span>NL),</a>
+<a class="sourceLine" id="cb4-8" data-line-number="8">  <span class="dt">five  =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(RS <span class="op">~</span><span class="st"> </span>BM <span class="op">+</span><span class="st"> </span>NL <span class="op">+</span><span class="st"> </span>DD),</a>
+<a class="sourceLine" id="cb4-9" data-line-number="9">  <span class="dt">six   =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(NL <span class="op">~</span><span class="st"> </span>RS, RS <span class="op">~</span><span class="st"> </span>BM),</a>
+<a class="sourceLine" id="cb4-10" data-line-number="10">  <span class="dt">seven =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(NL <span class="op">~</span><span class="st"> </span>RS, RS <span class="op">~</span><span class="st"> </span>LS <span class="op">+</span><span class="st"> </span>BM),</a>
+<a class="sourceLine" id="cb4-11" data-line-number="11">  <span class="dt">eight =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(NL <span class="op">~</span><span class="st"> </span>RS),</a>
+<a class="sourceLine" id="cb4-12" data-line-number="12">  <span class="dt">nine  =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(NL <span class="op">~</span><span class="st"> </span>RS, RS <span class="op">~</span><span class="st"> </span>LS),</a>
+<a class="sourceLine" id="cb4-13" data-line-number="13">  <span class="dt">.common =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(LS <span class="op">~</span><span class="st"> </span>BM, NL <span class="op">~</span><span class="st"> </span>BM, DD <span class="op">~</span><span class="st"> </span>NL)</a>
+<a class="sourceLine" id="cb4-14" data-line-number="14">)</a></code></pre></div>
 <p>The <code>define_model_set</code> function simply produces a set of matrices that summarize the connections between the variables. For example:</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">models<span class="op">$</span>one</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">models<span class="op">$</span>one</a></code></pre></div>
 <pre><code>##    BM NL DD RS LS
 ## BM  0  1  0  0  1
 ## NL  0  0  1  0  0
@@ -175,19 +178,22 @@
 ## attr(,"class")
 ## [1] "matrix" "DAG"</code></pre>
 <p>It is good to check if the DAG looks like you were expecting. Instead of staring at a bunch of matrices, simply <code>plot</code> one of the models to inspect it visually.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(models<span class="op">$</span>one)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(models<span class="op">$</span>one)</a></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-7-1.png" width="450px"></p>
 <p>Or better yet, plot all of the models at once:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="../reference/plot_model_set.html">plot_model_set</a></span>(models)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="../reference/plot_model_set.html">plot_model_set</a></span>(models)</a></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-8-1.png" width="600px"></p>
-<p>###Evaluating the model set</p>
-<p>Now that we have the model set, we can perform the path analysis using the <code>phylo_path</code> function. For this we will need a data set, included in this package as <code>rhino</code>, as well as a phylogenetic tree, <code>rhino_tree</code>. The package will take care of finding the d-seperation statements and fitting the necessary models.</p>
+</div>
+<div id="evaluating-the-model-set" class="section level3">
+<h3 class="hasAnchor">
+<a href="#evaluating-the-model-set" class="anchor"></a>Evaluating the model set</h3>
+<p>Now that we have the model set, we can perform the path analysis using the <code>phylo_path</code> function. For this we will need a data set, included in this package as <code>rhino</code>, as well as a phylogenetic tree, <code>rhino_tree</code>. The package will take care of finding the d-separation statements and fitting the necessary models.</p>
 <p>Importantly, when using PGLS, we need to be consistent in which variables are used as independent and dependent variables in the analysis. If one has a specific idea about which variables are to be considered as up- and down-stream, then you can use the <code>order</code> argument to give the ordering (from up to down). In this case, we supply the ordering to mimic the choices made by the chapter authors. Alternatively, you can choose to not supply an order, and the function will try to make a sensible order by itself. If the combination of all causal models is itself a DAG, the ordering of that model will be used, otherwise the ordering will be constructed by consensus (i.e. the most common ordering is chosen).</p>
 <p><strong>Generally, I advise to not supply the order argument, in order to reduce “researcher degrees of freedom”.</strong></p>
 <p>By default, <code>phylo_path</code> uses Pagel’s “lambda” model of evolution (specified here for clarity), but if you want, for example, to use a simple Brownian motion model, you can supply <code>model = 'BM'</code> instead.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/phylo_path.html">phylo_path</a></span>(models, <span class="dt">data =</span> rhino, <span class="dt">tree =</span> rhino_tree, <span class="dt">model =</span> <span class="st">'lambda'</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">result &lt;-<span class="st"> </span><span class="kw"><a href="../reference/phylo_path.html">phylo_path</a></span>(models, <span class="dt">data =</span> rhino, <span class="dt">tree =</span> rhino_tree, <span class="dt">model =</span> <span class="st">'lambda'</span>)</a></code></pre></div>
 <p>The result we end up with is a <code>phylo_path</code> object. Simply printing it gives us a quick summary of what is in the object. In this case we end up with five continuous variables, nine causal models and 21 unique regressions.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">result</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">result</a></code></pre></div>
 <pre><code>## A phylogenetic path analysis, on the variables:
 ##  Continuous:  BM NL DD RS LS 
 ##  Binary:       
@@ -196,7 +202,7 @@
 ## 
 ##  Containing 46 phylogenetic regressions, of which 21 unique</code></pre>
 <p>To get an overview of the analysis, we can ask for its <code>summary</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">(s &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(result))</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">(s &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary</a></span>(result))</a></code></pre></div>
 <pre><code>##   model k  q      C     p   CICc delta_CICc     l     w
 ## 1 eight 6  9  6.113 0.910 26.113      0.000 1.000 0.357
 ## 2   six 5 10  4.971 0.893 27.443      1.330 0.514 0.183
@@ -208,12 +214,15 @@
 ## 8   one 6  9 62.007 0.000 82.007     55.894 0.000 0.000
 ## 9   two 5 10 60.967 0.000 83.438     57.325 0.000 0.000</code></pre>
 <p>And plotting that summary gives us a quick overview of the support for each model:</p>
-<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(s)</a></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(s)</a></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-12-1.png" width="450px"></p>
-<p>###Selecting and fitting a final model</p>
+</div>
+<div id="selecting-and-fitting-a-final-model" class="section level3">
+<h3 class="hasAnchor">
+<a href="#selecting-and-fitting-a-final-model" class="anchor"></a>Selecting and fitting a final model</h3>
 <p>To view the best ranked model, we can use <code>best</code>. This returns a DAG with standardized regression coefficients, as well as a matrix of standard errors. These can be obtained for any particular model we looked at by using the <code>choice</code> function.</p>
-<p>_Note: These functions can also obtain confidence intervals for the estimates, which <code>phylolm</code> achieves through bootstrapping. This makes these very slow though, and by default this is turned off. Pass the number of bootstrap replicates you want to any modelling function in this package via the <code>boot</code> parameter to estimate confidence intervals, e.g. <code><a href="../reference/best.html">best(result, boot = 500)</a></code>. Either standard errors or confidence intervals can be plotted with <code>coef_plot</code> (see below).</p>
-<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">(best_model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/best.html">best</a></span>(result))</a></code></pre></div>
+<p>_Note: These functions can also obtain confidence intervals for the estimates, which <code>phylolm</code> achieves through bootstrapping. This makes these very slow though, and by default this is turned off. Pass the number of bootstrap replicates you want to any modelling function in this package via the <code>boot</code> parameter to estimate confidence intervals, e.g. <code><a href="../reference/best.html">best(result, boot = 500)</a></code>. Either standard errors or confidence intervals can be plotted with <code>coef_plot</code> (see below).</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">(best_model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/best.html">best</a></span>(result))</a></code></pre></div>
 <pre><code>## $coef
 ##    BM        LS RS        NL        DD
 ## BM  0 0.4973937  0 0.4613623 0.0000000
@@ -233,26 +242,26 @@
 ## attr(,"class")
 ## [1] "fitted_DAG"</code></pre>
 <p>This object can also be plotted, now the numbers and width of the arrow represent path coefficients. In this case, all paths are green since all relationships are positive.</p>
-<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(best_model)</a></code></pre></div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(best_model)</a></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-14-1.png" width="450px"></p>
 <p>From the summary we could see that in reality, there are several models that are quite good. Instead of using the best model, we can use the average of the best models, weighted by their relative evidence. By simply calling <code>average</code>, we can obtain the coefficients and standard errors of the averaged model where the CICc <code>cut_off</code> is 2 by default. If a model does not include a path, we assume that coefficient to be 0.</p>
-<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1">average_model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/average.html">average</a></span>(result)</a>
-<a class="sourceLine" id="cb18-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(average_model, <span class="dt">algorithm =</span> <span class="st">'mds'</span>, <span class="dt">curvature =</span> <span class="fl">0.1</span>) <span class="co"># increase the curvature to avoid overlapping edges</span></a></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1">average_model &lt;-<span class="st"> </span><span class="kw"><a href="../reference/average.html">average</a></span>(result)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(average_model, <span class="dt">algorithm =</span> <span class="st">'mds'</span>, <span class="dt">curvature =</span> <span class="fl">0.1</span>) <span class="co"># increase the curvature to avoid overlapping edges</span></a></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-15-1.png" width="450px"></p>
 <p>Note that, by default, the path averaging is only done for the models that actually contain that path. This facilitates the detection of weak effects, but also biases coefficients away from zero. Alternatively, we can assume the coefficients (and their variance) for absent paths to be zero by setting <code>avg_method = "full"</code>.</p>
-<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1">average_model_full &lt;-<span class="st"> </span><span class="kw"><a href="../reference/average.html">average</a></span>(result, <span class="dt">avg_method =</span> <span class="st">"full"</span>)</a>
-<a class="sourceLine" id="cb19-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(average_model_full, <span class="dt">algorithm =</span> <span class="st">'mds'</span>, <span class="dt">curvature =</span> <span class="fl">0.1</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1">average_model_full &lt;-<span class="st"> </span><span class="kw"><a href="../reference/average.html">average</a></span>(result, <span class="dt">avg_method =</span> <span class="st">"full"</span>)</a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/graphics/topics/plot">plot</a></span>(average_model_full, <span class="dt">algorithm =</span> <span class="st">'mds'</span>, <span class="dt">curvature =</span> <span class="fl">0.1</span>)</a></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-16-1.png" width="450px"></p>
 <p>We can see that paths that occur in all the best models, such as NL -&gt; DD, are not effected. But paths that occur only in some models, such as NL -&gt; RS, suffer <em>shrinkage</em> reflecting the fact that they were not as well supported.</p>
 <p>In this case in particular, the average model is actually not a DAG since it is cyclical and the relationship between RS and NL is clearly not well resolved by our analysis.</p>
 <p>If one is interested in the confidence in the regression coefficients, <code>coef_plot</code> can visualize the estimates and their approximate confidence intervals (you need to use the <code>boot</code> parameter when fitting the DAG if you are not model averaging, see above). We can see that for the . The order of the paths from left to right, attempts to follow the paths downstream, in this indicated by the <code>order</code> argument we gave the <code>phylo_path</code> function at the start.</p>
-<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="co">#coef_plot(average_model)</span></a></code></pre></div>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1"><span class="co">#coef_plot(average_model)</span></a></code></pre></div>
 <p>This plot, and others in the package, can be manipulated using <code>ggplot2</code> functions, for example, to create a horizontal black-and-white version. We can see that for full average model, shrinkage has caused several paths to become uncertain.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"><span class="co"># coef_plot(average_model_full, reverse_order = TRUE) + </span></a>
-<a class="sourceLine" id="cb21-2" title="2"><span class="co">#   ggplot2::coord_flip() + </span></a>
-<a class="sourceLine" id="cb21-3" title="3"><span class="co">#   ggplot2::theme_bw()</span></a></code></pre></div>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># coef_plot(average_model_full, reverse_order = TRUE) + </span></a>
+<a class="sourceLine" id="cb21-2" data-line-number="2"><span class="co">#   ggplot2::coord_flip() + </span></a>
+<a class="sourceLine" id="cb21-3" data-line-number="3"><span class="co">#   ggplot2::theme_bw()</span></a></code></pre></div>
 <p>Finally, you can access the conditional independencies and their associated p-values as well. This can be useful if you want to know <em>why</em> a certain model was rejected. The <code>phylo</code> column gives us the estimates for the correlation structure for each of the fitted models, in this case <em>lambda</em> since we used <code>corPagel</code>. For binary models this shows <em>s2</em>, which also reflects the strength of phylogenetic signal. Finally, all models are stored in the <code>model</code> list as well, in case other information needs to be extracted.</p>
-<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">result<span class="op">$</span>d_sep<span class="op">$</span>one</a></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">result<span class="op">$</span>d_sep<span class="op">$</span>one</a></code></pre></div>
 <pre><code>## # A tibble: 6 x 4
 ##   d_sep                    p phylo_par model        
 ##   &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt; &lt;list&gt;       
@@ -263,6 +272,7 @@
 ## 5 DD ~ NL + BM + LS 5.69e- 1     0.403 &lt;S3: phylolm&gt;
 ## 6 RS ~ DD + BM + LS 9.74e- 1     0.528 &lt;S3: phylolm&gt;</code></pre>
 <p>For model 1 it seems that the third conditional independence statement was violated (it has a very small p-value).</p>
+</div>
 </div>
   </div>
 

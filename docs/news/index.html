@@ -109,25 +109,25 @@
       
     </div>
 
-    <div id="phylopath-102" class="section level2">
+    <div id="phylopath-1-0-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#phylopath-102" class="anchor"></a>phylopath 1.0.2</h2>
+<a href="#phylopath-1-0-2" class="anchor"></a>phylopath 1.0.2</h2>
 <ul>
 <li>Prepare for dplyr 0.8.0 release.</li>
 </ul>
 </div>
-    <div id="phylopath-101" class="section level2">
+    <div id="phylopath-1-0-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#phylopath-101" class="anchor"></a>phylopath 1.0.1</h2>
+<a href="#phylopath-1-0-1" class="anchor"></a>phylopath 1.0.1</h2>
 <ul>
 <li><p>Fixed bug that would return the wrong model in some error messages.</p></li>
 <li><p>Improved reporting of warnings, and a <code><a href="../reference/show_warnings.html">show_warnings()</a></code> function has been added.</p></li>
 <li><p>Citation info now points to the <a href="https://doi.org/10.7717/peerj.4718">PeerJ paper</a>.</p></li>
 </ul>
 </div>
-    <div id="phylopath-100" class="section level2">
+    <div id="phylopath-1-0-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#phylopath-100" class="anchor"></a>phylopath 1.0.0</h2>
+<a href="#phylopath-1-0-0" class="anchor"></a>phylopath 1.0.0</h2>
 <ul>
 <li><p>Citation info now points to the <a href="https://www.biorxiv.org/content/early/2017/10/31/212068">bioRxiv paper</a>.</p></li>
 <li><p>All modeling functions now completely rely on the <code>phylolm</code> package, and no longer use <code>ape</code>. This is a major change, that will possibly change the outcomes of some of your existing analyses (as can happen when chaning the modeling package). There are, however, several good reasons to make this change, which I think make it worth the trouble. Firstly, the package is much faster for large trees, and this effect is compounded in <code>phylopath</code> because one may have to fit a few dozen models. Secondly, I think it is important to have confidence intervals around the regression coefficients, and those were not available for <code><a href="https://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">ape::binaryPGLMM</a></code>. Thirdly, <code>phylolm</code> makes it easy to use a larger variety of models of evolution, including two versions of OU and early burst, which can be simply set using the <code>model</code> parameter. Lastly, the <code>phylolm()</code> and <code>phyloglm()</code> functions give more uniform results, which makes it easier to code for situation where you may use both.</p></li>
@@ -141,27 +141,27 @@
 <li><p>Added support for additional arguments passed to <code>gls</code> from <code>phylo_path</code>. This can be helpful, for example, for setting the fitting method to maximum likelihood (<code>method = "ML"</code>).</p></li>
 </ul>
 </div>
-    <div id="phylopath-031" class="section level2">
+    <div id="phylopath-0-3-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#phylopath-031" class="anchor"></a>phylopath 0.3.1</h2>
+<a href="#phylopath-0-3-1" class="anchor"></a>phylopath 0.3.1</h2>
 <p>####Bugfixes:</p>
 <ul>
 <li><p>The package broke due to an update of <code>purrr</code>, but has now been fixed (reported by Christoph Liedtke, <a href='https://github.com/hcliedtke'>@hcliedtke</a>).</p></li>
 <li><p>The package depends on a recent version of <code>nlme</code>, but this wasn’t specified. All package versions of dependencies are now defined (reported by <a href='https://github.com/ManuelaGonzalez'>@ManuelaGonzalez</a>).</p></li>
 </ul>
 </div>
-    <div id="phylopath-030" class="section level2">
+    <div id="phylopath-0-3-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#phylopath-030" class="anchor"></a>phylopath 0.3.0</h2>
+<a href="#phylopath-0-3-0" class="anchor"></a>phylopath 0.3.0</h2>
 <ul>
 <li><p>Added support for completely binary models, that are fitted with <code><a href="https://www.rdocumentation.org/packages/ape/topics/binaryPGLMM">ape::binaryPGLMM</a></code>. Use <code>phylo_path_binary()</code> to compare models. <code><a href="../reference/average.html">average()</a></code>, <code><a href="../reference/best.html">best()</a></code> and <code><a href="../reference/choice.html">choice()</a></code> are now S3 generics and will handle both continuous and binary versions. Usage is designed to be as close to the continuous version as possible. <code>est_DAG_binary()</code> powers the binary S3 methods.</p></li>
 <li><p>All plot functions that used <code>DiagrammeR</code> now use <code>ggraph</code> instead. This gives much more control over the positioning of the nodes, and allows to plot multiple models at once. Exporting plots also becomes much easier.</p></li>
 <li><p>You can now plot a list of causal models with <code><a href="../reference/plot_model_set.html">plot_model_set()</a></code>. This creates a faceted plot where all nodes are kept in the same location, which makes it easier to spot how models are different.</p></li>
 </ul>
 </div>
-    <div id="phylopath-023" class="section level2">
+    <div id="phylopath-0-2-3" class="section level2">
 <h2 class="hasAnchor">
-<a href="#phylopath-023" class="anchor"></a>phylopath 0.2.3</h2>
+<a href="#phylopath-0-2-3" class="anchor"></a>phylopath 0.2.3</h2>
 <ul>
 <li><p>If there are any <code>NA</code> values in <code>data</code> for the variables in <code>models</code>, these rows are now dropped from <code>data</code> with a message. Use <code>na.rm = FALSE</code> to revert to the old behavior.</p></li>
 <li><p>When PGLS models fail, an informative error is now returned to the user.</p></li>
@@ -169,9 +169,9 @@
 <li><p><code><a href="https://www.rdocumentation.org/packages/utils/topics/citation">citation()</a></code> now correctly refers to the methods paper by Von Hardenberg &amp; Gonzalez-Voyer first and the package second.</p></li>
 </ul>
 </div>
-    <div id="phylopath-022" class="section level2">
+    <div id="phylopath-0-2-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#phylopath-022" class="anchor"></a>phylopath 0.2.2</h2>
+<a href="#phylopath-0-2-2" class="anchor"></a>phylopath 0.2.2</h2>
 <ul>
 <li><p>Fewer models are now fitted when using <code><a href="../reference/phylo_path.html">phylo_path()</a></code>, since any duplicated independence statements are now only fitted once. This leads to a significant reduction in running time in many cases, especially when many models are considered.</p></li>
 <li><p>Implemented support for parallel processing in <code><a href="../reference/phylo_path.html">phylo_path()</a></code> using the <code>parallel</code> argument.</p></li>
@@ -180,18 +180,18 @@
 <li><p>Prepared plotting functions for new release of <code>DiagrammeR</code>, v0.9 now required.</p></li>
 </ul>
 </div>
-    <div id="phylopath-021" class="section level2">
+    <div id="phylopath-0-2-1" class="section level2">
 <h2 class="hasAnchor">
-<a href="#phylopath-021" class="anchor"></a>phylopath 0.2.1</h2>
+<a href="#phylopath-0-2-1" class="anchor"></a>phylopath 0.2.1</h2>
 <ul>
 <li><p>IMPORTANT: Faulty model averaging has been fixed. This was often introduced due to differences in matrix ordering. Averaging results from versions before 0.2.1 should NOT be trusted.</p></li>
 <li><p>Using <code><a href="https://www.rdocumentation.org/packages/ape/topics/corBrownian">ape::corBrownian()</a></code> no longer returns an error.</p></li>
 <li><p>Averaging is less likely to fail due to errors in <code><a href="https://www.rdocumentation.org/packages/nlme/topics/intervals">nlme::intervals()</a></code>.</p></li>
 </ul>
 </div>
-    <div id="phylopath-020" class="section level2">
+    <div id="phylopath-0-2-0" class="section level2">
 <h2 class="hasAnchor">
-<a href="#phylopath-020" class="anchor"></a>phylopath 0.2.0</h2>
+<a href="#phylopath-0-2-0" class="anchor"></a>phylopath 0.2.0</h2>
 <ul>
 <li><p><code><a href="../reference/phylo_path.html">phylo_path()</a></code> has become more streamlined with functionality moved to other functions. The <code>phylopath</code> object now contains all necessary models and data, <code><a href="https://www.rdocumentation.org/packages/base/topics/summary">summary()</a></code> is used to obtain the results table, and <code><a href="../reference/best.html">best()</a></code> and <code><a href="../reference/average.html">average()</a></code> are used to extract and fit the best or average model. See the vignette for details.</p></li>
 <li><p>Model averaging for arbitrary models is now possible with <code><a href="../reference/average_DAGs.html">average_DAGs()</a></code>.</p></li>
@@ -207,15 +207,15 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#phylopath-102">1.0.2</a></li>
-        <li><a href="#phylopath-101">1.0.1</a></li>
-        <li><a href="#phylopath-100">1.0.0</a></li>
-        <li><a href="#phylopath-031">0.3.1</a></li>
-        <li><a href="#phylopath-030">0.3.0</a></li>
-        <li><a href="#phylopath-023">0.2.3</a></li>
-        <li><a href="#phylopath-022">0.2.2</a></li>
-        <li><a href="#phylopath-021">0.2.1</a></li>
-        <li><a href="#phylopath-020">0.2.0</a></li>
+        <li><a href="#phylopath-1-0-2">1.0.2</a></li>
+        <li><a href="#phylopath-1-0-1">1.0.1</a></li>
+        <li><a href="#phylopath-1-0-0">1.0.0</a></li>
+        <li><a href="#phylopath-0-3-1">0.3.1</a></li>
+        <li><a href="#phylopath-0-3-0">0.3.0</a></li>
+        <li><a href="#phylopath-0-2-3">0.2.3</a></li>
+        <li><a href="#phylopath-0-2-2">0.2.2</a></li>
+        <li><a href="#phylopath-0-2-1">0.2.1</a></li>
+        <li><a href="#phylopath-0-2-0">0.2.0</a></li>
       </ul>
     </div>
   </div>

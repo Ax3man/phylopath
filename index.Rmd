@@ -50,6 +50,10 @@ plot(choice(result, 'five'), rotation = 10, curvature = -0.05, flip_x = TRUE)
 
 The following published papers use `phylopath`:
 
+*2019*
+
+* Guo W.‐Y., van Kleunen M., Pierce S., _et al._ Domestic gardens play a dominant role in selecting alien species with adaptive strategies that facilitate naturalization. _Global Ecol Biogeogr_ 2019, 00:1–12. [doi:10.1111/geb.12882](https://doi.org/10.1111/geb.12882)
+
 *2018*
 
 * Santini, L., González‐Suáre, M., Russo, D., Gonzalez-Voyer, A., Von Hardenberg, A. & Ancilotto, L. One strategy does not fit all: determinants of urban adaptation in mammals. _Ecol Lett_ 2018. [doi:10.1111/ele.13199](https://doi.org/10.1111/ele.13199).
