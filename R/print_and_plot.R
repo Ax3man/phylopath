@@ -209,14 +209,19 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
   error_bar <- match.arg(error_bar, c('ci', 'se'), several.ok = FALSE)
   order_by <- match.arg(order_by, c('default', 'causal', 'strength'), FALSE)
   if (error_bar == 'ci' & is.null(fitted_DAG$lower)) {
-    message('The fitted model does not contain confidence intervals, so showing standard errors
-            instead. Fit the model with `boot` larger than 0 to get confidence intervals, or set
-            `error_bar = "se"` to avoid this warning.')
+    message(
+    'The fitted model does not contain confidence intervals, so showing standard errors instead. ',
+    'Fit the model with `boot` larger than 0 to get confidence intervals, or set `error_bar = "se"` ',
+    'to avoid this warning.'
+    )
     error_bar <- 'se'
   }
+  v <- colnames(fitted_DAG$coef)
   df <- as.data.frame(fitted_DAG$coef)
-  df <- tibble::rownames_to_column(df, 'from')
-  df <- tidyr::gather_(df, 'to', 'coef', colnames(fitted_DAG$coef))
+  df$from <- rownames(df)
+  df <- stats::reshape(df, varying = v, 'coef', direction = 'long')
+  df$to <- v[df$time]
+
   if (error_bar == 'ci') {
     df$lower <- c(fitted_DAG$lower)
     df$upper <- c(fitted_DAG$upper)
