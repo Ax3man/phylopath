@@ -159,11 +159,17 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
 summary.phylopath <- function(object, ...) {
   phylopath <- object
   stopifnot(inherits(phylopath, 'phylopath'))
+  n <- nrow(phylopath$data)
   k <- sapply(phylopath$d_sep, nrow)
   q <- sapply(phylopath$model_set, function(m) nrow(m) + sum(m))
   C <- sapply(phylopath$d_sep, function(x) C_stat(x$p))
   p <- C_p(C, k)
-  IC <- CICc(C, q, nrow(phylopath$data))
+  IC <- CICc(C, q, n)
+
+  if (n > max(q)) {
+    IC[n <= q] <- NA
+    warning('CICc was not calculated for causal models where the number of parameters is equal to or larger than the number of species.')
+  }
 
   d <- data.frame(
     model = names(phylopath$model_set), k = k, q = q, C = C, p = p,
