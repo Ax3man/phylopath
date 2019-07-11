@@ -83,13 +83,15 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
     order <- find_consensus_order(model_set)
   }
   formulas <- lapply(model_set, find_formulas, order)
-  formulas <- purrr::map(formulas,
-                         ~purrr::map(.x, ~{attr(., ".Environment") <- NULL; .}))
+  formulas <- purrr::map(
+    formulas,
+    ~purrr::map(.x, ~{attr(., ".Environment") <- NULL; .})
+  )
   f_list <- unique(unlist(formulas))
   if (!is.null(parallel)) {
-    cl <- parallel::makeCluster(min(c(parallel::detectCores() - 1,
-                                      length(f_list))),
-                                parallel)
+    cl <- parallel::makeCluster(
+      min(c(parallel::detectCores() - 1,length(f_list))), parallel
+    )
     parallel::clusterExport(cl, list('phylo_g_lm'), environment())
     on.exit(parallel::stopCluster(cl))
   } else {
@@ -103,19 +105,28 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
     data = data, tree = tree, model = model, method = method, cl = cl)
   # Produce appropriate error if needed
   errors <- purrr::map(dsep_models_runs, 'error')
-  purrr::map2(errors, f_list,
-              ~if(!is.null(.x))
-                stop(paste('Fitting the following model:\n   ',
-                           Reduce(paste, deparse(.y)),
-                           '\nproduced this error:\n   ', .x),
-                     call. = FALSE))
+  purrr::map2(
+    errors, f_list,
+    ~if(!is.null(.x))
+      stop(paste(
+        'Fitting the following model:\n   ',
+        Reduce(paste, deparse(.y)),
+        '\nproduced this error:\n   ',
+        .x
+      ), call. = FALSE)
+  )
   # Collect warnings as well, but save those for later.
   warnings <- purrr::map(dsep_models_runs, 'warning')
-  warnings <- purrr::map2(warnings, f_list,
-                          ~if(!is.null(.x))
-                             paste('Fitting the following model:\n   ',
-                                       Reduce(paste, deparse(.y)),
-                                       '\nproduced this/these warning(s):\n   ', .x))
+  warnings <- purrr::map2(
+    warnings, f_list,
+    ~if(!is.null(.x))
+      paste(
+        'Fitting the following model:\n   ',
+        Reduce(paste, deparse(.y)),
+        '\nproduced this/these warning(s):\n   ',
+        .x
+      )
+  )
   warnings <- warnings(!sapply(warnings, is.null))
   if (length(warnings) > 1) {
     warning('Some models produced warnings. Use `show_warnings()` to view them.')
@@ -128,7 +139,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
   d_sep <- purrr::map2(
     formulas,
     dsep_models,
-    ~dplyr::data_frame(
+    ~dplyr::tibble(
       d_sep = as.character(.x),
       p = purrr::map_dbl(.y, get_p),
       phylo_par = purrr::map_dbl(.y, get_phylo_param),
@@ -136,8 +147,10 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
     )
   )
 
-  out <- list(d_sep = d_sep, model_set = model_set, data = data, tree = tree,
-              model = model, method = method, dots = list(...), warnings = warnings)
+  out <- list(
+    d_sep = d_sep, model_set = model_set, data = data, tree = tree, model = model, method = method,
+    dots = list(...), warnings = warnings
+  )
   class(out) <- 'phylopath'
   return(out)
 }
@@ -152,8 +165,10 @@ summary.phylopath <- function(object, ...) {
   p <- C_p(C, k)
   IC <- CICc(C, q, nrow(phylopath$data))
 
-  d <- data.frame(model = names(phylopath$model_set), k = k, q = q, C = C, p = p,
-                  CICc = IC, stringsAsFactors = FALSE)
+  d <- data.frame(
+    model = names(phylopath$model_set), k = k, q = q, C = C, p = p,
+    CICc = IC, stringsAsFactors = FALSE
+  )
   d <- d[order(d$CICc), ]
   d$delta_CICc <- d$CICc - d$CICc[1]
   d$l <- l(d$delta_CICc)
@@ -221,8 +236,12 @@ choice <- function(phylopath, choice, ...) {
 
   do.call(
     est_DAG,
-    c(list(phylopath$model_set[[choice]], phylopath$data, phylopath$tree, phylopath$model,
-           phylopath$method), dots)
+    c(
+      list(
+        phylopath$model_set[[choice]], phylopath$data, phylopath$tree, phylopath$model,
+        phylopath$method),
+      dots
+    )
   )
 }
 
@@ -282,8 +301,12 @@ average <- function(phylopath, cut_off = 2, avg_method = 'conditional', ...) {
     function(x) {
       do.call(
         est_DAG,
-        c(list(DAG = x, data = phylopath$data, tree = phylopath$tree, model = phylopath$model,
-               method = phylopath$method), dots)
+        c(
+          list(
+            DAG = x, data = phylopath$data, tree = phylopath$tree, model = phylopath$model,
+            method = phylopath$method),
+          dots
+        )
       )
     }
   )
