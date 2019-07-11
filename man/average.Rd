@@ -34,9 +34,10 @@ Extract and average the best supported models from a phylogenetic path
 analysis.
 }
 \examples{
-  candidates <- list(
-    A = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ BM + NL),
-    B = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL)
+  candidates <- define_model_set(
+    A = NL ~ BM,
+    B = NL ~ LS,
+    .common = c(LS ~ BM, DD ~ NL)
   )
   p <- phylo_path(candidates, rhino, rhino_tree)
   summary(p)

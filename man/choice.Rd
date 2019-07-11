@@ -22,8 +22,11 @@ An object of class \code{fitted_DAG}.
 Extract and estimate an arbitrary model from a phylogenetic path analysis.
 }
 \examples{
-  candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
-                     B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+  candidates <- define_model_set(
+    A = NL ~ BM,
+    B = NL ~ LS,
+    .common = c(LS ~ BM, DD ~ NL)
+  )
   p <- phylo_path(candidates, rhino, rhino_tree)
   my_model <- choice(p, "B")
   # Print the best model to see coefficients, se and ci:

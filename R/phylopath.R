@@ -61,8 +61,11 @@
 #' @export
 #' @examples
 #'   #see vignette('intro_to_phylopath') for more details
-#'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
-#'                      B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+#'   candidates <- define_model_set(
+#'     A = NL ~ BM,
+#'     B = NL ~ LS,
+#'     .common = c(LS ~ BM, DD ~ NL)
+#'   )
 #'   p <- phylo_path(candidates, rhino, rhino_tree)
 #'
 #'   # Printing p gives some general information:
@@ -194,8 +197,11 @@ summary.phylopath <- function(object, ...) {
 #' @export
 #'
 #' @examples
-#'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
-#'                      B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+#'   candidates <- define_model_set(
+#'     A = NL ~ BM,
+#'     B = NL ~ LS,
+#'     .common = c(LS ~ BM, DD ~ NL)
+#'   )
 #'   p <- phylo_path(candidates, rhino, rhino_tree)
 #'   best_model <- best(p)
 #'   # Print the best model to see coefficients, se and ci:
@@ -227,8 +233,11 @@ best <- function(phylopath, ...) {
 #' @export
 #'
 #' @examples
-#'   candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
-#'                      B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+#'   candidates <- define_model_set(
+#'     A = NL ~ BM,
+#'     B = NL ~ LS,
+#'     .common = c(LS ~ BM, DD ~ NL)
+#'   )
 #'   p <- phylo_path(candidates, rhino, rhino_tree)
 #'   my_model <- choice(p, "B")
 #'   # Print the best model to see coefficients, se and ci:
@@ -267,9 +276,10 @@ choice <- function(phylopath, choice, ...) {
 #' @export
 #'
 #' @examples
-#'   candidates <- list(
-#'     A = DAG(LS ~ BM, NL ~ BM, DD ~ NL, RS ~ BM + NL),
-#'     B = DAG(LS ~ BM, NL ~ BM + RS, DD ~ NL)
+#'   candidates <- define_model_set(
+#'     A = NL ~ BM,
+#'     B = NL ~ LS,
+#'     .common = c(LS ~ BM, DD ~ NL)
 #'   )
 #'   p <- phylo_path(candidates, rhino, rhino_tree)
 #'   summary(p)

@@ -39,8 +39,11 @@ Perform model averaging on a list of DAGs.
   # functions, but this code shows how to average any set of models. Note
   # that not many checks are implemented, so you may want to be careful and
   # make sure the DAGs make sense and contain the same variables!
-  candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
-                     B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+  candidates <- define_model_set(
+    A = NL ~ BM,
+    B = NL ~ LS,
+    .common = c(LS ~ BM, DD ~ NL)
+  )
   fit_cand <- lapply(candidates, est_DAG, rhino, rhino_tree,
                      model = 'lambda', method = 'logistic_MPLE')
   ave_cand <- average_DAGs(fit_cand)

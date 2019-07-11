@@ -78,8 +78,11 @@ traits are modeled using \link[phylolm:phyloglm]{phylolm::phyloglm}.
 }
 \examples{
   #see vignette('intro_to_phylopath') for more details
-  candidates <- list(A = DAG(LS ~ BM, NL ~ BM, DD ~ NL),
-                     B = DAG(LS ~ BM, NL ~ LS, DD ~ NL))
+  candidates <- define_model_set(
+    A = NL ~ BM,
+    B = NL ~ LS,
+    .common = c(LS ~ BM, DD ~ NL)
+  )
   p <- phylo_path(candidates, rhino, rhino_tree)
 
   # Printing p gives some general information:
