@@ -64,7 +64,7 @@ traits are modeled using phylolm::phyloglm." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">phylopath</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -206,21 +206,24 @@ as necessary (with a message)?</p></td>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>  <span class='co'>#see vignette('intro_to_phylopath') for more details</span>
-  <span class='no'>candidates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/list'>list</a></span>(<span class='kw'>A</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>),
-                     <span class='kw'>B</span> <span class='kw'>=</span> <span class='fu'><a href='DAG.html'>DAG</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>NL</span> ~ <span class='no'>LS</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>))
+  <span class='no'>candidates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_model_set.html'>define_model_set</a></span>(
+    <span class='kw'>A</span> <span class='kw'>=</span> <span class='no'>NL</span> ~ <span class='no'>BM</span>,
+    <span class='kw'>B</span> <span class='kw'>=</span> <span class='no'>NL</span> ~ <span class='no'>LS</span>,
+    <span class='kw'>.common</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>)
+  )
   <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>phylo_path</span>(<span class='no'>candidates</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>)
 
   <span class='co'># Printing p gives some general information:</span>
   <span class='no'>p</span></div><div class='output co'>#&gt; A phylogenetic path analysis, on the variables:
-#&gt; 	Continuous:	 BM NL DD LS 
+#&gt; 	Continuous:	 BM LS NL DD 
 #&gt; 	Binary:		  
 #&gt; 
 #&gt;  Evaluated for these models: A B 
 #&gt; 
-#&gt;  Containing 6 phylogenetic regressions, of which 5 unique</div><div class='input'>  <span class='co'># And the summary gives statistics to compare the models:</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>p</span>)</div><div class='output co'>#&gt;   model k q      C     p   CICc delta_CICc l w
-#&gt; 1     A 3 7  2.652 0.851 17.869      0.000 1 1
-#&gt; 2     B 3 7 22.114 0.001 37.332     19.463 0 0</div><div class='input'>
+#&gt;  Containing 6 phylogenetic regressions, of which 4 unique</div><div class='input'>  <span class='co'># And the summary gives statistics to compare the models:</span>
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>p</span>)</div><div class='output co'>#&gt;   model k q     C       p CICc delta_CICc        l        w
+#&gt; A     A 3 7  2.65 0.85113 17.9        0.0 1.00e+00 1.00e+00
+#&gt; B     B 3 7 22.11 0.00115 37.3       19.5 5.94e-05 5.94e-05</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
