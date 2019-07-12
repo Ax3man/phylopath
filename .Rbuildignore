@@ -7,3 +7,5 @@
 ^index\.Rmd$
 ^docs$
 ^_pkgdown\.yml$
+^doc$
+^Meta$
