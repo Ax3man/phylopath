@@ -1,3 +1,18 @@
+phylopath 1.1.0
+--------------------------------------------------------------------------------
+
+* Bug fix: It was possible to get CICc values in the summary output that were
+  not valid. Specifically, to calculate CICc there is a division by 
+  `(n - 1 - q)`, where `n` is the number of observations (species) and `q` the 
+  number of parameters in the causal model. This could lead to infinite CICc
+  when `n == q + 1`, or a flipped of CICc when `n < q + 1`. This would typically
+  only occur when attempting to fit models with very species (e.g. < 10).
+  
+  New behavior is to set CICc to `NA` when `n` is insufficient, and to give a
+  warning.
+  
+* Removed dependencies `dplyr` and `tidyr`, but added `tibble`.
+
 phylopath 1.0.2
 --------------------------------------------------------------------------------
 
