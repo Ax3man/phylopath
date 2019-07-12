@@ -52,6 +52,8 @@ The following published papers use `phylopath`:
 
 *2019*
 
+* Scholer, M. N., Arcese, P., Puterman, M. L., Londoño, G. A. & Jankowski, J. E. Survival is negatively related to basal metabolic rate in tropical Andean birds. _Functional Ecology_ (2019) 00:1–10 [doi:10.1111/1365-2435.13375](https://doi.org/10.1111/1365-2435.13375)
+
 * Iglesias-Carrasco, M., Jennions M. D., Ho S. Y. W. & Duchêne, D. A. Sexual selection, body mass and molecular evolution interact to predict diversification in birds. _Proceedings B_ (2019), 286: 20190172. [doi:10.1098/rspb.2019.0172](https://doi.org/10.1098/rspb.2019.0172)
 
 * Guo W.‐Y., van Kleunen M., Pierce S., _et al._ Domestic gardens play a dominant role in selecting alien species with adaptive strategies that facilitate naturalization. _Global Ecol Biogeogr_ (2019), 00:1–12. [doi:10.1111/geb.12882](https://doi.org/10.1111/geb.12882)
