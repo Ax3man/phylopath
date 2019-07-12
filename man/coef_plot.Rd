@@ -38,7 +38,7 @@ Plot path coefficients and their confidence intervals or standard errors.
   plot(d)
   d_fitted <- est_DAG(d, rhino, rhino_tree, 'lambda')
   plot(d_fitted)
-  coef_plot(d_fitted)
+  coef_plot(d_fitted, error_bar = "se")
   # to create a horizontal version, use this:
-  coef_plot(d_fitted, reverse_order = TRUE) + ggplot2::coord_flip()
+  coef_plot(d_fitted, error_bar = "se", reverse_order = TRUE) + ggplot2::coord_flip()
 }
