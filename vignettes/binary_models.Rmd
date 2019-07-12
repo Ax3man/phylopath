@@ -47,7 +47,7 @@ Under the indirect fitness hypothesis, monogamy is expected to be a major driver
 
 Following the paper in question, we define 12 putative causal models.
 
-```{r, fig.align='center', fig.width=10, fig.height=8, out.height="600px", fig.dpi = 600}
+```{r define models, fig.align='center', fig.width=10, fig.height=8, out.height="600px", fig.dpi = 600}
 library(phylopath)
 
 models <- define_model_set(
@@ -73,7 +73,7 @@ plot_model_set(models, algorithm = 'kk')
 
 Now that we have our models, data and a tree, we can compare the models using `phylo_path`
 
-```{r}
+```{r fit models}
 (cichlids_results <- phylo_path(models, cichlids, cichlids_tree))
 ```
 
@@ -81,7 +81,7 @@ Note that two messages are printed. This is because there are missing values in 
 
 `phylo_path` notes that indeed all variables are binary.
 
-```{r}
+```{r get summary}
 (s <- summary(cichlids_results))
 plot(s)
 ```
