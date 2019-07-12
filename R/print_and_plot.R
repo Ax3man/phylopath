@@ -11,9 +11,11 @@ plot.phylopath_summary <- function(x, cut_off = 2, ...) {
     ggplot2::geom_col(col = 'black', alpha = 0.6) +
     ggplot2::geom_text(hjust = "inward") +
     ggplot2::coord_flip(expand = FALSE) +
-    ggplot2::scale_fill_manual(values = c('TRUE' = 'firebrick', 'FALSE' = 'black'),
-                               labels = c('TRUE' = paste('within', cut_off, 'CICc')),
-                               breaks = c('TRUE')) +
+    ggplot2::scale_fill_manual(
+      values = c('TRUE' = 'firebrick', 'FALSE' = 'black'),
+      labels = c('TRUE' = paste('within', cut_off, 'CICc')),
+      breaks = c('TRUE')
+    ) +
     ggplot2::scale_y_continuous(position = 'top') +
     ggplot2::guides(fill = ggplot2::guide_legend(title = NULL)) +
     ggplot2::labs(y = "model weight", caption = "bar labels are p-values, signficance indicates rejection") +
@@ -89,9 +91,11 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', manual_layout = N
   l <- combine_with_labels(l, labels)
 
   ggraph::ggraph(l) +
-    ggraph::geom_edge_arc(curvature = curvature, arrow = arrow, edge_width = edge_width,
-                          end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
-                          start_cap = ggraph::rectangle(box_x, box_y, 'mm')) +
+    ggraph::geom_edge_arc(
+      curvature = curvature, arrow = arrow, edge_width = edge_width,
+      end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+      start_cap = ggraph::rectangle(box_x, box_y, 'mm')
+    ) +
     ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
     ggraph::theme_graph(base_family = 'sans')
 }
@@ -156,21 +160,25 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
 
   if (type == 'color') {
     p <- ggplot2::ggplot(l) +
-      ggraph::geom_edge_arc(ggplot2::aes_(colour = ~weight, label = ~round(weight, 2)),
-                            edge_width = edge_width,
-                            curvature = curvature, arrow = arrow,
-                            end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
-                            start_cap = ggraph::rectangle(box_x, box_y, 'mm'),
-                            show.legend = show.legend,
-                            linejoin = c('bevel'),
-                            angle_calc = 'along',
-                            label_dodge = grid::unit(10, 'points')) +
+      ggraph::geom_edge_arc(
+        ggplot2::aes_(colour = ~weight, label = ~round(weight, 2)),
+        edge_width = edge_width,
+        curvature = curvature, arrow = arrow,
+        end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+        start_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+        show.legend = show.legend,
+        linejoin = c('bevel'),
+        angle_calc = 'along',
+        label_dodge = grid::unit(10, 'points')
+      ) +
       ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
-      ggraph::scale_edge_color_gradient2('standardized\npath coefficient',
-                                         low = colors[1], high = colors[2],
-                                         limits = c(-max(abs(igraph::E(g)$weight)),
-                                                    max(abs(igraph::E(g)$weight))),
-                                         guide = ggraph::guide_edge_colorbar()) +
+      ggraph::scale_edge_color_gradient2(
+        'standardized\npath coefficient',
+        low = colors[1], high = colors[2],
+        limits = c(-max(abs(igraph::E(g)$weight)),
+                   max(abs(igraph::E(g)$weight))),
+        guide = ggraph::guide_edge_colorbar()
+      ) +
       ggraph::theme_graph(base_family = 'sans')
   }
   return(p)
@@ -234,31 +242,28 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
 
   # Do the ordering of paths:
   if (order_by == 'default') {
-    df <- dplyr::arrange_(df,
-                          ~match(df$from, colnames(fitted_DAG$coef)),
-                          ~match(df$to, colnames(fitted_DAG$coef)))
+    df <- dplyr::arrange(
+      df,
+      match(df$from, colnames(fitted_DAG$coef)),
+      match(df$to, colnames(fitted_DAG$coef))
+    )
   }
   if (order_by == 'causal') {
     ordered_DAG <- fitted_DAG$coef > 0
     ordered_DAG[, ] <- as.numeric(ordered_DAG)
     order <- colnames(ggm::topSort(ordered_DAG))
-    df <- dplyr::arrange_(df,
-                          ~match(df$from, order),
-                          ~match(df$to, order))
+    df <- dplyr::arrange(df, match(df$from, order), match(df$to, order))
   }
   if (order_by == 'strength') {
-    df <- dplyr::arrange_(df, ~coef)
+    df <- dplyr::arrange(df, .data$coef)
   }
   # Do the filtering of paths:
   if (!is.null(from)) {
-    # make sure the variable is unambiguous
-    from_var <- from
-    df <- dplyr::filter_(df, ~from %in% from_var)
+    df <- df[df$from %in% from, ]
   }
   if (!is.null(to)) {
     # make sure the variable is unambiguous
-    to_var <- to
-    df <- dplyr::filter_(df, ~to %in% to_var)
+    df <- df[df$to %in% to, ]
   }
 
   if (reverse_order) {
