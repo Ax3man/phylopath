@@ -92,7 +92,7 @@ est_DAG <- function(DAG, data, tree, model, method, boot = 0, ...) {
   stopifnot(inherits(DAG, 'DAG'))
   # scale the continous variables
   r <- rownames(data)
-  data <- dplyr::mutate_if(data, is.numeric, scale)
+  data[sapply(data, is.numeric)] <- lapply(data[sapply(data, is.numeric)], scale)
   rownames(data) <- r
   d <- Map(function(x, y, n) {
     if (all(y == 0)) {

@@ -142,7 +142,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
   d_sep <- purrr::map2(
     formulas,
     dsep_models,
-    ~dplyr::tibble(
+    ~tibble::tibble(
       d_sep = as.character(.x),
       p = purrr::map_dbl(.y, get_p),
       phylo_par = purrr::map_dbl(.y, get_phylo_param),
@@ -169,9 +169,10 @@ summary.phylopath <- function(object, ...) {
   p <- C_p(C, k)
   IC <- CICc(C, q, n)
 
-  if (n > max(q)) {
+  if (n <= max(q) + 1) {
     IC[n <= q] <- NA
-    warning('CICc was not calculated for causal models where the number of parameters is equal to or larger than the number of species.')
+    warning('CICc was not calculated for causal models where the number of parameters is equal to',
+            'or larger than the number of species.')
   }
 
   d <- data.frame(

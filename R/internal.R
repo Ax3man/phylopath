@@ -67,7 +67,7 @@ find_consensus_order <- function(model_set) {
   # Otherwise we find the most common orderings and use those.
   # Make sure all models are ordered:
   model_set <- lapply(model_set, ggm::topSort)
-  vars <- lapply(model_set, row.names)
+  vars <- lapply(model_set, colnames)
   combs <- as.data.frame(t(utils::combn(vars[[1]], 2)), stringsAsFactors = FALSE)
   names(combs) <- c('node1', 'node2')
   combs$count <- 0
@@ -79,14 +79,13 @@ find_consensus_order <- function(model_set) {
   }
 
   # If node1 is commonly ordered above node2, leave as is, otherwise swap them around
-  combs <- dplyr::mutate_(combs,
-                          tmp = ~node1,
-                          node1 = ~ifelse(count > 0.5 * dplyr::n(), node1, node2),
-                          node2 = ~ifelse(count > 0.5 * dplyr::n(), node2, tmp))
+  tmp <- combs$node1
+  combs$node1 <- ifelse(combs$count > 0.5 * length(model_set), combs$node1, combs$node2)
+  combs$node2 <- ifelse(combs$count > 0.5 * length(model_set), combs$node2, tmp)
+
   # Now we order the nodes by how many nodes they are above, this should go from n:1
-  combs <- dplyr::group_by_(combs, ~node1)
-  combs <- dplyr::mutate_(combs, n = ~dplyr::n())
-  combs <- dplyr::arrange_(combs, ~dplyr::desc(n))
+  combs$n <- table(combs$node1)[combs$node1]
+  combs <- combs[order(-combs$n), ]
   res <- unlist(c(unique(combs$node1), utils::tail(combs, 1)[, 'node2']))
   names(res) <- NULL
   res

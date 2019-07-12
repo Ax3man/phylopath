@@ -1,6 +1,6 @@
 #' @export
 print.phylopath_summary <- function(x, ...) {
-  print(dplyr::mutate_if(x, is.numeric, dplyr::funs(round), digits = 3))
+  print.data.frame(x, digits = 3)
   return(invisible(x))
 }
 
@@ -208,9 +208,9 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
 #'   plot(d)
 #'   d_fitted <- est_DAG(d, rhino, rhino_tree, 'lambda')
 #'   plot(d_fitted)
-#'   coef_plot(d_fitted)
+#'   coef_plot(d_fitted, error_bar = "se")
 #'   # to create a horizontal version, use this:
-#'   coef_plot(d_fitted, reverse_order = TRUE) + ggplot2::coord_flip()
+#'   coef_plot(d_fitted, error_bar = "se", reverse_order = TRUE) + ggplot2::coord_flip()
 coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from = NULL, to = NULL,
                       reverse_order = FALSE) {
   stopifnot(inherits(fitted_DAG, 'fitted_DAG'))
@@ -242,20 +242,16 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
 
   # Do the ordering of paths:
   if (order_by == 'default') {
-    df <- dplyr::arrange(
-      df,
-      match(df$from, colnames(fitted_DAG$coef)),
-      match(df$to, colnames(fitted_DAG$coef))
-    )
+    df <- df[order(match(df$from, v), match(df$to, v)), ]
   }
   if (order_by == 'causal') {
     ordered_DAG <- fitted_DAG$coef > 0
     ordered_DAG[, ] <- as.numeric(ordered_DAG)
     order <- colnames(ggm::topSort(ordered_DAG))
-    df <- dplyr::arrange(df, match(df$from, order), match(df$to, order))
+    df <- df[order(match(df$from, order), match(df$to, order)), ]
   }
   if (order_by == 'strength') {
-    df <- dplyr::arrange(df, .data$coef)
+    df <- df[order(df$coef), ]
   }
   # Do the filtering of paths:
   if (!is.null(from)) {
