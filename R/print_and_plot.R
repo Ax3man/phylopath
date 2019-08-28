@@ -57,7 +57,7 @@ show_warnings <- function(phylopath = NULL) {
 #'
 #' @param x A `DAG`` object, usually created with the [define_model_set()] or [DAG()] function.
 #' @param algorithm A layout algorithm from [igraph], see
-#'   [ggraph::create_layout()] and [ggraph::create_layout.igraph()]. By default,
+#'   [ggraph::create_layout()]. By default,
 #'   uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.
 #' @param ... Not used.
 #' @inheritParams plot_model_set
@@ -105,7 +105,7 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', manual_layout = N
 #' @param x An object of class `fitted_DAG`.
 #' @param type How to express the weight of the path. Either `"width"`, or `"color"`.
 #' @param algorithm A layout algorithm from \code{igraph}, see
-#'   [ggraph::create_layout()] and [ggraph::create_layout.igraph()]. By default,
+#'   [ggraph::create_layout()]. By default,
 #'   uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.
 #' @param colors The end points of the continuous color scale. Keep in mind that red and green are
 #'   obvious colors to use, but are better to be avoided because of color blind users.

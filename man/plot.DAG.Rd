@@ -18,7 +18,7 @@ the form \code{c(var1 = "label1", var2 = "label2")}.
 If left at `NULL``, the variable names of the DAGs are used.}
 
 \item{algorithm}{A layout algorithm from \link{igraph}, see
-\code{\link[ggraph:create_layout]{ggraph::create_layout()}} and \code{\link[ggraph:create_layout.igraph]{ggraph::create_layout.igraph()}}. By default,
+\code{\link[ggraph:create_layout]{ggraph::create_layout()}}. By default,
 uses the Sugiyama layout algorithm, which is designed to minimize edge crossing in DAGs.}
 
 \item{manual_layout}{Alternatively, precisely define the layout yourself, by providing a
