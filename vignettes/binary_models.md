@@ -1,7 +1,7 @@
 ---
 title: "Comparing causal models of binary traits using phylopath"
 author: "Wouter van der Bijl"
-date: "`r Sys.Date()`"
+date: "2019-08-28"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{binary_models}
@@ -47,7 +47,8 @@ Under the indirect fitness hypothesis, monogamy is expected to be a major driver
 
 Following the paper in question, we define 12 putative causal models.
 
-```{r define_models, fig.align='center', fig.width=10, fig.height=8, out.height="600px", fig.dpi = 600}
+
+```r
 library(phylopath)
 
 models <- define_model_set(
@@ -69,22 +70,70 @@ models <- define_model_set(
 plot_model_set(models, algorithm = 'kk')
 ```
 
+<img src="figure/define models-1.png" title="plot of chunk define models" alt="plot of chunk define models" height="600px" style="display: block; margin: auto;" />
+
 ### Comparing the models
 
 Now that we have our models, data and a tree, we can compare the models using `phylo_path`
 
-```{r fit models}
+
+```r
 (cichlids_results <- phylo_path(models, cichlids, cichlids_tree))
+```
+
+```
+## 15 rows were dropped because they contained NA values.
+```
+
+```
+## Pruned tree to drop species not included in dat.
+```
+
+```
+## Warning in phylo_path(models, cichlids, cichlids_tree): Some models
+## produced warnings. Use `show_warnings()` to view them.
+```
+
+```
+## A phylogenetic path analysis, on the variables:
+## 	Continuous:	  
+## 	Binary:		 G P D M C 
+## 
+##  Evaluated for these models: A B C D E F G H I J K L 
+## 
+##  Containing 67 phylogenetic regressions, of which 22 unique
 ```
 
 Note that two messages are printed. This is because there are missing values in our data set that are first being removed. Also, since the tree includes species for which data is missing, the tree had to be pruned. This is done automatically with a message to the user. You should check whether the amount of data removed is correct.
 
 `phylo_path` notes that indeed all variables are binary.
 
-```{r get_summary}
+
+```r
 (s <- summary(cichlids_results))
+```
+
+```
+##   model k  q     C       p CICc delta_CICc        l        w
+## F     F 5 10  7.95 0.63385 33.1       0.00 1.000000 0.511539
+## L     L 4 11  6.66 0.57358 34.9       1.88 0.390236 0.199621
+## G     G 5 10 10.94 0.36231 36.1       2.99 0.224235 0.114705
+## E     E 5 10 11.63 0.31052 36.7       3.68 0.158648 0.081154
+## D     D 5 10 11.73 0.30322 36.9       3.79 0.150632 0.077054
+## C     C 6  9 18.91 0.09081 41.0       7.93 0.018945 0.009691
+## H     H 6  9 20.53 0.05775 42.6       9.55 0.008424 0.004309
+## I     I 6  9 23.79 0.02170 45.9      12.82 0.001646 0.000842
+## K     K 6  9 25.33 0.01333 47.4      14.36 0.000763 0.000390
+## J     J 6  9 25.82 0.01139 47.9      14.84 0.000598 0.000306
+## B     B 7  8 28.97 0.01055 48.2      15.10 0.000525 0.000269
+## A     A 6  9 27.68 0.00616 49.8      16.71 0.000236 0.000121
+```
+
+```r
 plot(s)
 ```
+
+![plot of chunk get summary](figure/get summary-1.png)
 
 We see that model F is the best supported model. This model notably does not include a link between monogamy and cooperative breeding, giving support to the direct benefits hypothesis.
 
@@ -94,26 +143,55 @@ Model L, the second best model, is exactly the same as
 
 Now that we have selected F as our best model, we still have three factors that affect cooperative breeding: diet, social grouping and parental care. Which one is more important? For this we can fit the model and look at magnitude of the coefficients. In this case, since we want to use the best model we use the function `best()`. One can use `choice()` to choose any arbitrary model, or `average()` to average over several models.
 
-```{r}
+
+```r
 best_cichlids <- best(cichlids_results)
 ```
 
 To see the individual coefficients and their standard errors, simply print `best_cichlids`:
 
-```{r}
+
+```r
 best_cichlids
+```
+
+```
+## $coef
+##   G M        P D        C
+## G 0 0 2.244975 0 4.499944
+## M 0 0 2.879175 0 0.000000
+## P 0 0 0.000000 0 3.415387
+## D 0 0 0.000000 0 3.415661
+## C 0 0 0.000000 0 0.000000
+## 
+## $se
+##   G M         P D        C
+## G 0 0 0.8132303 0 1.202999
+## M 0 0 0.8602750 0 0.000000
+## P 0 0 0.0000000 0 1.351865
+## D 0 0 0.0000000 0 1.380511
+## C 0 0 0.0000000 0 0.000000
+## 
+## attr(,"class")
+## [1] "fitted_DAG"
 ```
 
 Or plot those:
 
-```{r}
+
+```r
 coef_plot(best_cichlids, error_bar = "se", reverse_order = TRUE) + ggplot2::coord_flip()
 ```
 
+![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+
 But we can also plot the final model:
 
-```{r, fig.align='center', fig.width=8, fig.height=4, out.width="600px", fig.dpi = 300}
+
+```r
 plot(best_cichlids)
 ```
+
+<img src="figure/unnamed-chunk-4-1.png" title="plot of chunk unnamed-chunk-4" alt="plot of chunk unnamed-chunk-4" width="600px" style="display: block; margin: auto;" />
 
 It appears that social grouping is a slightly more important than diet and biparental care.

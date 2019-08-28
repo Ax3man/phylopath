@@ -1,4 +1,4 @@
-## ----define models, fig.align='center', fig.width=10, fig.height=8, out.height="600px", fig.dpi = 600----
+## ----define_models, fig.align='center', fig.width=10, fig.height=8, out.height="600px", fig.dpi = 600----
 library(phylopath)
 
 models <- define_model_set(
@@ -21,4 +21,20 @@ plot_model_set(models, algorithm = 'kk')
 
 ## ----fit models----------------------------------------------------------
 (cichlids_results <- phylo_path(models, cichlids, cichlids_tree))
+
+## ----get_summary---------------------------------------------------------
+(s <- summary(cichlids_results))
+plot(s)
+
+## ------------------------------------------------------------------------
+best_cichlids <- best(cichlids_results)
+
+## ------------------------------------------------------------------------
+best_cichlids
+
+## ------------------------------------------------------------------------
+coef_plot(best_cichlids, error_bar = "se", reverse_order = TRUE) + ggplot2::coord_flip()
+
+## ---- fig.align='center', fig.width=8, fig.height=4, out.width="600px", fig.dpi = 300----
+plot(best_cichlids)
 
