@@ -1,7 +1,7 @@
 ## Test environments
-* local Linux Mint install, R 3.6.1
+* local Linux Kubuntu install, R 3.6.1
 * Windows release using winbuilder, R 3.6.1
-* Development version using winbuilder 
+* Development version using winbuilder,  
 
 ## Local R CMD check results
 0 errors | 0 warnings | 0 notes
@@ -17,3 +17,5 @@ All ok.
 
 ## Downstream dependencies
 The package does not have downstream dependencies.
+
+This submission is to prepare for the upcoming submission of `ggraph` which will break this package.
