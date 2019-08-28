@@ -1,7 +1,6 @@
 ## Test environments
 * local Linux Kubuntu install, R 3.6.1
-* Windows release using winbuilder, R 3.6.1
-* Development version using winbuilder,  
+* Development version using winbuilder, 2019-08-27 r77080 
 
 ## Local R CMD check results
 0 errors | 0 warnings | 0 notes
