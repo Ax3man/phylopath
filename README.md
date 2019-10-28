@@ -13,7 +13,7 @@ install.packages("phylopath")
 Or if you'd like to install the development version (here on github), use:
 
 ```{r}
-devtools::install_github("Ax3man/phylopath")
+remotes::install_github("Ax3man/phylopath")
 ```
 
 It's easiest to start on the [website](https://ax3man.github.io/phylopath) and first read the introduction [here](https://ax3man.github.io/phylopath/articles/intro_to_phylopath.html), or read the [paper in PeerJ](https://doi.org/10.7717/peerj.4718).
