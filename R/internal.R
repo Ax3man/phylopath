@@ -169,7 +169,9 @@ phylo_g_lm <- function(formula, data, tree, model, method, boot = 0, ...) {
 
 get_p <- function(m) {
   s <- stats::coef(summary(m))
-  return(s[nrow(s), 'p.value'])
+  p <- s[nrow(s), 'p.value']
+  if (p < .Machine$double.eps) p <- .Machine$double.eps
+  return(p)
 }
 
 get_est <- function(m) {
