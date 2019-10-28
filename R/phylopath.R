@@ -130,7 +130,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
         .x
       )
   )
-  warnings <- warnings(!sapply(warnings, is.null))
+  warnings <- warnings[!sapply(warnings, is.null)]
   if (length(warnings) > 1) {
     warning('Some models produced warnings. Use `show_warnings()` to view them.')
   }
@@ -149,6 +149,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
       model = .y
     )
   )
+
 
   out <- list(
     d_sep = d_sep, model_set = model_set, data = data, tree = tree, model = model, method = method,
