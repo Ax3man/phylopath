@@ -1,3 +1,12 @@
+phylopath 1.1.1.9000
+--------------------------------------------------------------------------------
+
+* Bug fix: Very low p-values could cause underflow and result in infinite C 
+  statistics. All p-values are now set to be at least the size of the machine
+  accuracy (i.e. 2 * 10^-16).
+  
+* Warnings are now again correctly reported.
+
 phylopath 1.1.1
 --------------------------------------------------------------------------------
 
