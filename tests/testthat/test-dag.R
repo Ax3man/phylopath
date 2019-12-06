@@ -2,7 +2,8 @@ context("test-dag")
 library(phylopath)
 
 test_that("DAGs get the correct classes", {
-  expect_equal(class(DAG(A~B, B~C)), c('matrix', 'DAG'))
+  expect_true(inherits(DAG(A~B, B~C), 'matrix'))
+  expect_true(inherits(DAG(A~B, B~C), 'DAG'))
 })
 
 test_that('DAGs make correct nr of rows and columns', {
@@ -12,18 +13,18 @@ test_that('DAGs make correct nr of rows and columns', {
 
 test_that('Correct ordering of DAGs', {
   expect_equal(
-    DAG(A~B, B~C, C~D),
+    unclass(DAG(A~B, B~C, C~D)),
     structure(
       c(0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0),
-      .Dim = c(4L, 4L), .Dimnames = list(c("D", "C", "B", "A"), c("D", "C", "B", "A")),
-      class = c("matrix", "DAG")
+      .Dim = c(4L, 4L),
+      .Dimnames = list(c("D", "C", "B", "A"), c("D", "C", "B", "A"))
     )
   )
   expect_equal(
-    DAG(A~B, C~D, B~C, order = FALSE),
+    unclass(DAG(A~B, C~D, B~C, order = FALSE)),
     structure(
       c(0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0),
-      .Dim = c(4L, 4L), .Dimnames = list(c("A", "B", "C", "D"), c("A", "B", "C", "D")),
-      class = c("matrix", "DAG"))
+      .Dim = c(4L, 4L), .Dimnames = list(c("A", "B", "C", "D"), c("A", "B", "C", "D"))
+    )
   )
 })
