@@ -1,5 +1,7 @@
-phylopath 1.1.1.9000
+phylopath 1.1.2
 --------------------------------------------------------------------------------
+
+* Prepare for R v4.0.0.
 
 * Bug fix: Very low p-values could cause underflow and result in infinite C 
   statistics. All p-values are now set to be at least the size of the machine

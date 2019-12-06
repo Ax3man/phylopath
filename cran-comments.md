@@ -1,6 +1,7 @@
 ## Test environments
 * local Linux Kubuntu install, R 3.6.1
-* Development version using winbuilder, 2019-08-27 r77080 
+* Development version using winbuilder, (2019-12-02 r77499) 
+
 
 ## Local R CMD check results
 0 errors | 0 warnings | 0 notes
@@ -17,4 +18,4 @@ All ok.
 ## Downstream dependencies
 The package does not have downstream dependencies.
 
-This submission is to prepare for the upcoming submission of `ggraph` which will break this package.
+This submission is to prepare for the upcoming release of R v4.0.0, and fixes some additional bugs.
