@@ -4,8 +4,12 @@
 \alias{average_DAGs}
 \title{Perform model averaging on a list of DAGs.}
 \usage{
-average_DAGs(fitted_DAGs, weights = rep(1, length(coef)),
-  avg_method = "conditional", ...)
+average_DAGs(
+  fitted_DAGs,
+  weights = rep(1, length(coef)),
+  avg_method = "conditional",
+  ...
+)
 }
 \arguments{
 \item{fitted_DAGs}{A list of \code{fitted_DAG} objects containing

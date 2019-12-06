@@ -4,11 +4,22 @@
 \alias{plot.DAG}
 \title{Plot a directed acyclic graph.}
 \usage{
-\method{plot}{DAG}(x, labels = NULL, algorithm = "sugiyama",
-  manual_layout = NULL, text_size = 6, box_x = 12, box_y = 8,
-  edge_width = 1.5, curvature = 0.02, rotation = 0, flip_x = FALSE,
-  flip_y = FALSE, arrow = grid::arrow(type = "closed", 18,
-  grid::unit(15, "points")), ...)
+\method{plot}{DAG}(
+  x,
+  labels = NULL,
+  algorithm = "sugiyama",
+  manual_layout = NULL,
+  text_size = 6,
+  box_x = 12,
+  box_y = 8,
+  edge_width = 1.5,
+  curvature = 0.02,
+  rotation = 0,
+  flip_x = FALSE,
+  flip_y = FALSE,
+  arrow = grid::arrow(type = "closed", 18, grid::unit(15, "points")),
+  ...
+)
 }
 \arguments{
 \item{x}{A `DAG`` object, usually created with the \code{\link[=define_model_set]{define_model_set()}} or \code{\link[=DAG]{DAG()}} function.}

@@ -28,7 +28,7 @@ create models for use with the \code{phylopath} package.
 }
 \details{
 Supply a formulas for the model as arguments. Formulas should be of the
-form \code{child ~ parent`` and describe each path in your model. Multiple children of a single parent can be combined into a single formula: }child ~ parent1 + parent2\code{. Finally, an isolate (unconnected variable) can be included as being connected to itself: }isolate ~ isolate`.
+form \verb{child ~ parent`` and describe each path in your model. Multiple children of a single parent can be combined into a single formula: }child ~ parent1 + parent2\verb{. Finally, an isolate (unconnected variable) can be included as being connected to itself: }isolate ~ isolate`.
 }
 \examples{
   # Use formula notation to create DAGs:

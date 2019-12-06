@@ -4,8 +4,14 @@
 \alias{coef_plot}
 \title{Plot path coefficients and their confidence intervals or standard errors.}
 \usage{
-coef_plot(fitted_DAG, error_bar = "ci", order_by = "default",
-  from = NULL, to = NULL, reverse_order = FALSE)
+coef_plot(
+  fitted_DAG,
+  error_bar = "ci",
+  order_by = "default",
+  from = NULL,
+  to = NULL,
+  reverse_order = FALSE
+)
 }
 \arguments{
 \item{fitted_DAG}{A fitted DAG, usually obtained by \code{\link[=best]{best()}}, \code{\link[=average]{average()}} or \code{\link[=est_DAG]{est_DAG()}}.}
@@ -15,7 +21,7 @@ error bars. Will force standard errors with a message if confidence intervals ar
 available.}
 
 \item{order_by}{By \code{"default"}, the paths are ordered as in the the model that is supplied.
-Usually this is in the order that was established by \code{[phylo_path()]} for all combined graphs.
+Usually this is in the order that was established by \verb{[phylo_path()]} for all combined graphs.
 This can be change to \code{"causal"} to do a reordering based on the model at hand, or to
 \code{"strength"} to order them by the standardized regression coefficient.}
 

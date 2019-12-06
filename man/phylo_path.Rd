@@ -4,9 +4,17 @@
 \alias{phylo_path}
 \title{Compare causal models in a phylogenetic context.}
 \usage{
-phylo_path(model_set, data, tree, model = "lambda",
-  method = "logistic_MPLE", order = NULL, parallel = NULL,
-  na.rm = TRUE, ...)
+phylo_path(
+  model_set,
+  data,
+  tree,
+  model = "lambda",
+  method = "logistic_MPLE",
+  order = NULL,
+  parallel = NULL,
+  na.rm = TRUE,
+  ...
+)
 }
 \arguments{
 \item{model_set}{A list of directed acyclic graphs. These are matrices,

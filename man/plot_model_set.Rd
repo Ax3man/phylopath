@@ -4,11 +4,22 @@
 \alias{plot_model_set}
 \title{Plot several causal hypothesis at once.}
 \usage{
-plot_model_set(model_set, labels = NULL, algorithm = "kk",
-  manual_layout = NULL, text_size = 5, box_x = 12, box_y = 10,
-  edge_width = 1, curvature = 0.05, rotation = 0, flip_x = FALSE,
-  flip_y = FALSE, nrow = NULL, arrow = grid::arrow(type = "closed",
-  15, grid::unit(10, "points")))
+plot_model_set(
+  model_set,
+  labels = NULL,
+  algorithm = "kk",
+  manual_layout = NULL,
+  text_size = 5,
+  box_x = 12,
+  box_y = 10,
+  edge_width = 1,
+  curvature = 0.05,
+  rotation = 0,
+  flip_x = FALSE,
+  flip_y = FALSE,
+  nrow = NULL,
+  arrow = grid::arrow(type = "closed", 15, grid::unit(10, "points"))
+)
 }
 \arguments{
 \item{model_set}{A list of \code{DAG} objects, usually created with \code{\link[=define_model_set]{define_model_set()}}.}
