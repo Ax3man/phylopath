@@ -18,13 +18,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
@@ -51,6 +53,7 @@ traits are modeled using phylolm::phyloglm." />
 <![endif]-->
 
 
+
   </head>
 
   <body>
@@ -67,7 +70,7 @@ traits are modeled using phylolm::phyloglm." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">phylopath</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
 
@@ -106,6 +109,7 @@ traits are modeled using phylolm::phyloglm." />
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -117,13 +121,21 @@ traits are modeled using phylolm::phyloglm." />
     </div>
 
     <div class="ref-description">
-    <p>Continuous variables are modeled using <a href='https://www.rdocumentation.org/packages/phylolm/topics/phylolm'>phylolm::phylolm</a>, while binary
-traits are modeled using <a href='https://www.rdocumentation.org/packages/phylolm/topics/phyloglm'>phylolm::phyloglm</a>.</p>
+    <p>Continuous variables are modeled using <a href='https://rdrr.io/pkg/phylolm/man/phylolm.html'>phylolm::phylolm</a>, while binary
+traits are modeled using <a href='https://rdrr.io/pkg/phylolm/man/phyloglm.html'>phylolm::phyloglm</a>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>phylo_path</span>(<span class='no'>model_set</span>, <span class='no'>data</span>, <span class='no'>tree</span>, <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"lambda"</span>,
-  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"logistic_MPLE"</span>, <span class='kw'>order</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>phylo_path</span>(
+  <span class='no'>model_set</span>,
+  <span class='no'>data</span>,
+  <span class='no'>tree</span>,
+  <span class='kw'>model</span> <span class='kw'>=</span> <span class='st'>"lambda"</span>,
+  <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"logistic_MPLE"</span>,
+  <span class='kw'>order</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>na.rm</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,13 +157,13 @@ sure they are either character values or factors!</p></td>
     <tr>
       <th>model</th>
       <td><p>The evolutionary model used for the regressions on continuous
-variables. See <a href='https://www.rdocumentation.org/packages/phylolm/topics/phylolm'>phylolm::phylolm</a> for options and details. Defaults to
+variables. See <a href='https://rdrr.io/pkg/phylolm/man/phylolm.html'>phylolm::phylolm</a> for options and details. Defaults to
 Pagel's lambda model</p></td>
     </tr>
     <tr>
       <th>method</th>
       <td><p>The estimation method for the binary models. See
-<a href='https://www.rdocumentation.org/packages/phylolm/topics/phylolm'>phylolm::phylolm</a> for options and details. Defaults to logistic MPLE.</p></td>
+<a href='https://rdrr.io/pkg/phylolm/man/phylolm.html'>phylolm::phylolm</a> for options and details. Defaults to logistic MPLE.</p></td>
     </tr>
     <tr>
       <th>order</th>
@@ -200,6 +212,7 @@ as necessary (with a message)?</p></td>
 <dt>method</dt><dd><p>the employed method in <code>phyloglm</code></p></dd>
 <dt>dots</dt><dd><p>any additional arguments given, these are passed on to downstream functions</p></dd>
 <dt>warnings</dt><dd><p>any warnings generated by the models</p></dd>
+
 </dl>
 
 
@@ -208,7 +221,7 @@ as necessary (with a message)?</p></td>
   <span class='no'>candidates</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='define_model_set.html'>define_model_set</a></span>(
     <span class='kw'>A</span> <span class='kw'>=</span> <span class='no'>NL</span> ~ <span class='no'>BM</span>,
     <span class='kw'>B</span> <span class='kw'>=</span> <span class='no'>NL</span> ~ <span class='no'>LS</span>,
-    <span class='kw'>.common</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>)
+    <span class='kw'>.common</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='no'>LS</span> ~ <span class='no'>BM</span>, <span class='no'>DD</span> ~ <span class='no'>NL</span>)
   )
   <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>phylo_path</span>(<span class='no'>candidates</span>, <span class='no'>rhino</span>, <span class='no'>rhino_tree</span>)
 
@@ -220,7 +233,7 @@ as necessary (with a message)?</p></td>
 #&gt;  Evaluated for these models: A B 
 #&gt; 
 #&gt;  Containing 6 phylogenetic regressions, of which 4 unique</div><div class='input'>  <span class='co'># And the summary gives statistics to compare the models:</span>
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/summary'>summary</a></span>(<span class='no'>p</span>)</div><div class='output co'>#&gt;   model k q     C       p CICc delta_CICc        l        w
+  <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>p</span>)</div><div class='output co'>#&gt;   model k q     C       p CICc delta_CICc        l        w
 #&gt; A     A 3 7  2.65 0.85113 17.9        0.0 1.00e+00 1.00e+00
 #&gt; B     B 3 7 22.11 0.00115 37.3       19.5 5.94e-05 5.94e-05</div><div class='input'>
 </div></pre>
@@ -236,19 +249,23 @@ as necessary (with a message)?</p></td>
   </div>
 </div>
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Wouter van der Bijl.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 

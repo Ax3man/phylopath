@@ -18,13 +18,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 
 <!-- Font Awesome icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous" />
 
 <!-- clipboard.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script>
 
-<!-- sticky kit -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script>
+<!-- headroom.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
 <link href="pkgdown.css" rel="stylesheet">
@@ -48,6 +50,7 @@
 <![endif]-->
 
 
+
   </head>
 
   <body>
@@ -64,7 +67,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">phylopath</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.2</span>
       </span>
     </div>
 
@@ -103,6 +106,7 @@
 </div><!--/.navbar -->
 
       
+
       </header>
 
 <div class="row">
@@ -115,7 +119,7 @@
     <p>von Hardenberg A, Gonzalez-Voyer A (2013).
 &ldquo;Disentangling evolutionary cause-effect relationships with phylogenetic confirmatory path analysis.&rdquo;
 <em>Evolution</em>, <b>67 - 2</b>, 378-387.
-doi: <a href="http://doi.org/10.1111/j.1558-5646.2012.01790.x">10.1111/j.1558-5646.2012.01790.x</a>. 
+doi: <a href="https://doi.org/10.1111/j.1558-5646.2012.01790.x">10.1111/j.1558-5646.2012.01790.x</a>. 
 </p>
     <pre>@Article{phylopath-methods-paper,
   title = {Disentangling evolutionary cause-effect relationships with phylogenetic confirmatory path analysis},
@@ -129,7 +133,7 @@ doi: <a href="http://doi.org/10.1111/j.1558-5646.2012.01790.x">10.1111/j.1558-56
     <p>van der Bijl W (2018).
 &ldquo;phylopath: Easy phylogenetic path analysis in R.&rdquo;
 <em>PeerJ</em>, <b>6</b>, e4718.
-doi: <a href="http://doi.org/10.7717/peerj.4718">10.7717/peerj.4718</a>, R package version 1.1.0. 
+doi: <a href="https://doi.org/10.7717/peerj.4718">10.7717/peerj.4718</a>, R package version 1.1.2. 
 </p>
     <pre>@Article{phylopath-package,
   title = {phylopath: Easy phylogenetic path analysis in R.},
@@ -138,7 +142,7 @@ doi: <a href="http://doi.org/10.7717/peerj.4718">10.7717/peerj.4718</a>, R packa
   volume = {6},
   pages = {e4718},
   year = {2018},
-  note = {R package version 1.1.0},
+  note = {R package version 1.1.2},
   doi = {10.7717/peerj.4718},
 }</pre>
 
@@ -158,19 +162,23 @@ doi: <a href="http://doi.org/10.7717/peerj.4718">10.7717/peerj.4718</a>, R packa
 </div>
 
 
+
       <footer>
       <div class="copyright">
   <p>Developed by Wouter van der Bijl.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.3.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
 </div>
+
       </footer>
    </div>
 
   
 
+
   </body>
 </html>
+
 
