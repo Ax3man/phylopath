@@ -279,9 +279,9 @@ choice <- function(phylopath, choice, ...) {
 #'
 #' @examples
 #'   candidates <- define_model_set(
-#'     A = NL ~ BM,
-#'     B = NL ~ LS,
-#'     .common = c(LS ~ BM, DD ~ NL)
+#'     A = NL ~ RS,
+#'     B = RS ~ NL + BM,
+#'     .common = c(LS ~ BM, DD ~ NL, NL ~ BM)
 #'   )
 #'   p <- phylo_path(candidates, rhino, rhino_tree)
 #'   summary(p)
