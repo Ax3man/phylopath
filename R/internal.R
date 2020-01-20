@@ -168,7 +168,11 @@ phylo_g_lm <- function(formula, data, tree, model, method, boot = 0, ...) {
 }
 
 get_p <- function(m) {
-  s <- stats::coef(summary(m))
+  s <- switch(
+    class(m),
+    phylolm = stats::coef(phylolm::summary.phylolm(m)),
+    phyloglm = stats::coef(phylolm::summary.phyloglm(m))
+  )
   p <- s[nrow(s), 'p.value']
   if (p < .Machine$double.eps) p <- .Machine$double.eps
   return(p)
@@ -179,11 +183,20 @@ get_est <- function(m) {
 }
 
 get_se <- function(m) {
-  stats::coef(summary(m))[-1, 'StdErr']
+  s <- switch(
+    class(m),
+    phylolm = stats::coef(phylolm::summary.phylolm(m)),
+    phyloglm = stats::coef(phylolm::summary.phyloglm(m))
+  )
+  s[-1, 'StdErr']
 }
 
 get_lower <- function(m) {
-  s <- stats::coef(summary(m))
+  s <- switch(
+    class(m),
+    phylolm = stats::coef(phylolm::summary.phylolm(m)),
+    phyloglm = stats::coef(phylolm::summary.phyloglm(m))
+  )
   if ('lowerbootCI' %in% colnames(s)) {
     r <- s[-1, 'lowerbootCI']
   } else {
@@ -193,7 +206,11 @@ get_lower <- function(m) {
 }
 
 get_upper <- function(m) {
-  s <- stats::coef(summary(m))
+  s <- switch(
+    class(m),
+    phylolm = stats::coef(phylolm::summary.phylolm(m)),
+    phyloglm = stats::coef(phylolm::summary.phyloglm(m))
+  )
   if ('upperbootCI' %in% colnames(s)) {
     r <- s[-1, 'upperbootCI']
   } else {
