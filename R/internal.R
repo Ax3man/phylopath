@@ -239,6 +239,7 @@ adjust_layout <- function(l, rotation, flip_x, flip_y) {
 }
 
 combine_with_labels <- function(l, labels) {
+  incoming_class <- class(l)
   if (is.null(labels)) {
     return(l)
   }
@@ -249,7 +250,7 @@ combine_with_labels <- function(l, labels) {
     stop('Some nodes are missing from labels.', call. = FALSE)
   }
   l$name <- factor(l$name, names(labels), labels)
-  class(l) <- c("layout_igraph", "layout_ggraph", "data.frame")
+  class(l) <- incoming_class
   return(l)
 }
 

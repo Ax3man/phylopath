@@ -1,5 +1,7 @@
-phylopath 1.1.2.9000 (dev)
+phylopath 1.1.2.9001 (dev)
 --------------------------------------------------------------------------------
+
+* Updated plotting functions to work with new `ggraph` releases.
 
 * Fixed regression with parallel usage of `phylo_path` due to an S3 
   inheritance issue on the cluster (#16, thanks Simon Greenhill for the report).
