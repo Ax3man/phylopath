@@ -82,6 +82,10 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', manual_layout = N
                      box_x = 12, box_y = 8, edge_width = 1.5, curvature = 0.02, rotation = 0,
                      flip_x = FALSE, flip_y = FALSE,
                      arrow = grid::arrow(type = 'closed', 18, grid::unit(15, 'points')), ...) {
+  if (sum(x) == 0) {
+    stop('This DAG has no paths to plot.')
+  }
+
   g <- igraph::graph_from_adjacency_matrix(x, weighted = TRUE)
 
   l <- ggraph::create_layout(g, 'igraph', algorithm = algorithm)
@@ -131,6 +135,9 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
                             width_const = NULL, ...) {
   if (!is.null(width_const)) {
     warning('width_const has been deprecated and is ignored.', call. = FALSE)
+  }
+  if (sum(x$coef) == 0) {
+    stop('This DAG has no paths to plot.')
   }
   type <- match.arg(type, c('width', 'color', 'colour'), FALSE)
   if (type == 'colour') type <- 'color'
