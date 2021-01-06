@@ -7,16 +7,16 @@ print.phylopath_summary <- function(x, ...) {
 #' @export
 plot.phylopath_summary <- function(x, cut_off = 2, ...) {
   x$model <- factor(x$model, rev(x$model))
-  ggplot2::ggplot(x, ggplot2::aes_(~model, ~w, fill = ~delta_CICc < cut_off, label = ~round(p, 3))) +
+  ggplot2::ggplot(x, ggplot2::aes_(~w, ~model, fill = ~delta_CICc < cut_off, label = ~round(p, 3))) +
     ggplot2::geom_col(col = 'black', alpha = 0.6) +
     ggplot2::geom_text(hjust = "inward") +
-    ggplot2::coord_flip(expand = FALSE) +
     ggplot2::scale_fill_manual(
       values = c('TRUE' = 'firebrick', 'FALSE' = 'black'),
       labels = c('TRUE' = paste('within', cut_off, 'CICc')),
       breaks = c('TRUE')
     ) +
-    ggplot2::scale_y_continuous(position = 'top') +
+    ggplot2::scale_x_continuous(position = 'top') +
+    ggplot2::coord_cartesian(expand = FALSE) +
     ggplot2::guides(fill = ggplot2::guide_legend(title = NULL)) +
     ggplot2::labs(y = "model weight", caption = "bar labels are p-values, signficance indicates rejection") +
     ggplot2::theme(legend.position = 'bottom')
@@ -98,7 +98,7 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', manual_layout = N
 
   ggraph::ggraph(l) +
     ggraph::geom_edge_arc(
-      curvature = curvature, arrow = arrow, edge_width = edge_width,
+      strength = curvature, arrow = arrow, edge_width = edge_width,
       end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
       start_cap = ggraph::rectangle(box_x, box_y, 'mm')
     ) +
@@ -155,7 +155,7 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
     p <- ggplot2::ggplot(l) +
       ggraph::geom_edge_arc(
         ggplot2::aes_(width = ~abs(weight), color = ~weight < 0, label = ~round(weight, 2)),
-        curvature = curvature, arrow = arrow, end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
+        strength = curvature, arrow = arrow, end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
         start_cap = ggraph::rectangle(box_x, box_y, 'mm'), show.legend = show.legend,
         linejoin = c('bevel'), angle_calc = 'along', label_dodge = grid::unit(10, 'points')) +
       ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
@@ -172,7 +172,7 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
       ggraph::geom_edge_arc(
         ggplot2::aes_(colour = ~weight, label = ~round(weight, 2)),
         edge_width = edge_width,
-        curvature = curvature, arrow = arrow,
+        strength = curvature, arrow = arrow,
         end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
         start_cap = ggraph::rectangle(box_x, box_y, 'mm'),
         show.legend = show.legend,
@@ -374,7 +374,7 @@ plot_model_set <- function(model_set, labels = NULL, algorithm = 'kk', manual_la
 
   # Build plot.
   ggraph::ggraph(l) +
-    ggraph::geom_edge_arc(curvature = curvature, arrow = arrow, edge_width = edge_width,
+    ggraph::geom_edge_arc(strength = curvature, arrow = arrow, edge_width = edge_width,
                            end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
                            start_cap = ggraph::rectangle(box_x, box_y, 'mm')) +
     ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
