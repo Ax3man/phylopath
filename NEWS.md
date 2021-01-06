@@ -1,6 +1,8 @@
 phylopath 1.1.2.9001 (dev)
 --------------------------------------------------------------------------------
 
+* Add informative error when trying to plot a DAG without any paths.
+
 * Updated plotting functions to work with new `ggraph` releases.
 
 * Fixed regression with parallel usage of `phylo_path` due to an S3 
