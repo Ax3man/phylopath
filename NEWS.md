@@ -1,5 +1,8 @@
-phylopath 1.1.2.9001 (dev)
+phylopath 1.1.2.9002 (dev)
 --------------------------------------------------------------------------------
+
+* Fixed a bug that made made `phylo_path` fail to pass additional (...) 
+  arguments correctly to `phylolm`.
 
 * Add informative error when trying to plot a DAG without any paths.
 

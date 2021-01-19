@@ -158,7 +158,7 @@ phylo_g_lm <- function(formula, data, tree, model, method, boot = 0, ...) {
   } else {
     fun <- phylolm::phylolm
     args <- c(list(formula = formula, data = data, phy = tree, model = model, boot = boot),
-              dots_glm)
+              dots_lm)
   }
   res <- do.call(quiet_safely(fun), args)
   # Remove the call, since quiet_safely messes it up and it's annoying in printing
