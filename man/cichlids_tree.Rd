@@ -4,7 +4,9 @@
 \name{cichlids_tree}
 \alias{cichlids_tree}
 \title{Cichlid phylogeny.}
-\format{An object of class \code{phylo} of length 4.}
+\format{
+An object of class \code{phylo} of length 4.
+}
 \source{
 Dey, C.J., O'Connor, C.M., Wilkinson, H., Shultz, S., Balshine, S. &
 Fitzpatrick, J.L. 2017. Direct benefits and evolutionary transitions to

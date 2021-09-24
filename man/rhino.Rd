@@ -4,7 +4,9 @@
 \name{rhino}
 \alias{rhino}
 \title{Rhinogrades traits.}
-\format{An object of class \code{data.frame} with 100 rows and 6 columns.}
+\format{
+An object of class \code{data.frame} with 100 rows and 6 columns.
+}
 \source{
 Gonzalez-Voyer A & von Hardenberg A. 2014. An Introduction to
 Phylogenetic Path Analysis. Chapter 8. In: Garamszegi LZ (ed.), Modern

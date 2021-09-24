@@ -29,7 +29,7 @@ the form \code{c(var1 = "label1", var2 = "label2")}.
 If left at `NULL``, the variable names of the DAGs are used.}
 
 \item{algorithm}{A layout algorithm from \code{igraph}, see
-\code{\link[ggraph:create_layout]{ggraph::create_layout()}}. By default, uses the Kamada-Kawai
+\code{\link[ggraph:ggraph]{ggraph::create_layout()}}. By default, uses the Kamada-Kawai
 layout algorithm. Another good option is \code{"sugiyama"}, which is
 designed to minimize edge crossing in DAGs. However, it can often plot
 nodes too close together.}

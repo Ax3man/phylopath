@@ -19,7 +19,7 @@ variables. See \link[phylolm:phylolm]{phylolm::phylolm} for options and details.
 Pagel's lambda model}
 
 \item{method}{The estimation method for the binary models. See
-\link[phylolm:phylolm]{phylolm::phylolm} for options and details. Defaults to logistic MPLE.}
+\link[phylolm:phyloglm]{phylolm::phyloglm} for options and details. Defaults to logistic MPLE.}
 
 \item{boot}{The number of bootstrap replicates used to estimate confidence intervals.}
 

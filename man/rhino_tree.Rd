@@ -4,7 +4,9 @@
 \name{rhino_tree}
 \alias{rhino_tree}
 \title{Rhinogrades phylogeny.}
-\format{An object of class \code{phylo} of length 4.}
+\format{
+An object of class \code{phylo} of length 4.
+}
 \source{
 Gonzalez-Voyer A & von Hardenberg A. 2014. An Introduction to
 Phylogenetic Path Analysis. Chapter 8. In: Garamszegi LZ (ed.), Modern

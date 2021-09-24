@@ -4,7 +4,9 @@
 \name{red_list_tree}
 \alias{red_list_tree}
 \title{Mammalian phylogeny}
-\format{An object of class \code{phylo} of length 4.}
+\format{
+An object of class \code{phylo} of length 4.
+}
 \source{
 Gonzalez-Voyer, A. Gonzalez-Suarez M. Vila C. and Revilla E. 2016.
 Larger brain size indirectly increases vulnerability to extinction in
