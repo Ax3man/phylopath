@@ -139,7 +139,7 @@ l <- function(dCICc) exp(-0.5 * dCICc)
 
 w <- function(l) l / sum(l)
 
-phylo_g_lm <- function(formula, data, tree, model, method, boot = 0, dots) {
+phylo_g_lm <- function(formula, data, tree, model, method, boot = 0, dots = NULL) {
   # we capture the dots, because we need to match the names to either phylolm or phylolm
   dots_glm <- dots[names(dots) %in% names(formals(phylolm::phyloglm))]
   dots_lm <- dots[names(dots) %in% names(formals(phylolm::phylolm))]
