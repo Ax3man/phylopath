@@ -12,7 +12,7 @@
 #'   variables. See [phylolm::phylolm] for options and details. Defaults to
 #'   Pagel's lambda model
 #' @param method The estimation method for the binary models. See
-#'   [phylolm::phylolm] for options and details. Defaults to logistic MPLE.
+#'   [phylolm::phyloglm] for options and details. Defaults to logistic MPLE.
 #' @param order Causal order of the included variable, given as a character
 #'   vector. This is used to determine which variable should be the dependent
 #'   in the dsep regression equations. If left unspecified, the order will be
@@ -77,6 +77,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
                        order = NULL, parallel = NULL, na.rm = TRUE, ...) {
   # Always coerce to data.frame, as tibbles and data.tables do NOT play nice.
   data <- as.data.frame(data)
+  dots <- list(...)
   tmp <- check_models_data_tree(model_set, data, tree, na.rm)
   model_set <- tmp$model_set
   data <- tmp$data
@@ -101,11 +102,8 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
     cl <- NULL
   }
   dsep_models_runs <- pbapply::pblapply(
-    f_list,
-    function(x, data, tree, model, method, ...) {
-      phylo_g_lm(x, data, tree, model, method, ...)
-    },
-    data = data, tree = tree, model = model, method = method, cl = cl)
+    f_list, phylo_g_lm,
+    data = data, tree = tree, model = model, method = method, dots = dots, cl = cl)
   # Produce appropriate error if needed
   errors <- purrr::map(dsep_models_runs, 'error')
   purrr::map2(
@@ -153,7 +151,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
 
   out <- list(
     d_sep = d_sep, model_set = model_set, data = data, tree = tree, model = model, method = method,
-    dots = list(...), warnings = warnings
+    dots = dots, warnings = warnings
   )
   class(out) <- 'phylopath'
   return(out)
