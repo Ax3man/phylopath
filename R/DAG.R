@@ -90,6 +90,7 @@ define_model_set <- function(..., .common = NULL) {
 #'   plot(d_fitted)
 est_DAG <- function(DAG, data, tree, model, method, boot = 0, ...) {
   stopifnot(inherits(DAG, 'DAG'))
+  dots <- list(...)
   # scale the continous variables
   r <- rownames(data)
   data[sapply(data, is.numeric)] <- lapply(data[sapply(data, is.numeric)], scale)
@@ -99,7 +100,7 @@ est_DAG <- function(DAG, data, tree, model, method, boot = 0, ...) {
       return(cbind(y, y, y, y))
     }
     f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
-    m <- phylo_g_lm(f, data, tree, model, method, boot, ...)
+    m <- phylo_g_lm(f, data, tree, model, method, boot, dots)
     if (!is.null(m$error)) {
       stop(paste('Fitting the following model:\n   ', Reduce(paste, deparse(f)),
                  '\nproduced this error:\n   ', m$error),
