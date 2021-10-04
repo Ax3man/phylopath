@@ -5,6 +5,8 @@
 ^cran-comments\.md$
 ^README\.md$
 ^index\.Rmd$
+^index\.md$
+^index_files$
 ^docs$
 ^_pkgdown\.yml$
 ^doc$
