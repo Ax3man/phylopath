@@ -1,11 +1,7 @@
 ## Test environments
-* local Linux Kubuntu install, R 3.6.1
-* Development version using winbuilder, (2019-12-02 r77499) 
-* R-hub: 
-    Windows Server 2008 R2 SP1, R-devel, 32/64 bit
-    Platform:   Ubuntu Linux 16.04 LTS, R-release, GCC
-    Fedora Linux, R-devel, clang, gfortran
-    
+* local Linux Ubuntu install, R 4.0.3
+* Release version using winbuilder, (4.1.1 2021-08-10) 
+* Development version using winbuilder, (2021-09-30 r80997) 
 
 ## Local R CMD check results
 0 errors | 0 warnings | 0 notes
@@ -22,4 +18,4 @@ All ok.
 ## Downstream dependencies
 The package does not have downstream dependencies.
 
-This submission is to prepare for the upcoming release of R v4.0.0, and fixes some additional bugs.
+This submission is to fix issues introduced by updates to ggraph, and fixes some additional bugs.
