@@ -77,17 +77,39 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="phylopath" class="section level1">
+<div id="easy-phylogenetic-path-analysis-in-r" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#phylopath" class="anchor"></a>phylopath</h1></div>
-
-<p>This package implements phylogenetic path analysis in R.</p>
-<p>Install the package using:</p>
-<pre class="{r}"><code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("phylopath")</a></code></pre>
-<p>Or if you’d like to install the development version (here on github), use:</p>
-<pre class="{r}"><code><a href="https://remotes.r-lib.org/reference/install_github.html">remotes::install_github("Ax3man/phylopath")</a></code></pre>
-<p>It’s easiest to start on the <a href="https://ax3man.github.io/phylopath">website</a> and first read the introduction <a href="https://ax3man.github.io/phylopath/articles/intro_to_phylopath.html">here</a>, or read the <a href="https://doi.org/10.7717/peerj.4718">paper in PeerJ</a>.</p>
-<p>If you find any problems, or if you have suggestions for improvements, please file those under <a href="/issue">issues</a>. PRs welcome.</p>
+<a href="#easy-phylogenetic-path-analysis-in-r" class="anchor"></a>Easy phylogenetic path analysis in R</h1></div>
+<p>Use the <code>phylopath</code> package for an easy to use framework to perform phylogenetic path analysis (PPA).</p>
+<p>PPA can be used to compare support for competing causal models of trait evolution, while taking shared ancestry into account. All you need is:</p>
+<ol>
+<li>A clear set of models to test. 2. A data set of species with trait values. 3. A phylogeny of your species.</li>
+</ol>
+<p>For a complete worked example, click “Get Started” above, or see the <a href="https://doi.org/10.7717/peerj.4718">PeerJ paper</a>.</p>
+<p>This method was developed by Von Hardenberg and Gonzalez-Voyer. See <code><a href="https://rdrr.io/r/utils/citation.html">citation()</a></code> for info on correct citations.</p>
+<p><img src="index_files/figure-markdown_strict/unnamed-chunk-2-1.png" width="600px" style="display: block; margin: auto;"></p>
+<p><img src="index_files/figure-markdown_strict/unnamed-chunk-3-1.png" width="600px" style="display: block; margin: auto;"></p>
+<p>The following published papers use <code>phylopath</code> (not up-to-date):</p>
+<p><em>2019</em></p>
+<ul>
+<li><p>Scholer, M. N., Arcese, P., Puterman, M. L., Londoño, G. A. &amp; Jankowski, J. E. Survival is negatively related to basal metabolic rate in tropical Andean birds. <em>Functional Ecology</em> (2019) 00:1–10 <a href="https://doi.org/10.1111/1365-2435.13375">doi:10.1111/1365-2435.13375</a></p></li>
+<li><p>Iglesias-Carrasco, M., Jennions M. D., Ho S. Y. W. &amp; Duchêne, D. A. Sexual selection, body mass and molecular evolution interact to predict diversification in birds. <em>Proceedings B</em> (2019), 286: 20190172. <a href="https://doi.org/10.1098/rspb.2019.0172">doi:10.1098/rspb.2019.0172</a></p></li>
+<li><p>Guo W.‐Y., van Kleunen M., Pierce S., <em>et al.</em> Domestic gardens play a dominant role in selecting alien species with adaptive strategies that facilitate naturalization. <em>Global Ecol Biogeogr</em> (2019), 00:1–12. <a href="https://doi.org/10.1111/geb.12882">doi:10.1111/geb.12882</a></p></li>
+</ul>
+<p><em>2018</em></p>
+<ul>
+<li><p>Santini, L., González‐Suáre, M., Russo, D., Gonzalez-Voyer, A., Von Hardenberg, A. &amp; Ancilotto, L. One strategy does not fit all: determinants of urban adaptation in mammals. <em>Ecol Lett</em> (2018). <a href="https://doi.org/10.1111/ele.13199">doi:10.1111/ele.13199</a>.</p></li>
+<li><p>Kennedy, J. D., Borregaard, M. K., Marki, P. Z., Machac, A., Fjeldså, J., and Rahbek, C. Expansion in geographical and morphological space drives continued lineage diversification in a global passerine radiation. <em>Proceedings B</em> (2018): 285. <a href="https://doi.org/10.1098/rspb.2018.2181">doi:10.1098/rspb.2018.2181</a>.</p></li>
+<li><p>Liedtke, H. C., Gower, D. J., Wilkinson, M. &amp; Gomez-Mestre, I. Macroevolutionary shift in the size of amphibian genomes and the role of life history and climate. <em>Nature Eco Evo</em>. (2018). <a href="https://doi.org/10.1038/s41559-018-0674-4">doi:10.1038/s41559-018-0674-4</a>.</p></li>
+<li><p>Murali, G., Merilaita, S. &amp; Kodandaramaiah, U. Grab my tail: Evolution of dazzle stripes and colourful tails in lizards. <em>J Evol Biol</em> (2018). <a href="https://doi.org/10.1111/jeb.13364">doi:10.1111/jeb.13364</a>.</p></li>
+<li><p>Mellor, E., McDonald Kinkaid, H. &amp; Mason, G. Phylogenetic comparative methods: Harnessing the power of species diversity to investigate welfare issues in captive wild animals. <em>Zoo biology</em> (2018). <a href="https://doi.org/10.1002/zoo.21427">doi:10.1002/zoo.21427</a>.</p></li>
+<li><p>Braga, M. P., Araujo, S. B. L., Agosta, S., Brooks, D., Hoberg, E., Nylin, S., Janz, N. &amp; Boeger, W. A. Host use dynamics in a heterogeneous fitness landscape generates oscillations in host range and diversification. <em>Evolution</em> (2018). <a href="https://doi.org/10.1111/evo.13557">doi:10.1111/evo.13557</a>.</p></li>
+<li><p>Basset, Y., Dahl, C., Ctvrtecka, R., <em>et al.</em> A cross‐continental comparison of assemblages of seed‐ and fruit‐feeding insects in tropical rain forests: Faunal composition and rates of attack. <em>J Biogeogr.</em> (2018) 00:1–13. <a href="https://doi.org/10.1111/jbi.13211">doi:10.1111/jbi.13211</a></p></li>
+<li><p>Liao, W. B., Huang, Y., Zeng, Y., Zhong, M. J., Luo, Y. and Lüpold, S. Ejaculate evolution in external fertilizers: Influenced by sperm competition or sperm limitation? <em>Evolution</em> (2018), 72: 4–17. <a href="https://doi.org/10.1111/evo.13372">doi:10.1111/evo.13372</a></p></li>
+<li><p>Lin Zhang, Kun Guo, Guang-Zheng Zhang, Long-Hui Lin and Xiang Ji. Evolutionary transitions in body plan and reproductive mode alter maintenance metabolism in squamates. <em>BMC Evo Biol</em> (2018), 18:45. <a href="https://doi.org/10.1186/s12862-018-1166-5">doi:10.1186/s12862-018-1166-5</a></p></li>
+<li><p>Xin Yu, Mao Jun Zhong, Da Yong Li, Long Jin, Wen Bo Liao and Alexander Kotrschal. Large‐brained frogs mature later and live longer. <em>Evolution.</em> (2018). <a href="https://doi.org/10.1111/evo.13478">doi:10.1111/evo.13478</a>.</p></li>
+</ul>
+<p>Send me a message to add yours to the list.</p>
 </div>
   </div>
 
@@ -122,15 +144,7 @@
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://cran.r-project.org/package=phylopath"><img src="http://www.r-pkg.org/badges/version/phylopath" alt="CRAN_Status_Badge"></a></li>
-<li><a href="http://cran.rstudio.com/web/packages/phylopath/index.html"><img src="http://cranlogs.r-pkg.org/badges/grand-total/phylopath" alt="Cran downloads"></a></li>
-<li><a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a></li>
-</ul>
-</div>
-</div>
+  </div>
 </div>
 
 
