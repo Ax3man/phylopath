@@ -1,7 +1,8 @@
-pandoc: 2.3.1
-pkgdown: 1.4.1
+pandoc: 2.11.4
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   binary_models: binary_models.html
   intro_to_phylopath: intro_to_phylopath.html
+last_built: 2021-10-04T17:44Z
 
