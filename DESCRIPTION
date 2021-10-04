@@ -9,7 +9,7 @@ Maintainer: Wouter van der Bijl <wouter@zoology.ubc.ca>
 Description: A comprehensive and easy to use R implementation of confirmatory
     phylogenetic path analysis as described by Von Hardenberg and Gonzalez-Voyer
     (2012) <doi:10.1111/j.1558-5646.2012.01790.x>.
-URL: http://Ax3man.github.io/phylopath/
+URL: https://Ax3man.github.io/phylopath/
 BugReports: https://github.com/Ax3man/phylopath/issues
 License: GPL-3
 LazyData: TRUE
