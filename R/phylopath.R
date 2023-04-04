@@ -96,7 +96,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
     cl <- parallel::makeCluster(
       min(c(parallel::detectCores() - 1, length(f_list))), parallel
     )
-    parallel::clusterExport(cl, list('phylo_g_lm'), environment())
+    parallel::clusterExport(cl, list('phylo_g_lm', 'quiet_safely'), environment())
     on.exit(parallel::stopCluster(cl))
   } else {
     cl <- NULL
