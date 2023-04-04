@@ -159,11 +159,14 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
         start_cap = ggraph::rectangle(box_x, box_y, 'mm'), show.legend = show.legend,
         linejoin = c('bevel'), angle_calc = 'along', label_dodge = grid::unit(10, 'points')) +
       ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
-      ggraph::scale_edge_width_continuous(limits = c(0, max(igraph::E(g)$weight)), range = c(0, 2),
-                                          guide = 'none') +
-      ggraph::scale_edge_color_manual(name = NULL,
-                                      values = c('FALSE' = colors[2], 'TRUE' = colors[1]),
-                                      labels = c('positive', 'negative')) +
+      ggraph::scale_edge_width_continuous(
+        limits = c(0, max(abs(igraph::E(g)$weight))), range = c(0, 2), guide = 'none'
+      ) +
+      ggraph::scale_edge_color_manual(
+        name = NULL,
+        values = c('FALSE' = colors[2], 'TRUE' = colors[1]),
+        labels = c('positive', 'negative')
+      ) +
       ggraph::theme_graph(base_family = 'sans')
   }
 

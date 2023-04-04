@@ -3,6 +3,10 @@ phylopath 1.1.3.9000
 
 * Fixed a bug that no longer allowed parallel processing in `phylo_path`.
 
+* Fixed a bug where the range of the width scale for paths in `plot.fitted_DAG` 
+  was incorrectly set to the `max(weight)`, instead of `max(abs(weight))`. 
+  (Thanks Yu Xu for the report.)
+
 phylopath 1.1.3
 --------------------------------------------------------------------------------
 
