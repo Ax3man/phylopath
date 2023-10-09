@@ -16,6 +16,6 @@ Status: OK
 All OK.
 
 ## Downstream dependencies
-The package does not have downstream dependencies.
+The package has 1 downstream dependency, which was checked with revdepcheck and passed.
 
 This submission fixes several small bugs and makes minor improvements to the package.
