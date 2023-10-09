@@ -1,4 +1,4 @@
-phylopath 1.1.3.9000
+phylopath 1.2.0
 --------------------------------------------------------------------------------
 
 * Replaced parallel processing based on the `parallel` package and `pbapply` to
