@@ -40,9 +40,8 @@ itself a DAG, then the ordering of that full model is used. Otherwise,
 the most common ordering between each pair of variables is used to create
 a general ordering.}
 
-\item{parallel}{An optional vector containing the virtual connection
-process type for running the chains in parallel (such as \code{"SOCK"}).
-A cluster is create using the \code{parallel} package.}
+\item{parallel}{\emph{Superseded} From v1.2 \code{phylopath} uses the \code{future} package
+for all parallel processing, see details.}
 
 \item{na.rm}{Should rows that contain missing values be dropped from the data
 as necessary (with a message)?}
@@ -83,6 +82,16 @@ A phylopath object, with the following components:
 \description{
 Continuous variables are modeled using \link[phylolm:phylolm]{phylolm::phylolm}, while binary
 traits are modeled using \link[phylolm:phyloglm]{phylolm::phyloglm}.
+}
+\details{
+\emph{Parallel processing}: From v1.2, \code{phylopath} uses the \code{future} framework
+for parallel processing. This is compatible with the parallel computation
+within the underlying \code{phylolm}, making it easy to enable parallel
+processing of multiple models, and of bootstrap replicates. To enable,
+simply set a parallel \code{plan()} using the \code{future} package. Typically, you'll
+want to run \code{future::plan("multisession", workers = n)}, where \code{n} is the
+number of cores. Now parallel processing is enabled. Return to sequantial
+processing using \code{future::plan("sequential")}
 }
 \examples{
   #see vignette('intro_to_phylopath') for more details

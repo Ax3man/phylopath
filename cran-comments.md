@@ -1,5 +1,5 @@
 ## Test environments
-* local Linux Ubuntu install, R 4.0.3
+* local MacOS 12.4 install, R 4.3.0
 * Release version using winbuilder, (4.1.1 2021-08-10) 
 * Development version using winbuilder, (2021-09-30 r80997) 
 
@@ -13,9 +13,9 @@ Status: OK
 Status: OK
 
 ## CRAN Package Check Results:
-All ok.
+All OK.
 
 ## Downstream dependencies
 The package does not have downstream dependencies.
 
-This submission is to fix issues introduced by updates to ggraph, and fixes some additional bugs.
+This submission fixes several small bugs and makes minor improvements to the package.
