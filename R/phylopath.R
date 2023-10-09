@@ -3,6 +3,15 @@
 #' Continuous variables are modeled using [phylolm::phylolm], while binary
 #' traits are modeled using [phylolm::phyloglm].
 #'
+#' *Parallel processing*: From v1.2, `phylopath` uses the `future` framework
+#' for parallel processing. This is compatible with the parallel computation
+#' within the underlying `phylolm`, making it easy to enable parallel
+#' processing of multiple models, and of bootstrap replicates. To enable,
+#' simply set a parallel `plan()` using the `future` package. Typically, you'll
+#' want to run `future::plan("multisession", workers = n)`, where `n` is the
+#' number of cores. Now parallel processing is enabled. Return to sequantial
+#' processing using `future::plan("sequential")`
+#'
 #' @param model_set A list of directed acyclic graphs. These are matrices,
 #'   typically created with \code{define_model_set}.
 #' @param data A \code{data.frame} with data. If you have binary variables, make
@@ -20,9 +29,8 @@
 #'   itself a DAG, then the ordering of that full model is used. Otherwise,
 #'   the most common ordering between each pair of variables is used to create
 #'   a general ordering.
-#' @param parallel An optional vector containing the virtual connection
-#'   process type for running the chains in parallel (such as \code{"SOCK"}).
-#'   A cluster is create using the \code{parallel} package.
+#' @param parallel *Superseded* From v1.2 `phylopath` uses the `future` package
+#'   for all parallel processing, see details.
 #' @param na.rm Should rows that contain missing values be dropped from the data
 #'   as necessary (with a message)?
 #' @param ...
@@ -100,17 +108,13 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
   )
   f_list <- unique(unlist(formulas))
   if (!is.null(parallel)) {
-    cl <- parallel::makeCluster(
-      min(c(parallel::detectCores() - 1, length(f_list))), parallel
-    )
-    parallel::clusterExport(cl, list('phylo_g_lm', 'quiet_safely'), environment())
-    on.exit(parallel::stopCluster(cl))
-  } else {
-    cl <- NULL
+    warning('Use of the `parallel` argument has been superseded by the use of `future`. See documentation for details.')
   }
-  dsep_models_runs <- pbapply::pblapply(
+  dsep_models_runs <- future.apply::future_lapply(
     f_list, phylo_g_lm,
-    data = data, tree = tree, model = model, method = method, dots = dots, cl = cl)
+    data = data, tree = tree, model = model, method = method, dots = dots,
+    future.seed = TRUE
+  )
   # Produce appropriate error if needed
   errors <- purrr::map(dsep_models_runs, 'error')
   purrr::map2(
@@ -154,7 +158,6 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
       model = .y
     )
   )
-
 
   out <- list(
     d_sep = d_sep, model_set = model_set, data = data, tree = tree, model = model, method = method,
