@@ -17,7 +17,7 @@ This vignette gives a short example of how PPA can be applied to binary data set
 
 There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses `phylolm::phyloglm`, written by Lam Si Tung Ho, Robert Lachlan, Rachel Feldman and Cécile Ané. `phylopath`'s accuracy is directly dependent on the accuracy of that function, and if you don't trust `phyloglm` you should not trust binary models used in `phylo_path`.
 
-`phylolm::phyloglm` performs checks for model convergence. In practice, these often fail. Especially in `phylopath`, were we often fit many models, it is likely that at least one model fails these checks and generates a warning. You can see the warnings using `check_warnings()`. You can try changing to the second method (`method = 'logistic_IG10'`), or passing parameters like `btol` and `log.alpha.bound` (see `?phylolm::phyloglm`). These parameters are then applied to all models.
+`phylolm::phyloglm` performs checks for model convergence. In practice, these often fail. Especially in `phylopath`, were we often fit many models, it is likely that at least one model fails these checks and generates a warning. You can see the warnings using `check_warnings()`. You can try changing to the second method (`method = 'logistic_IG10'`), or passing parameters like `btol` and `log.alpha.bound` (see `?phylolm::phyloglm`). These parameters are then applied to all models. Another option is to use the `phylosem` package, which supports both Binomial and Poisson errors with a different implementation.
 
 *The example below currently generates such warnings, should not be trusted, and is only presented as an example.*
 

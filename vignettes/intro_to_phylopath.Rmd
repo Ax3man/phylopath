@@ -11,7 +11,7 @@ vignette: >
 
 ## Some starting notes
 
-If you are unfamiliar with phylogenetic comparative methods in general, I'd advise you learn more simple methods first. If you are comfortable with phylogenetic methods, but not with phylogenetic path analysis (PPA) in particular, you should have a look at the example below together with the wonderful [book chapter](http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf) by Gonzalez-Voyer and Von Hardenberg.
+If you are unfamiliar with phylogenetic comparative methods in general, I'd advise you learn more simple methods first. If you are comfortable with phylogenetic methods, but not with phylogenetic path analysis (PPA) in particular, you should have a look at the example below together with the wonderful [book chapter](https://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf) by Gonzalez-Voyer and Von Hardenberg.
 
 If you're just looking for how to use the package, the [PeerJ paper](https://doi.org/10.7717/peerj.4718) and these vignettes are what you are looking for.
 

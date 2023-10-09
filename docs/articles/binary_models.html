@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">phylopath</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.2.0</span>
       </span>
     </div>
 
@@ -115,7 +115,9 @@ using <code>check_warnings()</code>. You can try changing to the second
 method (<code>method = 'logistic_IG10'</code>), or passing parameters
 like <code>btol</code> and <code>log.alpha.bound</code> (see
 <code><a href="https://rdrr.io/pkg/phylolm/man/phyloglm.html" class="external-link">?phylolm::phyloglm</a></code>). These parameters are then applied to
-all models.</p>
+all models. Another option is to use the <code>phylosem</code> package,
+which supports both Binomial and Poisson errors with a different
+implementation.</p>
 <p><em>The example below currently generates such warnings, should not
 be trusted, and is only presented as an example.</em></p>
 <p>If you have useful opinions or information on these points, feel free
