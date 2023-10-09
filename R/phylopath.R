@@ -78,6 +78,13 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
   # Always coerce to data.frame, as tibbles and data.tables do NOT play nice.
   data <- as.data.frame(data)
   dots <- list(...)
+
+  # check for users passing boot as an optional parameter, which has been deprecated
+  if ('boot' %in% names(dots)) {
+    warning('Using `boot` has been deprecated here, pass to choice(), best(), average() or est_DAG() instead.')
+    dots <- dots[names(dots) != 'boot']
+  }
+
   tmp <- check_models_data_tree(model_set, data, tree, na.rm)
   model_set <- tmp$model_set
   data <- tmp$data
@@ -190,8 +197,9 @@ summary.phylopath <- function(object, ...) {
 #' analysis.
 #'
 #' @param phylopath An object of class \code{phylopath}.
-#' @param ... Arguments to pass to [phylolm::phylolm] and [phylolm::phyloglm]. If you specified
-#'   options in the original [phylo_path] call you don't need to specify them again.
+#' @param ... Arguments to pass to [phylolm::phylolm] and [phylolm::phyloglm]. Provide `boot = K`
+#'   parameter to enable bootstrapping, where `K` is the number of bootstrap replicates. If you
+#'   specified other options in the original [phylo_path] call you don't need to specify them again.
 #'
 #' @return An object of class \code{fitted_DAG}.
 #' @export
@@ -226,8 +234,9 @@ best <- function(phylopath, ...) {
 #' @param phylopath An object of class \code{phylopath}.
 #' @param choice A character string of the name of the model to be chosen, or
 #'   the index in \code{model_set}.
-#' @param ... Arguments to pass to [phylolm::phylolm] and [phylolm::phyloglm]. If you specified
-#'   options in the original [phylo_path] call you don't need to specify them again.
+#' @param ... Arguments to pass to [phylolm::phylolm] and [phylolm::phyloglm]. Provide `boot = K`
+#'   parameter to enable bootstrapping, where `K` is the number of bootstrap replicates. If you
+#'   specified other options in the original [phylo_path] call you don't need to specify them again.
 #'
 #' @return An object of class \code{fitted_DAG}.
 #' @export
@@ -267,8 +276,9 @@ choice <- function(phylopath, choice, ...) {
 #' @param cut_off The CICc cut-off used to select the best models. Use
 #'   `Inf` to average over all models. Use the [best()] function to
 #'   only use the top model, or [choice()] to select any single model.
-#' @param ... Arguments to pass to [phylolm::phylolm] and [phylolm::phyloglm]. If you specified
-#'   options in the original [phylo_path] call you don't need to specify them again.
+#' @param ... Arguments to pass to [phylolm::phylolm] and [phylolm::phyloglm]. Provide `boot = K`
+#'   parameter to enable bootstrapping, where `K` is the number of bootstrap replicates. If you
+#'   specified other options in the original [phylo_path] call you don't need to specify them again.
 #'
 #' @inheritParams average_DAGs
 #'

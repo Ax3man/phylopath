@@ -23,8 +23,9 @@ over models where the path appears, making it more sensitive to small
 effects. Following von Hardenberg & Gonzalez-Voyer 2013, conditional
 averaging is set as the default. Also see \code{\link[MuMIn:model.avg]{MuMIn::model.avg()}}.}
 
-\item{...}{Arguments to pass to \link[phylolm:phylolm]{phylolm::phylolm} and \link[phylolm:phyloglm]{phylolm::phyloglm}. If you specified
-options in the original \link{phylo_path} call you don't need to specify them again.}
+\item{...}{Arguments to pass to \link[phylolm:phylolm]{phylolm::phylolm} and \link[phylolm:phyloglm]{phylolm::phyloglm}. Provide \code{boot = K}
+parameter to enable bootstrapping, where \code{K} is the number of bootstrap replicates. If you
+specified other options in the original \link{phylo_path} call you don't need to specify them again.}
 }
 \value{
 An object of class \code{fitted_DAG}.
