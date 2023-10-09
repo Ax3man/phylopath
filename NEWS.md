@@ -9,6 +9,8 @@ phylopath 1.1.3.9000
   
 * Better user messaging and documentation around the use of the `boot` parameter.
 
+* Update of binary vignette to include more info on convergence warnings.
+
 phylopath 1.1.3
 --------------------------------------------------------------------------------
 

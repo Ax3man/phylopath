@@ -13,11 +13,15 @@ vignette: >
 
 This vignette gives a short example of how PPA can be applied to binary data sets using `phylopath`. A longer example with more explanation of the code can be found in the other vignette, "intro to phylopath".
 
-**Important note**: 
+**Important notes**:
 
 There has been some discussion concerning how to best perform logistic regression with phylogenetic correction. I take no position on this matter. This package uses `phylolm::phyloglm`, written by Lam Si Tung Ho, Robert Lachlan, Rachel Feldman and Cécile Ané. `phylopath`'s accuracy is directly dependent on the accuracy of that function, and if you don't trust `phyloglm` you should not trust binary models used in `phylo_path`.
 
-If you have useful opinions or information on this point, feel free to contact me.
+`phylolm::phyloglm` performs checks for model convergence. In practice, these often fail. Especially in `phylopath`, were we often fit many models, it is likely that at least one model fails these checks and generates a warning. You can see the warnings using `check_warnings()`. You can try changing to the second method (`method = 'logistic_IG10'`), or passing parameters like `btol` and `log.alpha.bound` (see `?phylolm::phyloglm`). These parameters are then applied to all models.
+
+*The example below currently generates such warnings, should not be trusted, and is only presented as an example.*
+
+If you have useful opinions or information on these points, feel free to contact me.
 
 # Example analysis
 
@@ -25,21 +29,21 @@ If you have useful opinions or information on this point, feel free to contact m
 
 This recreates the analysis from the following paper:
 
-> Dey CJ, O’Connor CM, Wilkinson H, Shultz S, Balshine S & Fitzpatrick JL. 2017. Direct benefits and evolutionary transitions to complex societies. Nature Ecology & Evolution. 0137.
+> Dey CJ, O'Connor CM, Wilkinson H, Shultz S, Balshine S & Fitzpatrick JL. 2017. Direct benefits and evolutionary transitions to complex societies. Nature Ecology & Evolution. 0137.
 
 This is, to my knowledge, the first study to employ PPA on binary traits.
 
-The study investigates the evolution of cooperative breeding in cichlids. In short (my summary), there has been intense debate about what factors drive species towards evolving systems of cooperative breeding. Many have argued (and provided evidence in birds and mammals) that cooperative breeding chiefly evolves from monogamous mating systems because helpers can gain indirect fitness benefits through kin selection. However, a non-exclusive alternative hypothesis is that direct benefits due to ecological factors may be important and provide direct benefits. Therefore, both hypotheses should be considered at the same time. 
+The study investigates the evolution of cooperative breeding in cichlids. In short (my summary), there has been intense debate about what factors drive species towards evolving systems of cooperative breeding. Many have argued (and provided evidence in birds and mammals) that cooperative breeding chiefly evolves from monogamous mating systems because helpers can gain indirect fitness benefits through kin selection. However, a non-exclusive alternative hypothesis is that direct benefits due to ecological factors may be important and provide direct benefits. Therefore, both hypotheses should be considered at the same time.
 
 The data is included in this paper as `cichlids` and `cichlids_tree`
 
 It contains five variables:
 
-- C: Cooperative breeding, cooperative or non-cooperative.
-- M: Mating system, monogamous or non-monogamous.
-- P: Parental care, maternal or biparental.
-- G: Social grouping, grouping or non-grouping.
-- D: Diet, piscivore or non-piscivore.
+-   C: Cooperative breeding, cooperative or non-cooperative.
+-   M: Mating system, monogamous or non-monogamous.
+-   P: Parental care, maternal or biparental.
+-   G: Social grouping, grouping or non-grouping.
+-   D: Diet, piscivore or non-piscivore.
 
 Under the indirect fitness hypothesis, monogamy is expected to be a major driver of cooperative breeding, while group living, biparental care and diet type may be important contributors towards a direct benefits scenario.
 
@@ -77,7 +81,9 @@ Now that we have our models, data and a tree, we can compare the models using `p
 (cichlids_results <- phylo_path(models, cichlids, cichlids_tree))
 ```
 
-Note that two messages are printed. This is because there are missing values in our data set that are first being removed. Also, since the tree includes species for which data is missing, the tree had to be pruned. This is done automatically with a message to the user. You should check whether the amount of data removed is correct.
+Note that three messages are printed. This is because there are missing values in our data set that are first being removed. Also, since the tree includes species for which data is missing, the tree had to be pruned. This is done automatically with a message to the user. You should check whether the amount of data removed is correct.
+
+The third messages notes that warnings have been generated, see the **Important notes** at the start of this vignette. I will continue with these results here, but *models with warnings should not be trusted*.
 
 `phylo_path` notes that indeed all variables are binary.
 
@@ -87,8 +93,6 @@ plot(s)
 ```
 
 We see that model F is the best supported model. This model notably does not include a link between monogamy and cooperative breeding, giving support to the direct benefits hypothesis.
-
-Model L, the second best model, is exactly the same as 
 
 ### Evaluating variable importance
 
@@ -116,4 +120,3 @@ But we can also plot the final model:
 plot(best_cichlids)
 ```
 
-It appears that social grouping is a slightly more important than diet and biparental care.
