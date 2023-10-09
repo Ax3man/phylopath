@@ -132,12 +132,12 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
         'Fitting the following model:\n   ',
         Reduce(paste, deparse(.y)),
         '\nproduced this/these warning(s):\n   ',
-        .x
+        .x, '\n'
       )
   )
   warnings <- warnings[!sapply(warnings, is.null)]
   if (length(warnings) > 1) {
-    warning('Some models produced warnings. Use `show_warnings()` to view them.')
+    warning('Some models produced warnings. Use `show_warnings()` to view them.\n')
   }
 
   # Collect models.
