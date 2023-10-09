@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
@@ -31,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">phylopath</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">1.1.4</span>
       </span>
     </div>
 
@@ -58,7 +60,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/Ax3man/phylopath">
+  <a href="https://github.com/Ax3man/phylopath" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
@@ -73,62 +75,101 @@
 
       
 
-      </header><script src="intro_to_phylopath_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Introduction to phylogenetic path analysis with phylopath</h1>
-                        <h4 class="author">Wouter van der Bijl</h4>
+      <h1 data-toc-skip>Introduction to phylogenetic path analysis with
+phylopath</h1>
+                        <h4 data-toc-skip class="author">Wouter van der
+Bijl</h4>
             
-            <h4 class="date">2021-10-04</h4>
+            <h4 data-toc-skip class="date">2023-10-09</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/Ax3man/phylopath/blob/master/vignettes/intro_to_phylopath.Rmd"><code>vignettes/intro_to_phylopath.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/Ax3man/phylopath/blob/HEAD/vignettes/intro_to_phylopath.Rmd" class="external-link"><code>vignettes/intro_to_phylopath.Rmd</code></a></small>
       <div class="hidden name"><code>intro_to_phylopath.Rmd</code></div>
 
     </div>
 
     
     
-<div id="some-starting-notes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#some-starting-notes" class="anchor"></a>Some starting notes</h2>
-<p>If you are unfamiliar with phylogenetic comparative methods in general, I’d advise you learn more simple methods first. If you are comfortable with phylogenetic methods, but not with phylogenetic path analysis (PPA) in particular, you should have a look at the example below together with the wonderful <a href="http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf">book chapter</a> by Gonzalez-Voyer and Von Hardenberg.</p>
-<p>If you’re just looking for how to use the package, the <a href="https://doi.org/10.7717/peerj.4718">PeerJ paper</a> and these vignettes are what you are looking for.</p>
-<div id="starting-up" class="section level3">
-<h3 class="hasAnchor">
-<a href="#starting-up" class="anchor"></a>Starting up</h3>
-<p>This package follows the general approach to phylogenetic methods as used by the package <code>phylolm</code> (this package is used for model fitting “under the hood”). This means in particular that you line up your phylogenetic tree and data by assigning the tip labels as the row names of your data.frame. (Please note that this is the same for <code>ape</code>, but different from the approach of <code>caper::pgls</code> where you create a comparative data object.)</p>
-<p>Your phylogenetic tree needs to be a <code>phylo</code> object, and many tree files can be read into R using the <code>ape</code> package (which is installed automatically with <code>phylopath</code>). For example:</p>
+<div class="section level2">
+<h2 id="some-starting-notes">Some starting notes<a class="anchor" aria-label="anchor" href="#some-starting-notes"></a>
+</h2>
+<p>If you are unfamiliar with phylogenetic comparative methods in
+general, I’d advise you learn more simple methods first. If you are
+comfortable with phylogenetic methods, but not with phylogenetic path
+analysis (PPA) in particular, you should have a look at the example
+below together with the wonderful <a href="http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf" class="external-link">book
+chapter</a> by Gonzalez-Voyer and Von Hardenberg.</p>
+<p>If you’re just looking for how to use the package, the <a href="https://doi.org/10.7717/peerj.4718" class="external-link">PeerJ paper</a> and these
+vignettes are what you are looking for.</p>
+<div class="section level3">
+<h3 id="starting-up">Starting up<a class="anchor" aria-label="anchor" href="#starting-up"></a>
+</h3>
+<p>This package follows the general approach to phylogenetic methods as
+used by the package <code>phylolm</code> (this package is used for model
+fitting “under the hood”). This means in particular that you line up
+your phylogenetic tree and data by assigning the tip labels as the row
+names of your data.frame. (Please note that this is the same for
+<code>ape</code>, but different from the approach of
+<code>caper::pgls</code> where you create a comparative data
+object.)</p>
+<p>Your phylogenetic tree needs to be a <code>phylo</code> object, and
+many tree files can be read into R using the <code>ape</code> package
+(which is installed automatically with <code>phylopath</code>). For
+example:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://ape-package.ird.fr/">ape</a></span><span class="op">)</span>
-<span class="va">my_tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ape/man/read.tree.html">read.tree</a></span><span class="op">(</span><span class="st">'my_tree.tre'</span><span class="op">)</span> <span class="co"># For Newick format trees</span>
-<span class="va">my_tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ape/man/read.nexus.html">read.nexus</a></span><span class="op">(</span><span class="st">'my_tree.nex'</span><span class="op">)</span> <span class="co"># For NEXUS format trees</span></code></pre></div>
-<p>More info on reading trees can be found <a href="https://www.r-phylo.org/wiki/HowTo/InputtingTrees">on the r-phylo wiki</a>.</p>
-<p>If you have a column in your data that contain the species names, you have to set those names are rownames, e.g. like this:</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://ape-package.ird.fr/" class="external-link">ape</a></span><span class="op">)</span></span>
+<span><span class="va">my_tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ape/man/read.tree.html" class="external-link">read.tree</a></span><span class="op">(</span><span class="st">'my_tree.tre'</span><span class="op">)</span> <span class="co"># For Newick format trees</span></span>
+<span><span class="va">my_tree</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ape/man/read.nexus.html" class="external-link">read.nexus</a></span><span class="op">(</span><span class="st">'my_tree.nex'</span><span class="op">)</span> <span class="co"># For NEXUS format trees</span></span></code></pre></div>
+<p>More info on reading trees can be found <a href="https://www.r-phylo.org/wiki/HowTo/InputtingTrees" class="external-link">on the r-phylo
+wiki</a>.</p>
+<p>If you have a column in your data that contain the species names, you
+have to set those names are rownames, e.g. like this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">my_data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">my_data</span><span class="op">$</span><span class="va">species_name</span></code></pre></div>
-<p>Often, tree tip labels don’t have spaces between the genus and species names but underscores (<code>_</code>). If this is the case for you, but you have names with species in your data, you need to replace those spaces. For example:</p>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">my_data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">my_data</span><span class="op">$</span><span class="va">species_name</span></span></code></pre></div>
+<p>Often, tree tip labels don’t have spaces between the genus and
+species names but underscores (<code>_</code>). If this is the case for
+you, but you have names with species in your data, you need to replace
+those spaces. For example:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">my_tree</span><span class="op">$</span><span class="va">tip.label</span> <span class="co"># Check the tip labels of your tree</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">my_data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html">gsub</a></span><span class="op">(</span><span class="st">' '</span>, <span class="st">'_'</span>, <span class="va">my_data</span><span class="op">$</span><span class="va">species_name_with_spaces</span><span class="op">)</span></code></pre></div>
-<p>Please be aware that some <code>data.frame</code> extensions like <code>data.table</code>s (used by the <code>data.table</code> package) and <code>tibble</code>s (used by the tidyverse packages) do <em>not</em> support rownames, and cannot be used. You can coerce those back to normal <code>data.frames</code> using <code>my_data &lt;- as.data.frame(my_data)</code>.</p>
-<p><code>phylopath</code> makes it’s best attempt at helping you out with your data and tree. That means in particular that:</p>
+<code class="sourceCode R"><span><span class="va">my_tree</span><span class="op">$</span><span class="va">tip.label</span> <span class="co"># Check the tip labels of your tree</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">my_data</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">gsub</a></span><span class="op">(</span><span class="st">' '</span>, <span class="st">'_'</span>, <span class="va">my_data</span><span class="op">$</span><span class="va">species_name_with_spaces</span><span class="op">)</span></span></code></pre></div>
+<p>Please be aware that some <code>data.frame</code> extensions like
+<code>data.table</code>s (used by the <code>data.table</code> package)
+and <code>tibble</code>s (used by the tidyverse packages) do
+<em>not</em> support rownames, and cannot be used. You can coerce those
+back to normal <code>data.frames</code> using
+<code>my_data &lt;- as.data.frame(my_data)</code>.</p>
+<p><code>phylopath</code> makes it’s best attempt at helping you out
+with your data and tree. That means in particular that:</p>
 <ul>
-<li>an informative error is raised when you have species (rownames!) in your data that are not in the tree,</li>
-<li>that <code>NA</code> values are filtered out of the data as necessary, with an informative message, and</li>
-<li>that the tree will be pruned for you if it has surplus species, with an informative message.</li>
+<li>an informative error is raised when you have species (rownames!) in
+your data that are not in the tree,</li>
+<li>that <code>NA</code> values are filtered out of the data as
+necessary, with an informative message, and</li>
+<li>that the tree will be pruned for you if it has surplus species, with
+an informative message.</li>
 </ul>
 </div>
-<div id="models-of-evolution" class="section level3">
-<h3 class="hasAnchor">
-<a href="#models-of-evolution" class="anchor"></a>Models of evolution</h3>
-<p>You can set different models of evolution just like in <code>phylolm</code>, using the <code>model</code> parameter. By default <code>phylopath</code> uses Pagel’s lambda. This model of evolution only applies when fitting regressions to continuous variables. The following models of evolution are available (per <code><a href="https://rdrr.io/pkg/phylolm/man/phylolm.html">?phylolm::phylolm</a></code>):</p>
+<div class="section level3">
+<h3 id="models-of-evolution">Models of evolution<a class="anchor" aria-label="anchor" href="#models-of-evolution"></a>
+</h3>
+<p>You can set different models of evolution just like in
+<code>phylolm</code>, using the <code>model</code> parameter. By default
+<code>phylopath</code> uses Pagel’s lambda. This model of evolution only
+applies when fitting regressions to continuous variables. The following
+models of evolution are available (per
+<code><a href="https://rdrr.io/pkg/phylolm/man/phylolm.html" class="external-link">?phylolm::phylolm</a></code>):</p>
 <ul>
 <li>
 <code>"BM"</code>: Brownian motion model.</li>
 <li>
-<code>"OUfixedRoot"</code>: the Ornstein-Uhlenbeck model with an ancestral state to be estimated at the root.</li>
+<code>"OUfixedRoot"</code>: the Ornstein-Uhlenbeck model with an
+ancestral state to be estimated at the root.</li>
 <li>
-<code>"OUrandomRoot"</code>: the Ornstein-Uhlenbeck model with the ancestral state at the root having the stationary distribution.</li>
+<code>"OUrandomRoot"</code>: the Ornstein-Uhlenbeck model with the
+ancestral state at the root having the stationary distribution.</li>
 <li>
 <code>"lambda"</code>: Pagel’s lambda model (<em>default</em>).</li>
 <li>
@@ -140,163 +181,263 @@
 <li>
 <code>"trend"</code>: the Brownian motion model with a trend.</li>
 </ul>
-<p>If you include binary data, these regressions do not use that model, but there are two methods for estimating the logistic PGLS model, which you can set using the <code>method</code> parameter. You can either use <code>"logistic_MPLE"</code> (the default) or <code>"logistic_IG10"</code> (also see <code><a href="https://rdrr.io/pkg/phylolm/man/phyloglm.html">?phylolm::phyloglm</a></code>).</p>
-<p>Other settings of <code>phylolm</code> and <code>phyloglm</code>, such as constraints on the phylogenetic parameter, can be set easily by passing those to <code>phylo_path</code>, and will be respected in downstream functions.</p>
+<p>If you include binary data, these regressions do not use that model,
+but there are two methods for estimating the logistic PGLS model, which
+you can set using the <code>method</code> parameter. You can either use
+<code>"logistic_MPLE"</code> (the default) or
+<code>"logistic_IG10"</code> (also see
+<code><a href="https://rdrr.io/pkg/phylolm/man/phyloglm.html" class="external-link">?phylolm::phyloglm</a></code>).</p>
+<p>Other settings of <code>phylolm</code> and <code>phyloglm</code>,
+such as constraints on the phylogenetic parameter, can be set easily by
+passing those to <code>phylo_path</code>, and will be respected in
+downstream functions.</p>
 </div>
 </div>
-<div id="an-example-analysis" class="section level2">
-<h2 class="hasAnchor">
-<a href="#an-example-analysis" class="anchor"></a>An example analysis</h2>
+<div class="section level2">
+<h2 id="an-example-analysis">An example analysis<a class="anchor" aria-label="anchor" href="#an-example-analysis"></a>
+</h2>
 <p>Below I recreate the phylogenetic path analysis described in:</p>
 <blockquote>
-<p>Gonzalez-Voyer A &amp; von Hardenberg A. 2014. An Introduction to Phylogenetic Path Analysis. Chapter 8. In: Garamszegi LZ (ed.), Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. pp. 201-229. Springer-Verlag Berlin Heidelberg.</p>
+<p>Gonzalez-Voyer A &amp; von Hardenberg A. 2014. An Introduction to
+Phylogenetic Path Analysis. Chapter 8. In: Garamszegi LZ (ed.), Modern
+Phylogenetic Comparative Methods and Their Application in Evolutionary
+Biology. pp. 201-229. Springer-Verlag Berlin Heidelberg.</p>
 </blockquote>
-<p>You can find this book chapter <a href="http://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf">online</a>. For an introduction to the methodology, as well as the data, see the wonderful book chapter.</p>
-<p>Specifically, we recreate the Rhinogrades example here. The data used has been included in this package.</p>
-<div id="specifying-the-model-set" class="section level3">
-<h3 class="hasAnchor">
-<a href="#specifying-the-model-set" class="anchor"></a>Specifying the model set</h3>
-<p>Following figure 8.7, we first create all 9 causal models using the <code>define_model_set</code> function. This function uses regression equations (or <code>formula</code>s) to express the hypothesized relationships in the models. Formulas should be of the form <code>parent ~ child</code> and describe each path in your model. Multiple children of a single parent can be combined into a single formula: <code>parent ~ child1 + child2</code>. Use <code>.common</code> to include paths that should appear in all your models.</p>
-<p>This is usually the hardest part of the analysis, both in thinking and in coding. Make sure you have a reasonable set of models that describe the different hypotheses that you want to compare. I’d advise against just trying to run all combinations you can think of. As for the coding, double-check the outcome is actually what you wanted (use the plots below), typos are easily made!</p>
+<p>You can find this book chapter <a href="https://www.consevol.org/pdf/Books/Chapter%208%20Modern%20Phylogenetic%20Comparative%20Methods%20book.pdf" class="external-link">online</a>.
+For an introduction to the methodology, as well as the data, see the
+wonderful book chapter.</p>
+<p>Specifically, we recreate the Rhinogrades example here. The data used
+has been included in this package.</p>
+<div class="section level3">
+<h3 id="specifying-the-model-set">Specifying the model set<a class="anchor" aria-label="anchor" href="#specifying-the-model-set"></a>
+</h3>
+<p>Following figure 8.7, we first create all 9 causal models using the
+<code>define_model_set</code> function. This function uses regression
+equations (or <code>formula</code>s) to express the hypothesized
+relationships in the models. Formulas should be of the form
+<code>parent ~ child</code> and describe each path in your model.
+Multiple children of a single parent can be combined into a single
+formula: <code>parent ~ child1 + child2</code>. Use <code>.common</code>
+to include paths that should appear in all your models.</p>
+<p>This is usually the hardest part of the analysis, both in thinking
+and in coding. Make sure you have a reasonable set of models that
+describe the different hypotheses that you want to compare. I’d advise
+against just trying to run all combinations you can think of. As for the
+coding, double-check the outcome is actually what you wanted (use the
+plots below), typos are easily made!</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://Ax3man.github.io/phylopath/">phylopath</a></span><span class="op">)</span>
-
-<span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/define_model_set.html">define_model_set</a></span><span class="op">(</span>
-  one   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">RS</span> <span class="op">~</span> <span class="va">DD</span><span class="op">)</span>,
-  two   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">DD</span> <span class="op">~</span> <span class="va">NL</span>, <span class="va">RS</span> <span class="op">~</span> <span class="va">LS</span> <span class="op">+</span> <span class="va">DD</span><span class="op">)</span>,
-  three <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">RS</span> <span class="op">~</span> <span class="va">NL</span><span class="op">)</span>,
-  four  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">RS</span> <span class="op">~</span> <span class="va">BM</span> <span class="op">+</span> <span class="va">NL</span><span class="op">)</span>,
-  five  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">RS</span> <span class="op">~</span> <span class="va">BM</span> <span class="op">+</span> <span class="va">NL</span> <span class="op">+</span> <span class="va">DD</span><span class="op">)</span>,
-  six   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">NL</span> <span class="op">~</span> <span class="va">RS</span>, <span class="va">RS</span> <span class="op">~</span> <span class="va">BM</span><span class="op">)</span>,
-  seven <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">NL</span> <span class="op">~</span> <span class="va">RS</span>, <span class="va">RS</span> <span class="op">~</span> <span class="va">LS</span> <span class="op">+</span> <span class="va">BM</span><span class="op">)</span>,
-  eight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">NL</span> <span class="op">~</span> <span class="va">RS</span><span class="op">)</span>,
-  nine  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">NL</span> <span class="op">~</span> <span class="va">RS</span>, <span class="va">RS</span> <span class="op">~</span> <span class="va">LS</span><span class="op">)</span>,
-  .common <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">LS</span> <span class="op">~</span> <span class="va">BM</span>, <span class="va">NL</span> <span class="op">~</span> <span class="va">BM</span>, <span class="va">DD</span> <span class="op">~</span> <span class="va">NL</span><span class="op">)</span>
-<span class="op">)</span></code></pre></div>
-<p>The <code>define_model_set</code> function simply produces a set of matrices that summarize the connections between the variables. For example:</p>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Ax3man.github.io/phylopath/" class="external-link">phylopath</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/define_model_set.html">define_model_set</a></span><span class="op">(</span></span>
+<span>  one   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">RS</span> <span class="op">~</span> <span class="va">DD</span><span class="op">)</span>,</span>
+<span>  two   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">DD</span> <span class="op">~</span> <span class="va">NL</span>, <span class="va">RS</span> <span class="op">~</span> <span class="va">LS</span> <span class="op">+</span> <span class="va">DD</span><span class="op">)</span>,</span>
+<span>  three <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">RS</span> <span class="op">~</span> <span class="va">NL</span><span class="op">)</span>,</span>
+<span>  four  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">RS</span> <span class="op">~</span> <span class="va">BM</span> <span class="op">+</span> <span class="va">NL</span><span class="op">)</span>,</span>
+<span>  five  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">RS</span> <span class="op">~</span> <span class="va">BM</span> <span class="op">+</span> <span class="va">NL</span> <span class="op">+</span> <span class="va">DD</span><span class="op">)</span>,</span>
+<span>  six   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">NL</span> <span class="op">~</span> <span class="va">RS</span>, <span class="va">RS</span> <span class="op">~</span> <span class="va">BM</span><span class="op">)</span>,</span>
+<span>  seven <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">NL</span> <span class="op">~</span> <span class="va">RS</span>, <span class="va">RS</span> <span class="op">~</span> <span class="va">LS</span> <span class="op">+</span> <span class="va">BM</span><span class="op">)</span>,</span>
+<span>  eight <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">NL</span> <span class="op">~</span> <span class="va">RS</span><span class="op">)</span>,</span>
+<span>  nine  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">NL</span> <span class="op">~</span> <span class="va">RS</span>, <span class="va">RS</span> <span class="op">~</span> <span class="va">LS</span><span class="op">)</span>,</span>
+<span>  .common <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">LS</span> <span class="op">~</span> <span class="va">BM</span>, <span class="va">NL</span> <span class="op">~</span> <span class="va">BM</span>, <span class="va">DD</span> <span class="op">~</span> <span class="va">NL</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The <code>define_model_set</code> function simply produces a set of
+matrices that summarize the connections between the variables. For
+example:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">models</span><span class="op">$</span><span class="va">one</span></code></pre></div>
-<pre><code>##    BM NL DD RS LS
-## BM  0  1  0  0  1
-## NL  0  0  1  0  0
-## DD  0  0  0  1  0
-## RS  0  0  0  0  0
-## LS  0  0  0  0  0
-## attr(,"class")
-## [1] "matrix" "array"  "DAG"</code></pre>
-<p>It is good to check if the DAG looks like you were expecting. Instead of staring at a bunch of matrices, simply <code>plot</code> one of the models to inspect it visually.</p>
+<code class="sourceCode R"><span><span class="va">models</span><span class="op">$</span><span class="va">one</span></span></code></pre></div>
+<pre><code><span><span class="co">##    BM NL DD RS LS</span></span>
+<span><span class="co">## BM  0  1  0  0  1</span></span>
+<span><span class="co">## NL  0  0  1  0  0</span></span>
+<span><span class="co">## DD  0  0  0  1  0</span></span>
+<span><span class="co">## RS  0  0  0  0  0</span></span>
+<span><span class="co">## LS  0  0  0  0  0</span></span>
+<span><span class="co">## attr(,"class")</span></span>
+<span><span class="co">## [1] "matrix" "array"  "DAG"</span></span></code></pre>
+<p>It is good to check if the DAG looks like you were expecting. Instead
+of staring at a bunch of matrices, simply <code>plot</code> one of the
+models to inspect it visually.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">models</span><span class="op">$</span><span class="va">one</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">models</span><span class="op">$</span><span class="va">one</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-7-1.png" width="450px"></p>
 <p>Or better yet, plot all of the models at once:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/plot_model_set.html">plot_model_set</a></span><span class="op">(</span><span class="va">models</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model_set.html">plot_model_set</a></span><span class="op">(</span><span class="va">models</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-8-1.png" width="600px"></p>
 </div>
-<div id="evaluating-the-model-set" class="section level3">
-<h3 class="hasAnchor">
-<a href="#evaluating-the-model-set" class="anchor"></a>Evaluating the model set</h3>
-<p>Now that we have the model set, we can perform the path analysis using the <code>phylo_path</code> function. For this we will need a data set, included in this package as <code>rhino</code>, as well as a phylogenetic tree, <code>rhino_tree</code>. The package will take care of finding the d-separation statements and fitting the necessary models.</p>
-<p>Importantly, when using PGLS, we need to be consistent in which variables are used as independent and dependent variables in the analysis. If one has a specific idea about which variables are to be considered as up- and down-stream, then you can use the <code>order</code> argument to give the ordering (from up to down). In this case, we supply the ordering to mimic the choices made by the chapter authors. Alternatively, you can choose to not supply an order, and the function will try to make a sensible order by itself. If the combination of all causal models is itself a DAG, the ordering of that model will be used, otherwise the ordering will be constructed by consensus (i.e. the most common ordering is chosen).</p>
-<p><strong>Generally, I advise to not supply the order argument, in order to reduce “researcher degrees of freedom”.</strong></p>
-<p>By default, <code>phylo_path</code> uses Pagel’s “lambda” model of evolution (specified here for clarity), but if you want, for example, to use a simple Brownian motion model, you can supply <code>model = 'BM'</code> instead.</p>
+<div class="section level3">
+<h3 id="evaluating-the-model-set">Evaluating the model set<a class="anchor" aria-label="anchor" href="#evaluating-the-model-set"></a>
+</h3>
+<p>Now that we have the model set, we can perform the path analysis
+using the <code>phylo_path</code> function. For this we will need a data
+set, included in this package as <code>rhino</code>, as well as a
+phylogenetic tree, <code>rhino_tree</code>. The package will take care
+of finding the d-separation statements and fitting the necessary
+models.</p>
+<p>Importantly, when using PGLS, we need to be consistent in which
+variables are used as independent and dependent variables in the
+analysis. If one has a specific idea about which variables are to be
+considered as up- and down-stream, then you can use the
+<code>order</code> argument to give the ordering (from up to down). In
+this case, we supply the ordering to mimic the choices made by the
+chapter authors. Alternatively, you can choose to not supply an order,
+and the function will try to make a sensible order by itself. If the
+combination of all causal models is itself a DAG, the ordering of that
+model will be used, otherwise the ordering will be constructed by
+consensus (i.e. the most common ordering is chosen).</p>
+<p><strong>Generally, I advise to not supply the order argument, in
+order to reduce “researcher degrees of freedom”.</strong></p>
+<p>By default, <code>phylo_path</code> uses Pagel’s “lambda” model of
+evolution (specified here for clarity), but if you want, for example, to
+use a simple Brownian motion model, you can supply
+<code>model = 'BM'</code> instead.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/phylo_path.html">phylo_path</a></span><span class="op">(</span><span class="va">models</span>, data <span class="op">=</span> <span class="va">rhino</span>, tree <span class="op">=</span> <span class="va">rhino_tree</span>, model <span class="op">=</span> <span class="st">'lambda'</span><span class="op">)</span></code></pre></div>
-<p>The result we end up with is a <code>phylo_path</code> object. Simply printing it gives us a quick summary of what is in the object. In this case we end up with five continuous variables, nine causal models and 21 unique regressions.</p>
+<code class="sourceCode R"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/phylo_path.html">phylo_path</a></span><span class="op">(</span><span class="va">models</span>, data <span class="op">=</span> <span class="va">rhino</span>, tree <span class="op">=</span> <span class="va">rhino_tree</span>, model <span class="op">=</span> <span class="st">'lambda'</span><span class="op">)</span></span></code></pre></div>
+<p>The result we end up with is a <code>phylo_path</code> object. Simply
+printing it gives us a quick summary of what is in the object. In this
+case we end up with five continuous variables, nine causal models and 21
+unique regressions.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span></code></pre></div>
-<pre><code>## A phylogenetic path analysis, on the variables:
-##  Continuous:  BM NL DD RS LS 
-##  Binary:       
-## 
-##  Evaluated for these models: one two three four five six seven eight nine 
-## 
-##  Containing 46 phylogenetic regressions, of which 22 unique</code></pre>
-<p>To get an overview of the analysis, we can ask for its <code>summary</code>:</p>
+<code class="sourceCode R"><span><span class="va">result</span></span></code></pre></div>
+<pre><code><span><span class="co">## A phylogenetic path analysis, on the variables:</span></span>
+<span><span class="co">##  Continuous:  BM NL DD RS LS </span></span>
+<span><span class="co">##  Binary:       </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##  Evaluated for these models: one two three four five six seven eight nine </span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">##  Containing 46 phylogenetic regressions, of which 22 unique</span></span></code></pre>
+<p>To get an overview of the analysis, we can ask for its
+<code>summary</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>##       model k  q     C        p CICc delta_CICc        l        w
-## eight eight 6  9  6.11 9.10e-01 26.1       0.00 1.00e+00 3.44e-01
-## four   four 5 10  4.78 9.05e-01 27.3       1.14 5.66e-01 1.95e-01
-## six     six 5 10  4.97 8.93e-01 27.4       1.33 5.14e-01 1.77e-01
-## nine   nine 5 10  5.73 8.37e-01 28.2       2.09 3.52e-01 1.21e-01
-## five   five 4 11  3.46 9.03e-01 28.5       2.34 3.10e-01 1.07e-01
-## seven seven 4 11  4.70 7.89e-01 29.7       3.59 1.66e-01 5.72e-02
-## three three 6  9 27.17 7.30e-03 47.2      21.06 2.68e-05 9.20e-06
-## one     one 6  9 62.01 9.70e-09 82.0      55.89 7.29e-13 2.51e-13
-## two     two 5 10 60.97 2.38e-09 83.4      57.33 3.56e-13 1.23e-13</code></pre>
-<p>And plotting that summary gives us a quick overview of the support for each model:</p>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">##       model k  q     C        p CICc delta_CICc        l        w</span></span>
+<span><span class="co">## eight eight 6  9  6.11 9.10e-01 26.1       0.00 1.00e+00 3.44e-01</span></span>
+<span><span class="co">## four   four 5 10  4.78 9.05e-01 27.3       1.14 5.66e-01 1.95e-01</span></span>
+<span><span class="co">## six     six 5 10  4.97 8.93e-01 27.4       1.33 5.14e-01 1.77e-01</span></span>
+<span><span class="co">## nine   nine 5 10  5.73 8.37e-01 28.2       2.09 3.52e-01 1.21e-01</span></span>
+<span><span class="co">## five   five 4 11  3.46 9.03e-01 28.5       2.34 3.10e-01 1.07e-01</span></span>
+<span><span class="co">## seven seven 4 11  4.70 7.89e-01 29.7       3.59 1.66e-01 5.72e-02</span></span>
+<span><span class="co">## three three 6  9 27.17 7.30e-03 47.2      21.06 2.68e-05 9.20e-06</span></span>
+<span><span class="co">## one     one 6  9 62.01 9.70e-09 82.0      55.89 7.29e-13 2.51e-13</span></span>
+<span><span class="co">## two     two 5 10 60.97 2.38e-09 83.4      57.33 3.56e-13 1.23e-13</span></span></code></pre>
+<p>And plotting that summary gives us a quick overview of the support
+for each model:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-12-1.png" width="450px"></p>
 </div>
-<div id="selecting-and-fitting-a-final-model" class="section level3">
-<h3 class="hasAnchor">
-<a href="#selecting-and-fitting-a-final-model" class="anchor"></a>Selecting and fitting a final model</h3>
-<p>To view the best ranked model, we can use <code>best</code>. This returns a DAG with standardized regression coefficients, as well as a matrix of standard errors. These can be obtained for any particular model we looked at by using the <code>choice</code> function.</p>
-<p>_Note: These functions can also obtain confidence intervals for the estimates, which <code>phylolm</code> achieves through bootstrapping. This makes these very slow though, and by default this is turned off. Pass the number of bootstrap replicates you want to any modelling function in this package via the <code>boot</code> parameter to estimate confidence intervals, e.g. <code><a href="../reference/best.html">best(result, boot = 500)</a></code>. Either standard errors or confidence intervals can be plotted with <code>coef_plot</code> (see below).</p>
+<div class="section level3">
+<h3 id="selecting-and-fitting-a-final-model">Selecting and fitting a final model<a class="anchor" aria-label="anchor" href="#selecting-and-fitting-a-final-model"></a>
+</h3>
+<p>To view the best ranked model, we can use <code>best</code>. This
+returns a DAG with standardized regression coefficients, as well as a
+matrix of standard errors. These can be obtained for any particular
+model we looked at by using the <code>choice</code> function.</p>
+<p>_Note: These functions can also obtain confidence intervals for the
+estimates, which <code>phylolm</code> achieves through bootstrapping.
+This makes these very slow though, and by default this is turned off.
+Pass the number of bootstrap replicates you want to any modelling
+function in this package via the <code>boot</code> parameter to estimate
+confidence intervals, e.g. <code>best(result, boot = 500)</code>. Either
+standard errors or confidence intervals can be plotted with
+<code>coef_plot</code> (see below).</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">best_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/best.html">best</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## $coef
-##    BM        LS RS        NL        DD
-## BM  0 0.4973937  0 0.4613623 0.0000000
-## LS  0 0.0000000  0 0.0000000 0.0000000
-## RS  0 0.0000000  0 0.5280685 0.0000000
-## NL  0 0.0000000  0 0.0000000 0.6285344
-## DD  0 0.0000000  0 0.0000000 0.0000000
-## 
-## $se
-##    BM         LS RS         NL         DD
-## BM  0 0.08934185  0 0.06500775 0.00000000
-## LS  0 0.00000000  0 0.00000000 0.00000000
-## RS  0 0.00000000  0 0.05726520 0.00000000
-## NL  0 0.00000000  0 0.00000000 0.08006703
-## DD  0 0.00000000  0 0.00000000 0.00000000
-## 
-## attr(,"class")
-## [1] "fitted_DAG"</code></pre>
-<p>This object can also be plotted, now the numbers and width of the arrow represent path coefficients. In this case, all paths are green since all relationships are positive.</p>
+<code class="sourceCode R"><span><span class="op">(</span><span class="va">best_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/best.html">best</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## $coef</span></span>
+<span><span class="co">##    BM        LS RS        NL        DD</span></span>
+<span><span class="co">## BM  0 0.4973937  0 0.4613623 0.0000000</span></span>
+<span><span class="co">## LS  0 0.0000000  0 0.0000000 0.0000000</span></span>
+<span><span class="co">## RS  0 0.0000000  0 0.5280685 0.0000000</span></span>
+<span><span class="co">## NL  0 0.0000000  0 0.0000000 0.6285344</span></span>
+<span><span class="co">## DD  0 0.0000000  0 0.0000000 0.0000000</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## $se</span></span>
+<span><span class="co">##    BM         LS RS         NL         DD</span></span>
+<span><span class="co">## BM  0 0.08934185  0 0.06500775 0.00000000</span></span>
+<span><span class="co">## LS  0 0.00000000  0 0.00000000 0.00000000</span></span>
+<span><span class="co">## RS  0 0.00000000  0 0.05726520 0.00000000</span></span>
+<span><span class="co">## NL  0 0.00000000  0 0.00000000 0.08006703</span></span>
+<span><span class="co">## DD  0 0.00000000  0 0.00000000 0.00000000</span></span>
+<span><span class="co">## </span></span>
+<span><span class="co">## attr(,"class")</span></span>
+<span><span class="co">## [1] "fitted_DAG"</span></span></code></pre>
+<p>This object can also be plotted, now the numbers and width of the
+arrow represent path coefficients. In this case, all paths are green
+since all relationships are positive.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">best_model</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">best_model</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-14-1.png" width="450px"></p>
-<p>From the summary we could see that in reality, there are several models that are quite good. Instead of using the best model, we can use the average of the best models, weighted by their relative evidence. By simply calling <code>average</code>, we can obtain the coefficients and standard errors of the averaged model where the CICc <code>cut_off</code> is 2 by default. If a model does not include a path, we assume that coefficient to be 0.</p>
+<p>From the summary we could see that in reality, there are several
+models that are quite good. Instead of using the best model, we can use
+the average of the best models, weighted by their relative evidence. By
+simply calling <code>average</code>, we can obtain the coefficients and
+standard errors of the averaged model where the CICc
+<code>cut_off</code> is 2 by default. If a model does not include a
+path, we assume that coefficient to be 0.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">average_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/average.html">average</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></code></pre></div>
-<pre><code>## Registered S3 methods overwritten by 'MuMIn':
-##   method         from   
-##   nobs.phylolm   phylolm
-##   logLik.phylolm phylolm</code></pre>
+<code class="sourceCode R"><span><span class="va">average_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/average.html">average</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Registered S3 methods overwritten by 'MuMIn':</span></span>
+<span><span class="co">##   method         from   </span></span>
+<span><span class="co">##   nobs.phylolm   phylolm</span></span>
+<span><span class="co">##   logLik.phylolm phylolm</span></span></code></pre>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">average_model</span>, algorithm <span class="op">=</span> <span class="st">'mds'</span>, curvature <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="co"># increase the curvature to avoid overlapping edges</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">average_model</span>, algorithm <span class="op">=</span> <span class="st">'mds'</span>, curvature <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="co"># increase the curvature to avoid overlapping edges</span></span></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-15-1.png" width="450px"></p>
-<p>Note that, by default, the path averaging is only done for the models that actually contain that path. This facilitates the detection of weak effects, but also biases coefficients away from zero. Alternatively, we can assume the coefficients (and their variance) for absent paths to be zero by setting <code>avg_method = "full"</code>.</p>
+<p>Note that, by default, the path averaging is only done for the models
+that actually contain that path. This facilitates the detection of weak
+effects, but also biases coefficients away from zero. Alternatively, we
+can assume the coefficients (and their variance) for absent paths to be
+zero by setting <code>avg_method = "full"</code>.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">average_model_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/average.html">average</a></span><span class="op">(</span><span class="va">result</span>, avg_method <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">average_model_full</span>, algorithm <span class="op">=</span> <span class="st">'mds'</span>, curvature <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">average_model_full</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/average.html">average</a></span><span class="op">(</span><span class="va">result</span>, avg_method <span class="op">=</span> <span class="st">"full"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">average_model_full</span>, algorithm <span class="op">=</span> <span class="st">'mds'</span>, curvature <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div>
 <p><img src="intro_to_phylopath_files/figure-html/unnamed-chunk-16-1.png" width="450px"></p>
-<p>We can see that paths that occur in all the best models, such as NL -&gt; DD, are not effected. But paths that occur only in some models, such as NL -&gt; RS, suffer <em>shrinkage</em> reflecting the fact that they were not as well supported.</p>
-<p>In this case in particular, the average model is actually not a DAG since it is cyclical and the relationship between RS and NL is clearly not well resolved by our analysis.</p>
-<p>If one is interested in the confidence in the regression coefficients, <code>coef_plot</code> can visualize the estimates and their approximate confidence intervals (you need to use the <code>boot</code> parameter when fitting the DAG if you are not model averaging, see above). We can see that for the . The order of the paths from left to right, attempts to follow the paths downstream, in this indicated by the <code>order</code> argument we gave the <code>phylo_path</code> function at the start.</p>
+<p>We can see that paths that occur in all the best models, such as NL
+-&gt; DD, are not effected. But paths that occur only in some models,
+such as NL -&gt; RS, suffer <em>shrinkage</em> reflecting the fact that
+they were not as well supported.</p>
+<p>In this case in particular, the average model is actually not a DAG
+since it is cyclical and the relationship between RS and NL is clearly
+not well resolved by our analysis.</p>
+<p>If one is interested in the confidence in the regression
+coefficients, <code>coef_plot</code> can visualize the estimates and
+their approximate confidence intervals (you need to use the
+<code>boot</code> parameter when fitting the DAG if you are not model
+averaging, see above). We can see that for the . The order of the paths
+from left to right, attempts to follow the paths downstream, in this
+indicated by the <code>order</code> argument we gave the
+<code>phylo_path</code> function at the start.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#coef_plot(average_model)</span></code></pre></div>
-<p>This plot, and others in the package, can be manipulated using <code>ggplot2</code> functions, for example, to create a horizontal black-and-white version. We can see that for full average model, shrinkage has caused several paths to become uncertain.</p>
+<code class="sourceCode R"><span><span class="co">#coef_plot(average_model)</span></span></code></pre></div>
+<p>This plot, and others in the package, can be manipulated using
+<code>ggplot2</code> functions, for example, to create a horizontal
+black-and-white version. We can see that for full average model,
+shrinkage has caused several paths to become uncertain.</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># coef_plot(average_model_full, reverse_order = TRUE) + </span>
-<span class="co">#   ggplot2::coord_flip() + </span>
-<span class="co">#   ggplot2::theme_bw()</span></code></pre></div>
-<p>Finally, you can access the conditional independencies and their associated p-values as well. This can be useful if you want to know <em>why</em> a certain model was rejected. The <code>phylo</code> column gives us the estimates for the correlation structure for each of the fitted models, in this case <em>lambda</em> since we used <code>corPagel</code>. For binary models this shows <em>s2</em>, which also reflects the strength of phylogenetic signal. Finally, all models are stored in the <code>model</code> list as well, in case other information needs to be extracted.</p>
+<code class="sourceCode R"><span><span class="co"># coef_plot(average_model_full, reverse_order = TRUE) + </span></span>
+<span><span class="co">#   ggplot2::coord_flip() + </span></span>
+<span><span class="co">#   ggplot2::theme_bw()</span></span></code></pre></div>
+<p>Finally, you can access the conditional independencies and their
+associated p-values as well. This can be useful if you want to know
+<em>why</em> a certain model was rejected. The <code>phylo</code> column
+gives us the estimates for the correlation structure for each of the
+fitted models, in this case <em>lambda</em> since we used
+<code>corPagel</code>. For binary models this shows <em>s2</em>, which
+also reflects the strength of phylogenetic signal. Finally, all models
+are stored in the <code>model</code> list as well, in case other
+information needs to be extracted.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">result</span><span class="op">$</span><span class="va">d_sep</span><span class="op">$</span><span class="va">one</span></code></pre></div>
-<pre><code>## # A tibble: 6 × 4
-##   d_sep                    p phylo_par model    
-##   &lt;chr&gt;                &lt;dbl&gt;     &lt;dbl&gt; &lt;list&gt;   
-## 1 DD ~ NL + BM      4.69e- 1     0.374 &lt;phylolm&gt;
-## 2 RS ~ DD + BM      2.46e- 1     0.529 &lt;phylolm&gt;
-## 3 RS ~ BM + DD + NL 5.40e-13     0.620 &lt;phylolm&gt;
-## 4 NL ~ BM + LS      9.94e- 1     0.778 &lt;phylolm&gt;
-## 5 DD ~ NL + BM + LS 5.69e- 1     0.403 &lt;phylolm&gt;
-## 6 RS ~ DD + BM + LS 9.74e- 1     0.528 &lt;phylolm&gt;</code></pre>
-<p>For model 1 it seems that the third conditional independence statement was violated (it has a very small p-value).</p>
+<code class="sourceCode R"><span><span class="va">result</span><span class="op">$</span><span class="va">d_sep</span><span class="op">$</span><span class="va">one</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 6 × 4</span></span></span>
+<span><span class="co">##   d_sep                    p phylo_par model    </span></span>
+<span><span class="co">##   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;list&gt;</span>   </span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">1</span> DD ~ NL + BM      4.69<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>     0.374 <span style="color: #949494;">&lt;phylolm&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">2</span> RS ~ DD + BM      2.46<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>     0.529 <span style="color: #949494;">&lt;phylolm&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">3</span> RS ~ BM + DD + NL 5.40<span style="color: #949494;">e</span><span style="color: #BB0000;">-13</span>     0.620 <span style="color: #949494;">&lt;phylolm&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">4</span> NL ~ BM + LS      9.94<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>     0.778 <span style="color: #949494;">&lt;phylolm&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">5</span> DD ~ NL + BM + LS 5.69<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>     0.403 <span style="color: #949494;">&lt;phylolm&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">6</span> RS ~ DD + BM + LS 9.74<span style="color: #949494;">e</span><span style="color: #BB0000;">- 1</span>     0.528 <span style="color: #949494;">&lt;phylolm&gt;</span></span></span></code></pre>
+<p>For model 1 it seems that the third conditional independence
+statement was violated (it has a very small p-value).</p>
 </div>
 </div>
   </div>
@@ -312,11 +453,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Wouter van der Bijl.</p>
+  <p></p>
+<p>Developed by Wouter van der Bijl.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer>
@@ -324,6 +467,8 @@
 
   
 
+
+  
 
   </body>
 </html>

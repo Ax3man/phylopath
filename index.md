@@ -14,9 +14,9 @@ For a complete worked example, click “Get Started” above, or see the
 This method was developed by Von Hardenberg and Gonzalez-Voyer. See
 `citation()` for info on correct citations.
 
-<img src="index_files/figure-markdown_strict/unnamed-chunk-2-1.png" width="600px" style="display: block; margin: auto;" />
+<img src="man/figures/unnamed-chunk-2-1.png" width="600px" style="display: block; margin: auto;" />
 
-<img src="index_files/figure-markdown_strict/unnamed-chunk-3-1.png" width="600px" style="display: block; margin: auto;" />
+<img src="man/figures/unnamed-chunk-3-1.png" width="600px" style="display: block; margin: auto;" />
 
 The following published papers use `phylopath` (not up-to-date):
 

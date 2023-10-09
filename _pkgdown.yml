@@ -12,6 +12,7 @@ reference:
       - average
       - best
       - choice
+      - show_warnings
   - title: "Plotting"
     contents:
       - plot.DAG
