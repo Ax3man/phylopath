@@ -1,7 +1,7 @@
 ## Test environments
 * local MacOS 12.4 install, R 4.3.0
-* Release version using winbuilder, (4.1.1 2021-08-10) 
-* Development version using winbuilder, (2021-09-30 r80997) 
+* Release version using winbuilder, R version 4.3.1 (2023-06-16 ucrt)
+* Development version using winbuilder, R Under development (unstable) (2023-10-08 r85282 ucrt)
 
 ## Local R CMD check results
 0 errors | 0 warnings | 0 notes
