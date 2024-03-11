@@ -1,3 +1,12 @@
+phylopath 1.2.0.9000
+--------------------------------------------------------------------------------
+
+* A warning is now generated when a user passes a data column with binary data
+  as a numeric vector.
+  
+* Informative errors are now returned when the `order` argument does not contain
+  each variable exactly once.
+
 phylopath 1.2.0
 --------------------------------------------------------------------------------
 

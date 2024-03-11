@@ -9,6 +9,7 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
          paste(sort(unique(unlist(var_names))), collapse = '\n'),
          call. = FALSE)
   }
+  # Drop all data columns that are not used in the models
   data <- data[, unique(unlist(var_names))]
   # We force all character columns to factors
   char_cols <- sapply(data, is.character)
@@ -21,6 +22,12 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
       stop("Variable '", names(data)[i], "' is expected to binary, but has ", n_levels, " levels.",
            .call = FALSE)
     }
+  }
+  # Check for data columns that are numeric, but only have 0-1. These might be user error, attempting
+  # to pass a binary variable as numeric
+  binary_numerics <- sapply(data, function(x) all(x %in% 0:1))
+  for (n in colnames(data)[binary_numerics]) {
+    warning('Column ', n, ' appears to have binary data, but was not recognized as binary. If it should be treated as binary, convert it to a factor first.')
   }
   # Check tree
   if (inherits(tree, 'multiPhylo')) {
@@ -46,7 +53,7 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
   # Prune the tree
   if (length(tree$tip.label) > nrow(data)) {
     tree <- ape::drop.tip(tree, setdiff(tree$tip.label, rownames(data)))
-    message('Pruned tree to drop species not included in dat.')
+    message('Pruned tree to drop species not included in `data`.')
   }
   # Add names to the models, if they don't have them
   if (is.null(names(model_set))) {

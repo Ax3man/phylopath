@@ -9,7 +9,7 @@
 #' processing of multiple models, and of bootstrap replicates. To enable,
 #' simply set a parallel `plan()` using the `future` package. Typically, you'll
 #' want to run `future::plan("multisession", workers = n)`, where `n` is the
-#' number of cores. Now parallel processing is enabled. Return to sequantial
+#' number of cores. Now parallel processing is enabled. Return to sequential
 #' processing using `future::plan("sequential")`
 #'
 #' @param model_set A list of directed acyclic graphs. These are matrices,
@@ -98,9 +98,19 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
   data <- tmp$data
   tree <- tmp$tree
 
-  if (is.null(order)) {
+  if (!is.null(order)) {
+    # check for duplications in the order vector, when manually supplied
+    if (length(order) > length(unique(order))) {
+      stop('The supplied `order` argument must contain each variable exactly once.')
+    }
+    if (length(order) != ncol(data)) {
+      stop('Not all variables are included in `order`, missing variables: ',
+           setdiff(colnames(data), order))
+    }
+  } else {
     order <- find_consensus_order(model_set)
   }
+
   formulas <- lapply(model_set, find_formulas, order)
   formulas <- purrr::map(
     formulas,
