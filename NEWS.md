@@ -6,6 +6,11 @@ phylopath 1.2.0.9000
   
 * Informative errors are now returned when the `order` argument does not contain
   each variable exactly once.
+  
+* Fixed a rare bug in `find_consensus_order`, due to a particular edge case of
+  order combinations. In old R versions this would generate a warning about the
+  an `if` condition with length > 1, which in newer versions results in an error.
+  (Thanks to Laura Alencar for the report.)
 
 phylopath 1.2.0
 --------------------------------------------------------------------------------
