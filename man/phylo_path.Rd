@@ -90,7 +90,7 @@ within the underlying \code{phylolm}, making it easy to enable parallel
 processing of multiple models, and of bootstrap replicates. To enable,
 simply set a parallel \code{plan()} using the \code{future} package. Typically, you'll
 want to run \code{future::plan("multisession", workers = n)}, where \code{n} is the
-number of cores. Now parallel processing is enabled. Return to sequantial
+number of cores. Now parallel processing is enabled. Return to sequential
 processing using \code{future::plan("sequential")}
 }
 \examples{

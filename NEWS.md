@@ -1,4 +1,4 @@
-phylopath 1.2.0.9000
+phylopath 1.2.1
 --------------------------------------------------------------------------------
 
 * A warning is now generated when a user passes a data column with binary data
