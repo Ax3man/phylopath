@@ -1,7 +1,7 @@
 Package: phylopath
 Type: Package
 Title: Perform Phylogenetic Path Analysis
-Version: 1.2.1
+Version: 1.2.1.9000
 Authors@R: person("Wouter", "van der Bijl",
                   email = "wouter@zoology.ubc.ca",
                   role = c("aut", "cre"))
@@ -15,12 +15,14 @@ License: GPL-3
 LazyData: TRUE
 Depends:
   R (>= 2.10)
+biocViews:
 Imports:
     ape (>= 4.1),
     future.apply,
     ggm (>= 2.3),
     ggplot2 (>= 3.0.0),
     ggraph (>= 1.0.0),
+    graph,
     igraph (>= 1.0.1),
     MuMIn (>= 1.15.6),
     phylolm (>= 2.5),
