@@ -9,6 +9,12 @@ Install the package using:
 ```{r}
 install.packages("phylopath")
 ```
+You may need to install the downstream dependency `graph` from Bioconductor:
+
+```{r}
+if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
+BiocManager::install("graph")
+```
 
 Or if you'd like to install the development version (here on github), use:
 
