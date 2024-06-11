@@ -142,10 +142,9 @@ est_DAG <- function(DAG, data, tree, model, method, boot = 0, ...) {
 #'   some models will shrink towards zero. The conditional method only averages
 #'   over models where the path appears, making it more sensitive to small
 #'   effects. Following von Hardenberg & Gonzalez-Voyer 2013, conditional
-#'   averaging is set as the default. Also see [MuMIn::model.avg()].
-#' @param ... Additional arguments passed to [MuMIn::par.avg()].
+#'   averaging is set as the default.
+#' @param ... Use of the ellipses is deprecated.
 #'
-#'   For details on the error calculations, see [MuMIn::par.avg()].
 #'
 #' @return An object of class `fitted_DAG`, including standard errors and
 #'   confidence intervals.
@@ -167,6 +166,7 @@ est_DAG <- function(DAG, data, tree, model, method, boot = 0, ...) {
 #'   coef_plot(ave_cand)
 average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
                          avg_method = 'conditional', ...) {
+  if (length(list(...)) != 0) stop('Use of ... is deprecated.')
   avg_method <- match.arg(avg_method, choices = c("full", "conditional"))
   ord <- rownames(fitted_DAGs[[1]]$coef)
   fitted_DAGs <- lapply(fitted_DAGs, function(l) {
@@ -182,16 +182,18 @@ average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
     coef[coef == 0]           <- NA
     std_error[std_error == 0] <- NA
   }
-  a_coef <- apply(coef, 1:2, stats::weighted.mean, w = rel_weights,
-                  na.rm = TRUE)
+  a_coef <- apply(coef, 1:2, stats::weighted.mean, w = rel_weights, na.rm = TRUE)
   a_coef[is.nan(a_coef)] <- 0
 
   if (!is.null(std_error)) {
     coef_list      <- purrr::array_branch(coef, 1:2)
     std_error_list <- purrr::array_branch(std_error, 1:2)
-    r <- purrr::map2(coef_list, std_error_list,
-                     function(.x, .y, ...) MuMIn::par.avg(.x, .y, rel_weights, ...),
-                     ...)
+    r <- purrr::map2(
+      coef_list,
+      std_error_list,
+      function(.x, .y, ...) par_avg(.x, .y, rel_weights, ...),
+      ...
+    )
     r <- purrr::map(r, function(x) { x[is.nan(x)] <- 0; x } )
     a_std_error <- matrix(purrr::map_dbl(r, "SE"), nrow = nrow(coef))
     lower       <- matrix(purrr::map_dbl(r, "Lower CI"), nrow = nrow(coef))

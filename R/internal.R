@@ -303,3 +303,24 @@ combine_dots <- function(old_dots, ...) {
   new_dots <- list(...)
   c(new_dots, old_dots[!(names(old_dots) %in% names(new_dots))])
 }
+
+par_avg <- function(x, se, weight) {
+  # Derived from original MuMIn::par.avg function, written by Kamil Bartoń.
+
+  if (!(is.numeric(x) && is.numeric(se) && is.numeric(weight)))
+    stop("'x', 'se' and 'weight' must be numeric vectors")
+  n <- length(x)
+  if (length(weight) != n || length(se) != n) {
+    stop("'x', 'se' and 'weight' are not of the same length")
+  }
+  weight[is.na(weight)] <- 0
+  wx <- stats::weighted.mean(x, weight, na.rm = TRUE)
+
+  x.sqdiff <- (x - wx) ^ 2
+  xvar <- se ^ 2
+
+  se <- sqrt(stats::weighted.mean(xvar + x.sqdiff, weight, na.rm = TRUE))
+  ci <- stats::qnorm(0.975, lower.tail = TRUE) * se
+
+  return(c(Coefficient = wx, SE = se, `Lower CI` = wx - ci, `Upper CI` = wx + ci))
+}

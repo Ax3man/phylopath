@@ -1,7 +1,7 @@
 Package: phylopath
 Type: Package
 Title: Perform Phylogenetic Path Analysis
-Version: 1.2.1.9000
+Version: 1.3.0
 Authors@R: person("Wouter", "van der Bijl",
                   email = "wouter@zoology.ubc.ca",
                   role = c("aut", "cre"))
@@ -22,13 +22,11 @@ Imports:
     ggm (>= 2.3),
     ggplot2 (>= 3.0.0),
     ggraph (>= 1.0.0),
-    graph,
     igraph (>= 1.0.1),
-    MuMIn (>= 1.15.6),
     phylolm (>= 2.5),
     purrr (>= 0.2.3),
     tibble
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
 Suggests: 
     knitr,

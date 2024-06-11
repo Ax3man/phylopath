@@ -21,7 +21,7 @@ variance) for the missing paths to zero, meaning paths that are missing in
 some models will shrink towards zero. The conditional method only averages
 over models where the path appears, making it more sensitive to small
 effects. Following von Hardenberg & Gonzalez-Voyer 2013, conditional
-averaging is set as the default. Also see \code{\link[MuMIn:model.avg]{MuMIn::model.avg()}}.}
+averaging is set as the default.}
 
 \item{...}{Arguments to pass to \link[phylolm:phylolm]{phylolm::phylolm} and \link[phylolm:phyloglm]{phylolm::phyloglm}. Provide \code{boot = K}
 parameter to enable bootstrapping, where \code{K} is the number of bootstrap replicates. If you
