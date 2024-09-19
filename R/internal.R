@@ -1,6 +1,3 @@
-# use `graph` package to force automatic install from BioConductor
-null <- graph::randomGraph(1, 1, 1)
-
 check_models_data_tree <- function(model_set, data, tree, na.rm) {
   var_names <- lapply(model_set, colnames)
   # Check whether all causal models have the same variables.
