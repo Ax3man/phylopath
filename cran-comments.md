@@ -6,7 +6,7 @@
 
 ## CRAN Package Check Results:
 This release fixes the current NOTE about Rd \link{} targets missing package
-anchors.
+anchors, as requested by CRAN.
 
 ## Downstream dependencies
 The package has 2 downstream dependencies, which were checked with revdepcheck and passed.
