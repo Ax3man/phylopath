@@ -146,3 +146,30 @@ test_that("plot.phylopath_summary produces a ggplot", {
   expect_s3_class(plot(summary(p)), "ggplot")
   expect_s3_class(plot(summary(p), cut_off = 5), "ggplot")
 })
+
+test_that("every plot builds, not only constructs", {
+  # Variables referenced in aes() are resolved when a plot is *built*, not when
+  # it is constructed, so a mis-named column would pass every test above. These
+  # build each plot for real.
+  f <- fitted()
+  fb <- suppressWarnings(est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(),
+                                 model = "BM", method = "logistic_MPLE", boot = 20))
+  p <- phylo_path(define_model_set(a = c(B ~ A, C ~ B), b = c(B ~ A, C ~ A),
+                                   .common = c(D ~ D)),
+                  test_data(), test_tree(), model = "BM")
+  plots <- list(
+    dag        = plot(DAG(B ~ A, C ~ B)),
+    dag_labels = plot(DAG(B ~ A, C ~ B), labels = c(A = "Ay", B = "Bee", C = "Cee")),
+    fitted_w   = plot(f, type = "width"),
+    fitted_c   = plot(f, type = "color"),
+    coef_se    = coef_plot(f, error_bar = "se"),
+    coef_ci    = coef_plot(fb),
+    coef_str   = coef_plot(f, error_bar = "se", order_by = "strength"),
+    model_set  = plot_model_set(define_model_set(one = c(B ~ A, C ~ B),
+                                                two = c(B ~ A, C ~ A))),
+    summary    = plot(summary(p))
+  )
+  for (nm in names(plots)) {
+    expect_no_error(ggplot2::ggplot_build(plots[[nm]]))
+  }
+})

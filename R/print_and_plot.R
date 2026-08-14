@@ -1,3 +1,6 @@
+#' @importFrom ggplot2 .data
+NULL
+
 #' @export
 print.phylopath_summary <- function(x, ...) {
   print.data.frame(x, digits = 3)
@@ -7,7 +10,9 @@ print.phylopath_summary <- function(x, ...) {
 #' @export
 plot.phylopath_summary <- function(x, cut_off = 2, ...) {
   x$model <- factor(x$model, rev(x$model))
-  ggplot2::ggplot(x, ggplot2::aes_(~w, ~model, fill = ~delta_CICc < cut_off, label = ~round(p, 3))) +
+  ggplot2::ggplot(x, ggplot2::aes(x = .data$w, y = .data$model,
+                                 fill = .data$delta_CICc < cut_off,
+                                 label = round(.data$p, 3))) +
     ggplot2::geom_col(col = 'black', alpha = 0.6) +
     ggplot2::geom_text(hjust = "inward") +
     ggplot2::scale_fill_manual(
@@ -102,7 +107,7 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', manual_layout = N
       end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
       start_cap = ggraph::rectangle(box_x, box_y, 'mm')
     ) +
-    ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
+    ggraph::geom_node_text(ggplot2::aes(label = .data$name), size = text_size) +
     ggraph::theme_graph(base_family = 'sans')
 }
 
@@ -154,11 +159,12 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
   if (type == 'width') {
     p <- ggplot2::ggplot(l) +
       ggraph::geom_edge_arc(
-        ggplot2::aes_(width = ~abs(weight), color = ~weight < 0, label = ~round(weight, 2)),
+        ggplot2::aes(width = abs(.data$weight), color = .data$weight < 0,
+                     label = round(.data$weight, 2)),
         strength = curvature, arrow = arrow, end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
         start_cap = ggraph::rectangle(box_x, box_y, 'mm'), show.legend = show.legend,
         linejoin = c('bevel'), angle_calc = 'along', label_dodge = grid::unit(10, 'points')) +
-      ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
+      ggraph::geom_node_text(ggplot2::aes(label = .data$name), size = text_size) +
       ggraph::scale_edge_width_continuous(
         limits = c(0, max(abs(igraph::E(g)$weight))), range = c(0, 2), guide = 'none'
       ) +
@@ -173,7 +179,7 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
   if (type == 'color') {
     p <- ggplot2::ggplot(l) +
       ggraph::geom_edge_arc(
-        ggplot2::aes_(colour = ~weight, label = ~round(weight, 2)),
+        ggplot2::aes(colour = .data$weight, label = round(.data$weight, 2)),
         edge_width = edge_width,
         strength = curvature, arrow = arrow,
         end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
@@ -183,7 +189,7 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
         angle_calc = 'along',
         label_dodge = grid::unit(10, 'points')
       ) +
-      ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
+      ggraph::geom_node_text(ggplot2::aes(label = .data$name), size = text_size) +
       ggraph::scale_edge_color_gradient2(
         'standardized\npath coefficient',
         low = colors[1], high = colors[2],
@@ -281,8 +287,9 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
   }
   df <- df[abs(df$coef) > .Machine$double.eps, ]
   ggplot2::ggplot(df,
-                  ggplot2::aes_(~path, ~coef, ymin = ~lower, ymax = ~upper)) +
-    ggplot2::geom_hline(yintercept = 0, size = 1, lty = 2) +
+                  ggplot2::aes(x = .data$path, y = .data$coef,
+                               ymin = .data$lower, ymax = .data$upper)) +
+    ggplot2::geom_hline(yintercept = 0, linewidth = 1, lty = 2) +
     ggplot2::geom_pointrange(size = 0.75) +
     ggplot2::xlab('') +
     ggplot2::ylab(ifelse(error_bar == 'ci',
@@ -378,7 +385,7 @@ plot_model_set <- function(model_set, labels = NULL, algorithm = 'kk', manual_la
     ggraph::geom_edge_arc(strength = curvature, arrow = arrow, edge_width = edge_width,
                            end_cap = ggraph::rectangle(box_x, box_y, 'mm'),
                            start_cap = ggraph::rectangle(box_x, box_y, 'mm')) +
-    ggraph::geom_node_text(ggplot2::aes_(label = ~name), size = text_size) +
+    ggraph::geom_node_text(ggplot2::aes(label = .data$name), size = text_size) +
     ggraph::facet_edges(~model, nrow = nrow) +
     ggplot2::scale_x_continuous(expand = c(0.2, 0)) +
     ggplot2::scale_y_continuous(expand = c(0.2, 0)) +

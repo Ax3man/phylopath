@@ -38,6 +38,8 @@ reporting, and adds unit tests, all from a review by Claude.
   matching `phylo_path()`. Previously these arguments had no defaults, so calling
   `est_DAG()` without them failed.
 
+* Updated `ggplot2` code to remove deprecated functionality.
+
 * Added a unit test suite covering the d-separation basis set, the model
   comparison statistics, model averaging, and the plotting functions.
 
