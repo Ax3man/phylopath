@@ -26,8 +26,8 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
   for (i in f_cols) {
     n_levels <- length(levels(data[[i]]))
     if (n_levels != 2) {
-      stop("Variable '", names(data)[i], "' is expected to binary, but has ", n_levels, " levels.",
-           .call = FALSE)
+      stop("Variable '", names(data)[i], "' is expected to be binary, but has ", n_levels,
+           " levels.", call. = FALSE)
     }
   }
   # Check for data columns that are numeric, but only have 0-1. These might be user error, attempting

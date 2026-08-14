@@ -159,7 +159,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
       )
   )
   warnings <- warnings[!sapply(warnings, is.null)]
-  if (length(warnings) > 1) {
+  if (length(warnings) > 0) {
     warning('Some models produced warnings. Use `show_warnings()` to view them.\n')
   }
 
@@ -367,6 +367,6 @@ average <- function(phylopath, cut_off = 2, avg_method = 'conditional', ...) {
     }
   )
   average <- average_DAGs(best_models, b$w, avg_method)
-  class(average$coef) <- c('matrix', 'DAG')
+  class(average$coef) <- c('matrix', 'array', 'DAG')
   return(average)
 }

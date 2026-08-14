@@ -215,3 +215,11 @@ test_that("name_model_set fills in only the missing names", {
   expect_error(name_model_set(c("B", ""), 2), "unique name")
 })
 
+test_that("show_warnings does not append FALSE to the message", {
+  # `.call = FALSE` was a typo for `call. = FALSE`; warning() pastes unmatched
+  # arguments into the message, so users saw "...FALSE".
+  fake <- structure(list(warnings = list("something went wrong")), class = "phylopath")
+  msg <- tryCatch(show_warnings(fake), warning = conditionMessage)
+  expect_equal(msg, "something went wrong")
+  expect_no_match(msg, "FALSE")
+})

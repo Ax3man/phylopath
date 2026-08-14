@@ -121,3 +121,9 @@ test_that("best and average refuse to rank models when CICc is missing", {
   expect_s3_class(suppressWarnings(choice(p, "sparse")), "fitted_DAG")
 })
 
+test_that("the averaged coefficient matrix keeps the modern matrix class", {
+  avg <- average(pp(), cut_off = Inf)
+  expect_equal(class(avg$coef), c("matrix", "array", "DAG"))
+  expect_true(is.matrix(avg$coef))
+  expect_true(is.array(avg$coef))
+})

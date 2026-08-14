@@ -246,3 +246,18 @@ test_that("print.phylopath reports the variables and models", {
   expect_match(paste(out, collapse = " "), "these models: a b")
   expect_match(paste(out, collapse = " "), "phylogenetic regressions")
 })
+
+test_that("a single model warning is still announced", {
+  # The notice has to fire for one warning as well as for several, or the user
+  # never learns that show_warnings() has something to show.
+  data <- test_data()
+  data$b1 <- factor(rep(c("no", "yes"), 20))
+  data$b2 <- factor(rep(c("no", "yes"), each = 20))
+  ms <- define_model_set(a = c(B ~ A), .common = c(C ~ C, D ~ D, b1 ~ b1, b2 ~ b2))
+
+  p <- suppressWarnings(phylo_path(ms, data, test_tree(), model = "BM"))
+  expect_length(p$warnings, 1)
+  expect_warning(phylo_path(ms, data, test_tree(), model = "BM"),
+                 "Use `show_warnings\\(\\)` to view them")
+})
+

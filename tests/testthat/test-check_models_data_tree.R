@@ -198,3 +198,16 @@ test_that("duplicated model names are rejected", {
     "unique name"
   )
 })
+
+test_that("the binary level error message is well formed", {
+  three <- tiny_data(A = 1:4, B = factor(c("x", "y", "z", "x")))
+  msg <- tryCatch(
+    check_models_data_tree(list(DAG(B ~ A)), three, tiny_tree(), na.rm = FALSE),
+    error = conditionMessage
+  )
+  expect_equal(msg, "Variable 'B' is expected to be binary, but has 3 levels.")
+  # `.call = FALSE` used to leak into the text, and "to binary" was missing a word.
+  expect_no_match(msg, "FALSE")
+  expect_no_match(msg, "expected to binary")
+})
+

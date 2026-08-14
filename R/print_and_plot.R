@@ -51,7 +51,7 @@ show_warnings <- function(phylopath = NULL) {
   if (is.null(phylopath)) phylopath <- .Last.value
   if (!inherits(phylopath, 'phylopath'))
     stop('This function expects a phylopath object.', call. = FALSE)
-  sink <- lapply(phylopath$warnings, warning, .call = FALSE)
+  sink <- lapply(phylopath$warnings, warning, call. = FALSE)
   return(invisible(NULL))
 }
 
