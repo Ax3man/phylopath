@@ -1,3 +1,46 @@
+phylopath 1.3.2
+--------------------------------------------------------------------------------
+
+This release has some bug fixes for small edge cases, minor improvements in
+reporting, and adds unit tests, all from a review by Claude.
+
+* Bug fix: `CICc` could not be calculated when the number of parameters was
+  exactly one less than the number of species, but silently returned `Inf`
+  instead of `NA`. Affected models now return `NA`.
+
+* Bug fix: the `phylo_par` column now correctly reports the alpha parameter in
+  the case of GLMs. 
+
+* Bug fix: model sets in which only some of the models were named kept empty
+  names for the others, which made those models impossible to select with
+  `best()` and `choice()`. Unnamed models in a partially named set are now
+  labelled in the same way as those in a fully unnamed set.
+
+* Bug fix: automatic model labels ran out after `Z`, giving models beyond the
+  26th a missing name. Labelling now continues as `AA`, `AB`, and so on.
+
+* Bug fix: the notice pointing to `show_warnings()` was only shown when more
+  than one model produced a warning, so a single warning went unmentioned.
+
+* Bug fix: `show_warnings()` and the error for variables with more than two
+  levels appended `FALSE` to their messages.
+
+* `best()` and `average()` now return an informative error when `CICc` could not
+  be calculated for one or more of the models, rather than failing with an 
+  uninformative error.
+
+* Informative errors are now returned when a variable is used in the causal
+  models but is not a column of `data`, when the `order` argument does not
+  contain exactly the variables used in the models, and when two causal models
+  are given the same name.
+
+* `est_DAG()` now defaults to `model = "lambda"` and `method = "logistic_MPLE"`,
+  matching `phylo_path()`. Previously these arguments had no defaults, so calling
+  `est_DAG()` without them failed.
+
+* Added a unit test suite covering the d-separation basis set, the model
+  comparison statistics, model averaging, and the plotting functions.
+
 phylopath 1.3.1
 --------------------------------------------------------------------------------
 
