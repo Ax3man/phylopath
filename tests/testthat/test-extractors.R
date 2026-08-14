@@ -105,3 +105,19 @@ test_that("combine_dots lets new arguments win over stored ones", {
   expect_length(combine_dots(list()), 0)
 })
 
+test_that("best and average refuse to rank models when CICc is missing", {
+  # Previously this surfaced as `inherits(DAG, "DAG") is not TRUE`, from
+  # selecting NA rows out of the summary table.
+  ms <- define_model_set(sparse = c(B ~ A, C ~ B), dense = c(B ~ A, C ~ B, D ~ C))
+  p <- suppressWarnings(phylo_path(ms, small_data(), small_tree(), model = "BM"))
+
+  expect_error(suppressWarnings(best(p)), "CICc could not be calculated")
+  expect_error(suppressWarnings(average(p)), "CICc could not be calculated")
+  # The message names the model at fault and says what to do about it.
+  expect_error(suppressWarnings(best(p)), "dense")
+  expect_error(suppressWarnings(best(p)), "n > q \\+ 1")
+
+  # choice() does not rank models, so it still works.
+  expect_s3_class(suppressWarnings(choice(p, "sparse")), "fitted_DAG")
+})
+

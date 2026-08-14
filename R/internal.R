@@ -62,6 +62,19 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
   return(list(model_set = model_set, data = data, tree = tree))
 }
 
+# `best()` and `average()` both rank models by CICc, which is meaningless if it
+# could not be calculated for some of them.
+stop_if_no_CICc <- function(d, fun) {
+  if (anyNA(d$CICc)) {
+    stop('CICc could not be calculated for the following causal model(s): ',
+         paste(d$model[is.na(d$CICc)], collapse = ', '), '.\n',
+         '  `', fun, '()` compares models by CICc, so it needs a value for every ',
+         'model in the set. Either use a smaller set of models, or collect data ',
+         'for more species (CICc requires n > q + 1).', call. = FALSE)
+  }
+  invisible(d)
+}
+
 find_consensus_order <- function(model_set) {
   # If the fully combined model is acyclic, then we use that.
   model_set_same_order <- lapply(model_set, function(x) {

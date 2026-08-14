@@ -239,7 +239,9 @@ best <- function(phylopath, ...) {
   stopifnot(inherits(phylopath, 'phylopath'))
   dots <- combine_dots(phylopath$dots, ...)
 
-  b <- summary(phylopath)[1, 'model']
+  d <- summary(phylopath)
+  stop_if_no_CICc(d, 'best')
+  b <- d[1, 'model']
   best_model <- phylopath$model_set[[b]]
   do.call(
     est_DAG,
@@ -338,6 +340,7 @@ average <- function(phylopath, cut_off = 2, avg_method = 'conditional', ...) {
   dots <- combine_dots(phylopath$dots, ...)
 
   d <- summary(phylopath)
+  stop_if_no_CICc(d, 'average')
   b <- d[d$delta_CICc < cut_off, ]
 
   best_models <- lapply(
