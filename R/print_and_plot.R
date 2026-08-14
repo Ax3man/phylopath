@@ -341,9 +341,7 @@ plot_model_set <- function(model_set, labels = NULL, algorithm = 'kk', manual_la
   if (!is.list(model_set) | !all(purrr::map_lgl(model_set, ~inherits(., 'DAG')))) {
     stop('model_set should be a list of DAG objects.')
   }
-  if (is.null(names(model_set))) {
-    names(model_set) <- LETTERS[seq_along(model_set)]
-  }
+  names(model_set) <- name_model_set(names(model_set), length(model_set))
   var_names <- lapply(model_set, colnames)
   if (length(model_set) > 1 &
       (stats::var(lengths(model_set)) != 0 |

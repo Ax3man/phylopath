@@ -191,3 +191,27 @@ test_that("phylo_par is populated for an all-binary analysis", {
   expect_true(all(p$d_sep$a$phylo_par > 0))
 })
 
+test_that("model_set_labels continues past Z with AA, AB and so on", {
+  expect_equal(model_set_labels(3), c("A", "B", "C"))
+  expect_equal(model_set_labels(26)[26], "Z")
+  labels_27 <- model_set_labels(27)
+  expect_equal(labels_27[26:27], c("Z", "AA"))
+  expect_equal(model_set_labels(30)[27:30], c("AA", "AB", "AC", "AD"))
+  expect_length(unique(model_set_labels(702)), 702)
+  expect_equal(model_set_labels(702)[702], "ZZ")
+  expect_error(model_set_labels(703), "Cannot automatically name more than 702")
+})
+
+test_that("name_model_set fills in only the missing names", {
+  expect_equal(name_model_set(NULL, 3), c("A", "B", "C"))
+  expect_equal(name_model_set(c("one", "two"), 2), c("one", "two"))
+  # A partially named set keeps the names it has and letters the rest.
+  expect_equal(name_model_set(c("", "named"), 2), c("A", "named"))
+  expect_equal(name_model_set(c("first", "", ""), 3), c("first", "B", "C"))
+  expect_equal(name_model_set(c(NA, "named"), 2), c("A", "named"))
+  # Duplicates would make models unreachable by name.
+  expect_error(name_model_set(c("same", "same"), 2), "unique name")
+  # A user name can collide with a generated one: here the blank becomes "B".
+  expect_error(name_model_set(c("B", ""), 2), "unique name")
+})
+

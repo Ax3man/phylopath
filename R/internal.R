@@ -62,11 +62,38 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
     tree <- ape::drop.tip(tree, setdiff(tree$tip.label, rownames(data)))
     message('Pruned tree to drop species not included in `data`.')
   }
-  # Add names to the models, if they don't have them
-  if (is.null(names(model_set))) {
-    names(model_set) <- LETTERS[1:length(model_set)]
-  }
+  # Add names to any models that don't have them
+  names(model_set) <- name_model_set(names(model_set), length(model_set))
   return(list(model_set = model_set, data = data, tree = tree))
+}
+
+# Labels for automatically named models: A, B, ... Z, then AA, AB, ... ZZ.
+model_set_labels <- function(n) {
+  labels <- LETTERS
+  if (n > length(labels)) {
+    labels <- c(labels, paste0(rep(LETTERS, each = length(LETTERS)), LETTERS))
+  }
+  if (n > length(labels)) {
+    stop('Cannot automatically name more than ', length(labels),
+         ' causal models. Please name your models explicitly.', call. = FALSE)
+  }
+  labels[seq_len(n)]
+}
+
+# Fill in names for any models the user left unnamed. Models are looked up by
+# name downstream (by `best()` and `choice()`), so every model needs a name and
+# all names have to be unique.
+name_model_set <- function(nms, n) {
+  if (is.null(nms)) nms <- rep('', n)
+  blank <- is.na(nms) | nms == ''
+  if (any(blank)) {
+    nms[blank] <- model_set_labels(n)[blank]
+  }
+  if (anyDuplicated(nms)) {
+    stop('Each causal model needs a unique name, but the following are duplicated: ',
+         paste(unique(nms[duplicated(nms)]), collapse = ', '), '.', call. = FALSE)
+  }
+  nms
 }
 
 # `best()` and `average()` both rank models by CICc, which is meaningless if it

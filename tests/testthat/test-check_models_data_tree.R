@@ -171,3 +171,30 @@ test_that("a variable used in the models but absent from the data is named", {
   expect_match(msg, ", ")
 })
 
+test_that("partially named model sets get the missing names filled in", {
+  # A set with some names kept `""` for the rest, which made those models
+  # unreachable by name and broke best() and choice().
+  ms <- list(DAG(B ~ A), named = DAG(A ~ B))
+  res <- check_models_data_tree(ms, tiny_data(A = 1:4, B = 5:8), tiny_tree(),
+                                na.rm = FALSE)
+  expect_equal(names(res$model_set), c("A", "named"))
+  expect_false(any(names(res$model_set) == ""))
+})
+
+test_that("names continue past Z when there are more than 26 models", {
+  # LETTERS[1:27] used to yield NA for the 27th model.
+  ms <- unname(replicate(27, DAG(B ~ A), simplify = FALSE))
+  res <- check_models_data_tree(ms, tiny_data(A = 1:4, B = 5:8), tiny_tree(),
+                                na.rm = FALSE)
+  expect_false(anyNA(names(res$model_set)))
+  expect_equal(names(res$model_set)[26:27], c("Z", "AA"))
+  expect_length(unique(names(res$model_set)), 27)
+})
+
+test_that("duplicated model names are rejected", {
+  ms <- list(same = DAG(B ~ A), same = DAG(A ~ B))
+  expect_error(
+    check_models_data_tree(ms, tiny_data(A = 1:4, B = 5:8), tiny_tree(), na.rm = FALSE),
+    "unique name"
+  )
+})
