@@ -94,3 +94,9 @@ make_fitted_DAG <- function(vars, coefs, ses) {
   }
   structure(list(coef = cm, se = sm), class = "fitted_DAG")
 }
+
+# A deliberately under-powered subset: few enough species that CICc is undefined
+# for the denser causal models (it needs n > q + 1).
+small_tree <- function() ape::keep.tip(test_tree(), paste0("t", 1:8))
+
+small_data <- function() test_data()[paste0("t", 1:8), ]

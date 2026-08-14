@@ -188,10 +188,15 @@ summary.phylopath <- function(object, ...) {
   p <- C_p(C, k)
   IC <- CICc(C, q, n)
 
-  if (n <= max(q) + 1) {
-    IC[n <= q] <- NA
-    warning('CICc was not calculated for causal models where the number of parameters is equal to',
-            'or larger than the number of species.')
+  # The small sample correction of CICc divides by n - q - 1, so CICc is only
+  # defined when there are more species than parameters plus one.
+  if (any(n <= q + 1)) {
+    undefined <- n <= q + 1
+    IC[undefined] <- NA
+    warning('CICc requires more species than parameters (n > q + 1), so it could not be ',
+            'calculated for the following causal model(s): ',
+            paste(names(phylopath$model_set)[undefined], collapse = ', '), '.',
+            call. = FALSE)
   }
 
   d <- data.frame(

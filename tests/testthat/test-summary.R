@@ -96,3 +96,40 @@ test_that("print.phylopath_summary returns its input invisibly", {
   expect_equal(res$value, s)
 })
 
+test_that("CICc is NA, with a warning, when there are too few species", {
+  # CICc = C + 2q(n / (n - q - 1)) is undefined at n == q + 1 and meaningless
+  # below it, so it must not be reported as a number there.
+  ms <- define_model_set(sparse = c(B ~ A, C ~ B), dense = c(B ~ A, C ~ B, D ~ C))
+  p <- suppressWarnings(phylo_path(ms, small_data(), small_tree(), model = "BM"))
+
+  expect_equal(nrow(p$data), 8)
+  q <- vapply(p$model_set, function(m) nrow(m) + sum(m), numeric(1))
+  expect_equal(unname(q), c(6, 7))
+
+  expect_warning(s <- summary(p), "CICc requires more species than parameters")
+  # The warning names the offending model, so the user knows which to drop.
+  expect_warning(summary(p), "dense")
+
+  expect_false(is.na(s$CICc[s$model == "sparse"]))
+  expect_true(is.na(s$CICc[s$model == "dense"]))
+  # Never Inf: at n == q + 1 the naive formula divides by zero.
+  expect_false(any(is.infinite(s$CICc)))
+})
+
+test_that("an unscoreable model makes the whole weight column NA", {
+  # Deliberate: a model weight is relative to its model set, so if one member
+  # could not be scored, the remaining weights would answer a different question
+  # than the user asked. All-NA weights say "this set is not comparable".
+  ms <- define_model_set(sparse = c(B ~ A, C ~ B), dense = c(B ~ A, C ~ B, D ~ C))
+  p <- suppressWarnings(phylo_path(ms, small_data(), small_tree(), model = "BM"))
+  s <- suppressWarnings(summary(p))
+  expect_true(all(is.na(s$w)))
+})
+
+test_that("models that cannot be scored sort last", {
+  ms <- define_model_set(sparse = c(B ~ A, C ~ B), dense = c(B ~ A, C ~ B, D ~ C))
+  p <- suppressWarnings(phylo_path(ms, small_data(), small_tree(), model = "BM"))
+  s <- suppressWarnings(summary(p))
+  expect_equal(s$model[1], "sparse")
+  expect_true(is.na(s$CICc[nrow(s)]))
+})
