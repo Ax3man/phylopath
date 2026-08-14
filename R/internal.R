@@ -256,6 +256,8 @@ get_upper <- function(m) {
 
 get_phylo_param <- function(m) {
   r <- m$optpar
+  # phyloglm reports its phylogenetic parameter as `alpha`, not as `optpar`.
+  if (is.null(r)) r <- m$alpha
   if (is.null(r)) r <- NA
   return(r)
 }

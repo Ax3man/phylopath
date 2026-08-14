@@ -168,3 +168,26 @@ test_that("an analysis without warnings has an empty warning list", {
   expect_no_warning(show_warnings(p))
 })
 
+test_that("get_phylo_param reports alpha for phyloglm models", {
+  # phyloglm stores its phylogenetic parameter as `alpha`; reading only `optpar`
+  # made phylo_par NA for every binary variable.
+  data <- test_data()
+  data$bin <- factor(rep(c("no", "yes"), 20))
+  fit <- suppressWarnings(phylo_g_lm(bin ~ A, data, test_tree(), model = "BM",
+                                     method = "logistic_MPLE")$result)
+  expect_s3_class(fit, "phyloglm")
+  expect_null(fit$optpar)
+  expect_false(is.null(fit$alpha))
+  expect_equal(get_phylo_param(fit), fit$alpha)
+  expect_false(is.na(get_phylo_param(fit)))
+})
+
+test_that("phylo_par is populated for an all-binary analysis", {
+  p <- suppressMessages(suppressWarnings(phylo_path(
+    define_model_set(a = c(C ~ M, P ~ C), .common = c(G ~ G, D ~ D)),
+    cichlids, cichlids_tree
+  )))
+  expect_false(any(is.na(p$d_sep$a$phylo_par)))
+  expect_true(all(p$d_sep$a$phylo_par > 0))
+})
+
