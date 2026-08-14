@@ -91,16 +91,19 @@ test_that("phylo_g_lm strips the call from the fitted model", {
   expect_null(fit$result$call)
 })
 
-test_that("get_p reads the last coefficient and floors at machine epsilon", {
+test_that("get_p reads the last coefficient and floors only at zero", {
   fit <- phylolm::phylolm(B ~ A, data = test_data(), phy = test_tree(), model = "BM")
   tbl <- stats::coef(phylolm::summary.phylolm(fit))
   expect_equal(get_p(fit), tbl[nrow(tbl), "p.value"])
 
-  # A p-value of exactly 0 would make Fisher's C infinite, so it is floored.
+  # A p-value of exactly 0 would make Fisher's C infinite, so it is floored at
+  # the smallest representable number. Genuinely small p-values pass through:
+  # phylolm reports them accurately far below machine epsilon.
   fake <- fit
   fake$coefficients[2] <- 1e10
-  expect_gte(get_p(fake), .Machine$double.eps)
+  expect_gte(get_p(fake), .Machine$double.xmin)
   expect_true(is.finite(C_stat(get_p(fake))))
+  expect_lt(get_p(fake), .Machine$double.eps)
 })
 
 test_that("get_est and get_se drop the intercept", {

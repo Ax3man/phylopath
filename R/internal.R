@@ -201,7 +201,9 @@ find_formulas <- function(d, order) {
 
 C_stat <- function(ps) -2 * sum(log(ps))
 
-C_p <- function(C, k) 1 - stats::pchisq(C, 2 * k)
+# Computed as the upper tail directly: 1 - pchisq() underflows to exactly 0
+# once the tail is smaller than about 1e-16, and 0 is never a correct p-value.
+C_p <- function(C, k) stats::pchisq(C, 2 * k, lower.tail = FALSE)
 
 CICc <- function(C, q, n) C + 2 * q * (n / (n - 1 - q))
 
@@ -243,7 +245,11 @@ get_p <- function(m) {
     phyloglm = stats::coef(phylolm::summary.phyloglm(m))
   )
   p <- s[nrow(s), 'p.value']
-  if (p < .Machine$double.eps) p <- .Machine$double.eps
+  # Floor only at the smallest representable number, so that C = -2 * sum(log(p))
+  # cannot become infinite, without discarding p-values that are genuinely small:
+  # phylolm computes these as 2 * pt(-abs(t), df), which stays accurate well
+  # below machine epsilon.
+  if (p < .Machine$double.xmin) p <- .Machine$double.xmin
   return(p)
 }
 

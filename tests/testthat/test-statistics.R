@@ -103,3 +103,27 @@ test_that("par_avg validates its inputs", {
   expect_error(par_avg(c(1, 2), 1, c(1, 1)), "not of the same length")
   expect_error(par_avg(c(1, 2), c(1, 1), 1), "not of the same length")
 })
+
+test_that("C_p keeps its precision far into the upper tail", {
+  # Computing the tail as 1 - pchisq() underflows to exactly 0 once the tail is
+  # below about 1e-16, which reports an impossible p-value of 0 for a model that
+  # is merely very strongly rejected.
+  expect_gt(C_p(200, 5), 0)
+  expect_equal(C_p(200, 5), stats::pchisq(200, 10, lower.tail = FALSE))
+  expect_equal(1 - stats::pchisq(200, 10), 0)
+
+  # Still monotonic, and unchanged where the naive form was accurate anyway.
+  expect_lt(C_p(300, 5), C_p(200, 5))
+  expect_equal(C_p(5, 3), 1 - stats::pchisq(5, 6))
+  expect_equal(C_p(0, 2), 1)
+})
+
+test_that("the p-value floor keeps Fisher's C finite", {
+  # get_p() floors each claim at the smallest representable number so that
+  # C = -2 * sum(log(p)) cannot become infinite. An infinite C would make CICc
+  # infinite, and then every model weight NaN.
+  expect_false(is.finite(C_stat(0)))
+  expect_true(is.finite(C_stat(.Machine$double.xmin)))
+  expect_true(is.finite(C_stat(rep(.Machine$double.xmin, 10))))
+  expect_equal(C_stat(.Machine$double.xmin), -2 * log(.Machine$double.xmin))
+})
