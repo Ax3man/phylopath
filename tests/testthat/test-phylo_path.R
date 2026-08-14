@@ -179,9 +179,19 @@ test_that("a supplied `order` is used and validated", {
     phylo_path(ms, data, tree, model = "BM", order = c("A", "A", "B", "C")),
     "must contain each variable exactly once"
   )
+  # An incomplete order, and one naming variables that are not in the models,
+  # both have to be reported by name rather than failing somewhere downstream.
   expect_error(
     phylo_path(ms, data, tree, model = "BM", order = c("A", "B", "C")),
-    "Not all variables are included in `order`"
+    "Missing from `order`: D"
+  )
+  expect_error(
+    phylo_path(ms, data, tree, model = "BM", order = c("X1", "X2", "X3", "X4")),
+    "Not a variable in the models: X1, X2, X3, X4"
+  )
+  expect_error(
+    phylo_path(ms, data, tree, model = "BM", order = c("A", "B", "C", "typo")),
+    "Missing from `order`: D"
   )
 })
 

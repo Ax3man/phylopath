@@ -88,7 +88,8 @@ define_model_set <- function(..., .common = NULL) {
 #'   plot(d)
 #'   d_fitted <- est_DAG(d, rhino, rhino_tree, 'lambda')
 #'   plot(d_fitted)
-est_DAG <- function(DAG, data, tree, model, method, boot = 0, ...) {
+est_DAG <- function(DAG, data, tree, model = 'lambda', method = 'logistic_MPLE',
+                    boot = 0, ...) {
   stopifnot(inherits(DAG, 'DAG'))
   dots <- list(...)
   # scale the continous variables

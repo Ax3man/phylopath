@@ -103,9 +103,18 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
     if (length(order) > length(unique(order))) {
       stop('The supplied `order` argument must contain each variable exactly once.')
     }
-    if (length(order) != ncol(data)) {
-      stop('Not all variables are included in `order`, missing variables: ',
-           setdiff(colnames(data), order))
+    if (!setequal(order, colnames(data))) {
+      missing_from_order <- setdiff(colnames(data), order)
+      unknown_in_order <- setdiff(order, colnames(data))
+      stop('The supplied `order` must contain exactly the variables used in the causal ',
+           'models.',
+           if (length(missing_from_order) > 0)
+             paste0('\n  Missing from `order`: ',
+                    paste(missing_from_order, collapse = ', ')),
+           if (length(unknown_in_order) > 0)
+             paste0('\n  Not a variable in the models: ',
+                    paste(unknown_in_order, collapse = ', ')),
+           call. = FALSE)
     }
   } else {
     order <- find_consensus_order(model_set)

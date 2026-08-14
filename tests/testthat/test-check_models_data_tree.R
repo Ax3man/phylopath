@@ -154,3 +154,20 @@ test_that("unnamed model sets are lettered", {
   expect_equal(names(res2$model_set), c("first", "second"))
 })
 
+test_that("a variable used in the models but absent from the data is named", {
+  # Previously this surfaced as "undefined columns selected" from [.data.frame.
+  d <- tiny_data(A = 1:4, B = 5:8)
+  expect_error(
+    check_models_data_tree(list(DAG(B ~ A, C ~ A)), d, tiny_tree(), na.rm = FALSE),
+    "are used in the causal models, but are not columns in `data`: C"
+  )
+  # Several missing variables are all listed (in the DAG's own node order).
+  msg <- tryCatch(
+    check_models_data_tree(list(DAG(B ~ A, C ~ A, E ~ A)), d, tiny_tree(), na.rm = FALSE),
+    error = conditionMessage
+  )
+  expect_match(msg, "C")
+  expect_match(msg, "E")
+  expect_match(msg, ", ")
+})
+

@@ -4,7 +4,15 @@
 \alias{est_DAG}
 \title{Add standardized path coefficients to a DAG.}
 \usage{
-est_DAG(DAG, data, tree, model, method, boot = 0, ...)
+est_DAG(
+  DAG,
+  data,
+  tree,
+  model = "lambda",
+  method = "logistic_MPLE",
+  boot = 0,
+  ...
+)
 }
 \arguments{
 \item{DAG}{A directed acyclic graph, typically created with \code{DAG}.}

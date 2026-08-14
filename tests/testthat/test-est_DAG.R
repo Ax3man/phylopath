@@ -113,3 +113,29 @@ test_that("binary responses are fitted with phyloglm", {
   expect_false(fit$se["A", "bin"] == 0)
 })
 
+test_that("est_DAG has usable defaults for model and method", {
+  # Both are documented via @inheritParams, but had no defaults here, so a
+  # perfectly reasonable call failed with "argument \"model\" is missing".
+  expect_equal(formals(est_DAG)$model, "lambda")
+  expect_equal(formals(est_DAG)$method, "logistic_MPLE")
+
+  fit <- est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree())
+  expect_s3_class(fit, "fitted_DAG")
+  # The default really is Pagel's lambda, matching phylo_path().
+  expect_equal(fit$coef, est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(),
+                                 model = "lambda")$coef)
+
+  # The documented example, which previously worked only by accident.
+  expect_s3_class(est_DAG(DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS), rhino, rhino_tree,
+                          "lambda"),
+                  "fitted_DAG")
+})
+
+test_that("est_DAG defaults work for binary variables too", {
+  # method is only consulted for binary responses, which is why the missing
+  # default went unnoticed for continuous data.
+  data <- test_data()
+  data$bin <- factor(rep(c("no", "yes"), 20))
+  expect_s3_class(suppressWarnings(est_DAG(DAG(bin ~ A), data, test_tree())),
+                  "fitted_DAG")
+})

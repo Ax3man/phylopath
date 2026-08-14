@@ -9,8 +9,15 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
          paste(sort(unique(unlist(var_names))), collapse = '\n'),
          call. = FALSE)
   }
+  # Check that all variables used in the models are actually present
+  used_vars <- unique(unlist(var_names))
+  missing_vars <- setdiff(used_vars, colnames(data))
+  if (length(missing_vars) > 0) {
+    stop('These variables are used in the causal models, but are not columns in `data`: ',
+         paste(missing_vars, collapse = ', '), '.', call. = FALSE)
+  }
   # Drop all data columns that are not used in the models
-  data <- data[, unique(unlist(var_names))]
+  data <- data[, used_vars, drop = FALSE]
   # We force all character columns to factors
   char_cols <- sapply(data, is.character)
   data[char_cols] <- lapply(data[char_cols], as.factor)
