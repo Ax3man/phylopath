@@ -43,8 +43,9 @@ reporting, and adds unit tests, all from a review by Claude.
 
 * Updated `ggplot2` code to remove deprecated functionality.
 
-* Fixed the binary models vignette, which referred to `check_warnings()` rather
-  than `show_warnings()`.
+* Fixed several inaccuracies in the vignettes, including a reference to a
+  function that does not exist, and restored two `coef_plot()` examples in the
+  introduction that had been commented out.
 
 * Added a unit test suite covering the d-separation basis set, the model
   comparison statistics, model averaging, and the plotting functions.

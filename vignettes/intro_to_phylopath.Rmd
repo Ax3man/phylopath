@@ -188,21 +188,21 @@ We can see that paths that occur in all the best models, such as NL -> DD, are n
 
 In this case in particular, the average model is actually not a DAG since it is cyclical and the relationship between RS and NL is clearly not well resolved by our analysis.
 
-If one is interested in the confidence in the regression coefficients, `coef_plot` can visualize the estimates and their approximate confidence intervals (you need to use the `boot` parameter when fitting the DAG if you are not model averaging, see above). We can see that for the . The order of the paths from left to right, attempts to follow the paths downstream, in this indicated by the `order` argument we gave the `phylo_path` function at the start.
+If one is interested in the confidence in the regression coefficients, `coef_plot` can visualize the estimates and their approximate confidence intervals (you need to use the `boot` parameter when fitting the DAG if you are not model averaging, see above). The order of the paths from left to right attempts to follow the paths downstream, in this case indicated by the `order` argument we gave the `phylo_path` function at the start.
 
 ```{r}
-#coef_plot(average_model)
+coef_plot(average_model)
 ```
 
 This plot, and others in the package, can be manipulated using `ggplot2` functions, for example, to create a horizontal black-and-white version. We can see that for full average model, shrinkage has caused several paths to become uncertain.
 
 ```{r, fig.height=3.5}
-# coef_plot(average_model_full, reverse_order = TRUE) + 
-#   ggplot2::coord_flip() + 
-#   ggplot2::theme_bw()
+coef_plot(average_model_full, reverse_order = TRUE) +
+  ggplot2::coord_flip() +
+  ggplot2::theme_bw()
 ```
 
-Finally, you can access the conditional independencies and their associated p-values as well. This can be useful if you want to know _why_ a certain model was rejected. The `phylo` column gives us the estimates for the correlation structure for each of the fitted models, in this case _lambda_ since we used `corPagel`. For binary models this shows _s2_, which also reflects the strength of phylogenetic signal. Finally, all models are stored in the `model` list as well, in case other information needs to be extracted.
+Finally, you can access the conditional independencies and their associated p-values as well. This can be useful if you want to know _why_ a certain model was rejected. The `phylo_par` column gives us the estimates for the phylogenetic parameter of the fitted models, in this case `lambda`, since that is the (default) model of evolution we used here. For binary models this shows `alpha`. Finally, all models are stored in the `model` list as well, in case other information needs to be extracted.
 
 ```{r}
 result$d_sep$one
