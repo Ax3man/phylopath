@@ -92,6 +92,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
     warning('Using `boot` has been deprecated here, pass to choice(), best(), average() or est_DAG() instead.')
     dots <- dots[names(dots) != 'boot']
   }
+  dots <- check_dots(dots)
 
   tmp <- check_models_data_tree(model_set, data, tree, na.rm)
   model_set <- tmp$model_set
@@ -246,7 +247,7 @@ summary.phylopath <- function(object, ...) {
 #'
 best <- function(phylopath, ...) {
   stopifnot(inherits(phylopath, 'phylopath'))
-  dots <- combine_dots(phylopath$dots, ...)
+  dots <- check_dots(combine_dots(phylopath$dots, ...))
 
   d <- summary(phylopath)
   stop_if_no_CICc(d, 'best')
@@ -285,7 +286,7 @@ best <- function(phylopath, ...) {
 #'
 choice <- function(phylopath, choice, ...) {
   stopifnot(inherits(phylopath, 'phylopath'))
-  dots <- combine_dots(phylopath$dots, ...)
+  dots <- check_dots(combine_dots(phylopath$dots, ...))
 
   do.call(
     est_DAG,
@@ -346,7 +347,7 @@ choice <- function(phylopath, choice, ...) {
 #'
 average <- function(phylopath, cut_off = 2, avg_method = 'conditional', ...) {
   stopifnot(inherits(phylopath, 'phylopath'))
-  dots <- combine_dots(phylopath$dots, ...)
+  dots <- check_dots(combine_dots(phylopath$dots, ...))
 
   d <- summary(phylopath)
   stop_if_no_CICc(d, 'average')

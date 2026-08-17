@@ -210,12 +210,60 @@ test_that("superseded and deprecated arguments warn", {
   expect_length(p$dots, 0)
 })
 
-test_that("unrecognised arguments in ... warn", {
-  expect_warning(
-    phylo_path(define_model_set(a = c(B ~ A, C ~ B), .common = c(D ~ D)),
-               test_data(), test_tree(), model = "BM", not_an_argument = 1),
-    "not recognized"
+# Collect every warning a call emits, rather than just the first, so that the
+# *number* of warnings can be asserted.
+all_warnings <- function(expr) {
+  ws <- character()
+  withCallingHandlers(
+    expr,
+    warning = function(w) {
+      ws <<- c(ws, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
   )
+  ws
+}
+
+test_that("unrecognised arguments in ... warn once, and name themselves", {
+  ms <- define_model_set(a = c(B ~ A, C ~ B), .common = c(D ~ D))
+  ws <- all_warnings(
+    p <- phylo_path(ms, test_data(), test_tree(), model = "BM", not_an_argument = 1)
+  )
+  # Once per user call, not once per regression: this model set has four.
+  expect_length(ws, 1)
+  expect_match(ws, "not recognized", fixed = FALSE)
+  # The message says which argument was wrong, which is the actionable part.
+  expect_match(ws, "not_an_argument")
+  # The offending argument is discarded, so it cannot reach phylolm later.
+  expect_length(p$dots, 0)
+})
+
+test_that("unrecognised arguments warn once from the fitting functions too", {
+  ms <- define_model_set(a = c(B ~ A, C ~ B), b = c(B ~ A, C ~ A), .common = c(D ~ D))
+  p <- phylo_path(ms, test_data(), test_tree(), model = "BM")
+  d <- DAG(B ~ A, C ~ B)
+
+  expect_length(all_warnings(est_DAG(d, test_data(), test_tree(), model = "BM",
+                                     nonsense = 1)), 1)
+  expect_length(all_warnings(best(p, nonsense = 1)), 1)
+  expect_length(all_warnings(choice(p, "a", nonsense = 1)), 1)
+  # average() fits one DAG per model within the cut off, so this is the case that
+  # used to warn once per model per regression. The cut off is set explicitly so
+  # that more than one model is certain to be averaged over.
+  expect_length(all_warnings(average(p, cut_off = Inf, nonsense = 1)), 1)
+})
+
+test_that("arguments recognised by only one of phylolm and phyloglm are kept", {
+  # `btol` is a phyloglm argument and `measurement_error` a phylolm one. A data
+  # set with both binary and continuous variables needs both to survive the
+  # check, since narrowing to the relevant one happens per fit.
+  ms <- define_model_set(a = c(B ~ A, C ~ B), .common = c(D ~ D))
+  ws <- all_warnings(
+    p <- phylo_path(ms, test_data(), test_tree(), model = "BM",
+                    btol = 20, measurement_error = FALSE)
+  )
+  expect_length(ws, 0)
+  expect_named(p$dots, c("btol", "measurement_error"))
 })
 
 test_that("errors from the underlying model are reported with the formula", {

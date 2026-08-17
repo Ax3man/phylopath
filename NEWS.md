@@ -47,6 +47,10 @@ reporting, and adds unit tests, all from a review by Claude.
   function that does not exist, and restored two `coef_plot()` examples in the
   introduction that had been commented out.
 
+* Bug fix: passing an argument that neither `phylolm()` nor `phyloglm()` accepts
+  produced one warning per fitted regression, and did not say which argument was
+  at fault. Such arguments are now reported once per call, by name.
+
 * The vignettes now have descriptive titles in the vignette index, and all
   figures have alt-text.
 

@@ -71,16 +71,33 @@ test_that("phylo_g_lm converts a factor response to 0/1 using the level order", 
   expect_lt(stats::coef(fit2)[["A"]], 0)
 })
 
-test_that("phylo_g_lm warns about arguments it cannot route", {
-  expect_warning(
-    phylo_g_lm(B ~ A, test_data(), test_tree(), model = "BM",
-               method = "logistic_MPLE", dots = list(nonsense = 1)),
-    "not recognized"
-  )
-  # A genuine phylolm argument is accepted quietly.
+test_that("check_dots drops unrecognised arguments and names them", {
+  expect_warning(check_dots(list(nonsense = 1)), "not recognized")
+  expect_warning(check_dots(list(nonsense = 1)), "nonsense")
+  # Only the offending argument is dropped.
+  expect_equal(suppressWarnings(check_dots(list(nonsense = 1, btol = 20))),
+               list(btol = 20))
+  # Arguments of either phylolm or phyloglm are kept, quietly.
+  expect_no_warning(kept <- check_dots(list(lower.bound = 0.01, btol = 20)))
+  expect_named(kept, c("lower.bound", "btol"))
+  # Nothing to check is not an error, and returns an empty list either way.
+  expect_no_warning(expect_length(check_dots(list()), 0))
+})
+
+test_that("phylo_g_lm routes arguments to the right fitting function", {
+  # The unroutable-argument warning lives in check_dots() now, so phylo_g_lm is
+  # only responsible for narrowing already-valid dots to the function in use. A
+  # phyloglm-only argument must not reach phylolm, and vice versa.
   expect_no_warning(
     phylo_g_lm(B ~ A, test_data(), test_tree(), model = "lambda",
-               method = "logistic_MPLE", dots = list(lower.bound = 0.01))
+               method = "logistic_MPLE", dots = list(lower.bound = 0.01, btol = 20))
+  )
+  data <- test_data()
+  data$bin <- factor(ifelse(data$A > stats::median(data$A), "high", "low"),
+                     levels = c("low", "high"))
+  expect_no_warning(
+    phylo_g_lm(bin ~ A, data, test_tree(), model = "lambda",
+               method = "logistic_MPLE", dots = list(lower.bound = 0.01, btol = 20))
   )
 })
 

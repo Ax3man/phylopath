@@ -211,13 +211,23 @@ l <- function(dCICc) exp(-0.5 * dCICc)
 
 w <- function(l) l / sum(l)
 
+# Drop any arguments in ... that neither phylolm nor phyloglm accepts, and generate
+# a warning when they are passed.
+check_dots <- function(dots) {
+  known <- union(names(formals(phylolm::phyloglm)), names(formals(phylolm::phylolm)))
+  unknown <- setdiff(names(dots), known)
+  if (length(unknown) > 0) {
+    warning('The following arguments are not recognized by `phylolm::phylolm()` or ',
+            '`phylolm::phyloglm()`, and are ignored: ', paste(unknown, collapse = ', '),
+            call. = FALSE)
+  }
+  dots[!(names(dots) %in% unknown)]
+}
+
 phylo_g_lm <- function(formula, data, tree, model, method, boot = 0, dots = NULL) {
   # we capture the dots, because we need to match the names to either phylolm or phylolm
   dots_glm <- dots[names(dots) %in% names(formals(phylolm::phyloglm))]
   dots_lm <- dots[names(dots) %in% names(formals(phylolm::phylolm))]
-  if (length(union(names(dots_glm), names(dots_lm))) != length(dots)) {
-    warning("Some arguments in ... are not recognized.", call. = FALSE)
-  }
   # we capture the first argument in the formula, to check whether it is binary
   x_var <- data[[all.vars(formula)[1]]]
   if (is.factor(x_var)) {
