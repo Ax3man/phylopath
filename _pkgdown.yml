@@ -1,5 +1,7 @@
+url: https://ax3man.github.io/phylopath/
+
 template:
-  params:
+  bootstrap: 5
   bootswatch: cosmo
 
 reference:
@@ -36,9 +38,10 @@ reference:
 
 navbar:
   title: "phylopath"
-  type: inverse
+  bg: primary
   left:
     - icon: fa-home
+      aria-label: Home
       href: index.html
     - text: "Get started"
       href: articles/intro_to_phylopath.html
@@ -50,4 +53,5 @@ navbar:
       href: "news/index.html"
   right:
     - icon: fa-github
+      aria-label: GitHub
       href: https://github.com/Ax3man/phylopath
