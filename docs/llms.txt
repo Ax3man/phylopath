@@ -1,0 +1,99 @@
+# Easy phylogenetic path analysis in R
+
+Use the `phylopath` package for an easy to use framework to perform
+phylogenetic path analysis (PPA).
+
+PPA can be used to compare support for competing causal models of trait
+evolution, while taking shared ancestry into account. All you need
+is: 1. A clear set of models to test. 2. A data set of species with
+trait values. 3. A phylogeny of your species.
+
+For a complete worked example, click “Get Started” above, or see the
+[PeerJ paper](https://doi.org/10.7717/peerj.4718).
+
+This method was developed by Von Hardenberg and Gonzalez-Voyer. See
+[`citation()`](https://rdrr.io/r/utils/citation.html) for info on
+correct citations.
+
+![A grid of nine small causal diagrams, one per candidate model, each
+showing directed arrows between the five rhinograde traits body mass,
+litter size, nose length, dry days and range
+size.](reference/figures/unnamed-chunk-2-1.png)
+
+![The fitted best supported causal model, with arrows labelled by their
+standardized path coefficients and drawn with a width proportional to
+the strength of the effect.](reference/figures/unnamed-chunk-3-1.png)
+
+`phylopath` has been used by [\>100
+publications](https://scholar.google.ca/scholar?oi=bibs&hl=en&cites=5933615079034924484)
+so far!
+
+# Package index
+
+## Top level functions
+
+Use these functions to describe, fit, select and average your models.
+
+- [`define_model_set()`](https://ax3man.github.io/phylopath/reference/define_model_set.md)
+  : Define a model set.
+- [`DAG()`](https://ax3man.github.io/phylopath/reference/DAG.md) :
+  Directed acyclic graphs (DAGs)
+- [`phylo_path()`](https://ax3man.github.io/phylopath/reference/phylo_path.md)
+  : Compare causal models in a phylogenetic context.
+- [`average()`](https://ax3man.github.io/phylopath/reference/average.md)
+  : Extract and average the best supported models from a phylogenetic
+  path analysis.
+- [`best()`](https://ax3man.github.io/phylopath/reference/best.md) :
+  Extract and estimate the best supported model from a phylogenetic path
+  analysis.
+- [`choice()`](https://ax3man.github.io/phylopath/reference/choice.md) :
+  Extract and estimate an arbitrary model from a phylogenetic path
+  analysis.
+- [`show_warnings()`](https://ax3man.github.io/phylopath/reference/show_warnings.md)
+  : Print out warnings from a phylopath analysis.
+
+## Plotting
+
+- [`plot(`*`<DAG>`*`)`](https://ax3man.github.io/phylopath/reference/plot.DAG.md)
+  : Plot a directed acyclic graph.
+- [`plot(`*`<fitted_DAG>`*`)`](https://ax3man.github.io/phylopath/reference/plot.fitted_DAG.md)
+  : Plot a directed acyclic graph with path coefficients.
+- [`plot_model_set()`](https://ax3man.github.io/phylopath/reference/plot_model_set.md)
+  : Plot several causal hypothesis at once.
+- [`coef_plot()`](https://ax3man.github.io/phylopath/reference/coef_plot.md)
+  : Plot path coefficients and their confidence intervals or standard
+  errors.
+
+## Low level functions
+
+Use these functions for finer control. These are mostly for internal
+use.
+
+- [`est_DAG()`](https://ax3man.github.io/phylopath/reference/est_DAG.md)
+  : Add standardized path coefficients to a DAG.
+- [`average_DAGs()`](https://ax3man.github.io/phylopath/reference/average_DAGs.md)
+  : Perform model averaging on a list of DAGs.
+
+## Included datasets
+
+- [`rhino`](https://ax3man.github.io/phylopath/reference/rhino.md) :
+  Rhinogrades traits.
+- [`rhino_tree`](https://ax3man.github.io/phylopath/reference/rhino_tree.md)
+  : Rhinogrades phylogeny.
+- [`cichlids`](https://ax3man.github.io/phylopath/reference/cichlids.md)
+  : Cichlid traits and the evolution of cooperative breeding.
+- [`cichlids_tree`](https://ax3man.github.io/phylopath/reference/cichlids_tree.md)
+  : Cichlid phylogeny.
+- [`red_list`](https://ax3man.github.io/phylopath/reference/red_list.md)
+  : Data on brain size, life history and vulnerability to extinction
+- [`red_list_tree`](https://ax3man.github.io/phylopath/reference/red_list_tree.md)
+  : Mammalian phylogeny
+
+# Articles
+
+### All vignettes
+
+- [Comparing causal models of binary traits using
+  phylopath](https://ax3man.github.io/phylopath/articles/binary_models.md):
+- [Introduction to phylogenetic path analysis with
+  phylopath](https://ax3man.github.io/phylopath/articles/intro_to_phylopath.md):

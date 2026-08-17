@@ -1,8 +1,10 @@
-pandoc: 3.1.11
-pkgdown: 2.0.9
+pandoc: '3.10'
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   binary_models: binary_models.html
   intro_to_phylopath: intro_to_phylopath.html
-last_built: 2024-06-11T22:11Z
-
+last_built: 2026-08-17T18:33Z
+urls:
+  reference: https://ax3man.github.io/phylopath/reference
+  article: https://ax3man.github.io/phylopath/articles
