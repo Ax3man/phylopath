@@ -363,11 +363,12 @@ plot_model_set <- function(model_set, labels = NULL, algorithm = 'kk', manual_la
   result <- igraph::make_empty_graph() + igraph::vertices(row.names(model_set[[1]]))
   for (i in seq_along(model_set)) {
     m <- model_set[[i]]
-    ind  <- which(m == 1)
-    from <- ind %% nrow(model_set[[i]])
-    to   <- (ind - from) / nrow(model_set[[i]]) + 1
-    result <- igraph::add_edges(result, c(rbind(rownames(m)[from], colnames(m)[to])),
-                                attr = list(model = names(model_set)[[i]]))
+    ind <- which(m == 1, arr.ind = TRUE)
+    result <- igraph::add_edges(
+      result,
+      c(rbind(rownames(m)[ind[, 'row']], colnames(m)[ind[, 'col']])),
+      attr = list(model = names(model_set)[[i]])
+    )
   }
   igraph::edge.attributes(result)$model <- factor(igraph::E(result)$model,
                                                   names(model_set), names(model_set))

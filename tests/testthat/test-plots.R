@@ -130,6 +130,28 @@ test_that("plot_model_set facets over the models", {
   expect_s3_class(plot_model_set(ms, nrow = 2), "ggplot")
 })
 
+# The arrows plot_model_set() decided to draw, as a "from->to" character vector,
+# per model. The layout keeps the graph it was built from as an attribute.
+drawn_edges <- function(p) {
+  g <- attr(p$data, "graph")
+  e <- igraph::as_edgelist(g)
+  split(paste0(e[, 1], "->", e[, 2]), igraph::E(g)$model)
+}
+
+test_that("plot_model_set draws exactly the edges the models contain", {
+  # An unsorted model can have an edge in the last row of its matrix, which is
+  # where locating edges by index arithmetic goes wrong.
+  m <- DAG(A ~ B, B ~ C, order = FALSE)          # the chain C -> B -> A
+  expect_setequal(drawn_edges(plot_model_set(list(one = m)))$one, c("B->A", "C->B"))
+  expect_setequal(drawn_edges(plot_model_set(list(one = DAG(A ~ B, order = FALSE))))$one,
+                  "B->A")
+
+  ms <- define_model_set(one = c(B ~ A, C ~ B), two = c(B ~ A, C ~ A))
+  drawn <- drawn_edges(plot_model_set(ms))
+  expect_setequal(drawn$one, c("A->B", "B->C"))
+  expect_setequal(drawn$two, c("A->B", "A->C"))
+})
+
 test_that("plot_model_set names unnamed model sets and validates input", {
   expect_s3_class(plot_model_set(list(DAG(B ~ A), DAG(A ~ B))), "ggplot")
   expect_error(plot_model_set(list(DAG(B ~ A), "not a DAG")),
