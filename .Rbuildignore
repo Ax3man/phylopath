@@ -14,3 +14,4 @@
 ^CRAN-SUBMISSION$
 ^revdep$
 ^.DS_Store$
+^\.github$

@@ -1,6 +1,6 @@
 # phylopath
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/phylopath)](https://cran.r-project.org/package=phylopath) [![Cran downloads](http://cranlogs.r-pkg.org/badges/grand-total/phylopath)](http://cran.rstudio.com/web/packages/phylopath/index.html) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/phylopath)](https://cran.r-project.org/package=phylopath) [![Cran downloads](http://cranlogs.r-pkg.org/badges/grand-total/phylopath)](http://cran.rstudio.com/web/packages/phylopath/index.html) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![R-CMD-check](https://github.com/Ax3man/phylopath/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Ax3man/phylopath/actions/workflows/R-CMD-check.yaml)
 
 This package implements phylogenetic path analysis in R.
 
