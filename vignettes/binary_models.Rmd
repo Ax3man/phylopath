@@ -4,7 +4,7 @@ author: "Wouter van der Bijl"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{binary_models}
+  %\VignetteIndexEntry{Comparing causal models of binary traits using phylopath}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -51,7 +51,7 @@ Under the indirect fitness hypothesis, monogamy is expected to be a major driver
 
 Following the paper in question, we define 12 putative causal models.
 
-```{r define_models, fig.align='center', fig.width=10, fig.height=8, out.height="600px", fig.dpi = 600}
+```{r define_models, fig.align='center', fig.width=10, fig.height=8, out.height="600px", fig.dpi = 600, fig.alt = "A grid of twelve causal diagrams, one panel per candidate model, each relating cooperative breeding, mating system, parental care, social grouping and diet with directed arrows."}
 library(phylopath)
 
 models <- define_model_set(
@@ -87,7 +87,7 @@ The third messages notes that warnings have been generated, see the **Important 
 
 `phylo_path` notes that indeed all variables are binary.
 
-```{r get_summary}
+```{r get_summary, fig.alt = "A dot and line plot of CICc against model, with the twelve models ordered from best to worst supported and a dashed line marking the cut off two CICc units above the best model."}
 (s <- summary(cichlids_results))
 plot(s)
 ```
@@ -110,13 +110,13 @@ best_cichlids
 
 Or plot those:
 
-```{r}
+```{r, fig.alt = "A horizontal point and error bar plot of the path coefficients of the best supported model, with standard errors and a dashed line at zero."}
 coef_plot(best_cichlids, error_bar = "se", reverse_order = TRUE) + ggplot2::coord_flip()
 ```
 
 But we can also plot the final model:
 
-```{r, fig.align='center', fig.width=8, fig.height=4, out.width="600px", fig.dpi = 300}
+```{r, fig.align='center', fig.width=8, fig.height=4, out.width="600px", fig.dpi = 300, fig.alt = "The fitted best supported model, with arrows labelled by their coefficients and drawn with a width proportional to the strength of the effect."}
 plot(best_cichlids)
 ```
 

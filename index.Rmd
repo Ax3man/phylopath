@@ -7,7 +7,7 @@ output: md_document
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(dev = "png", fig.height = 7, fig.width = 7, dpi = 300, out.width = "600px",
-                      fig.align = 'center')
+                      fig.align = 'center', fig.path = "man/figures/")
 ```
 
 # Easy phylogenetic path analysis in R
@@ -23,7 +23,7 @@ For a complete worked example, click "Get Started" above, or see the [PeerJ pape
 
 This method was developed by Von Hardenberg and Gonzalez-Voyer. See `citation()` for info on correct citations.
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, fig.alt = "A grid of nine small causal diagrams, one per candidate model, each showing directed arrows between the five rhinograde traits body mass, litter size, nose length, dry days and range size."}
 library(phylopath)
 
 models <- define_model_set(
@@ -41,8 +41,8 @@ models <- define_model_set(
 plot_model_set(models, rotation = -57, flip_x = TRUE)
 ```
 
-```{r, echo = FALSE}
-result <- phylo_path(models, data = rhino, tree = rhino_tree, 
+```{r, echo = FALSE, fig.alt = "The fitted best supported causal model, with arrows labelled by their standardized path coefficients and drawn with a width proportional to the strength of the effect."}
+result <- phylo_path(models, data = rhino, tree = rhino_tree,
                      order = c('BM', 'NL', 'DD', 'LS', 'RS'))
 #plot(choice(result, 'five'), rotation = 9.45, curvature = -0.0000001, flip_x = TRUE)
 plot(choice(result, 'five'), rotation = 10, curvature = -0.05, flip_x = TRUE)

@@ -47,6 +47,9 @@ reporting, and adds unit tests, all from a review by Claude.
   function that does not exist, and restored two `coef_plot()` examples in the
   introduction that had been commented out.
 
+* The vignettes now have descriptive titles in the vignette index, and all
+  figures have alt-text.
+
 * Added a unit test suite covering the d-separation basis set, the model
   comparison statistics, model averaging, and the plotting functions.
 

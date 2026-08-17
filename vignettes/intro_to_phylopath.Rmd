@@ -4,7 +4,7 @@ author: "Wouter van der Bijl"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{phylopath}
+  %\VignetteIndexEntry{Introduction to phylogenetic path analysis with phylopath}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -112,13 +112,13 @@ models$one
 
 It is good to check if the DAG looks like you were expecting. Instead of staring at a bunch of matrices, simply `plot` one of the models to inspect it visually.
 
-```{r, fig.height = 5, fig.width = 5, dpi = 300}
+```{r, fig.height = 5, fig.width = 5, dpi = 300, fig.alt = "A causal diagram of model one, with arrows from body mass to litter size and nose length, from nose length to dry days, and from dry days to range size."}
 plot(models$one)
 ```
 
 Or better yet, plot all of the models at once:
 
-```{r, fig.height=8, fig.width=8, out.width = "600px"}
+```{r, fig.height=8, fig.width=8, out.width = "600px", fig.alt = "A grid of nine causal diagrams, one panel per candidate model, sharing the same five variables but differing in which arrows are present."}
 plot_model_set(models)
 ```
 
@@ -150,7 +150,7 @@ To get an overview of the analysis, we can ask for its `summary`:
 
 And plotting that summary gives us a quick overview of the support for each model:
 
-```{r}
+```{r, fig.alt = "A dot and line plot of CICc against model, with the models ordered from best to worst supported and a dashed line marking the cut off two CICc units above the best model."}
 plot(s)
 ```
 
@@ -166,20 +166,20 @@ _Note: These functions can also obtain confidence intervals for the estimates, w
 
 This object can also be plotted, now the numbers and width of the arrow represent path coefficients. In this case, all paths are green since all relationships are positive.
 
-```{r, warning = FALSE, fig.width = 6}
+```{r, warning = FALSE, fig.width = 6, fig.alt = "The best supported causal model, with each arrow labelled by its standardized path coefficient and drawn with a width proportional to the strength of the effect. All arrows are green, since all coefficients are positive."}
 plot(best_model)
 ```
 
 From the summary we could see that in reality, there are several models that are quite good. Instead of using the best model, we can use the average of the best models, weighted by their relative evidence. By simply calling `average`, we can obtain the coefficients and standard errors of the averaged model where the CICc `cut_off` is 2 by default. If a model does not include a path, we assume that coefficient to be 0.
 
-```{r, fig.width = 7}
+```{r, fig.width = 7, fig.alt = "The conditionally averaged causal model, labelled with averaged path coefficients. It contains arrows in both directions between nose length and range size, so it is cyclical rather than a DAG."}
 average_model <- average(result)
 plot(average_model, algorithm = 'mds', curvature = 0.1) # increase the curvature to avoid overlapping edges
 ```
 
 Note that, by default, the path averaging is only done for the models that actually contain that path. This facilitates the detection of weak effects, but also biases coefficients away from zero. Alternatively, we can assume the coefficients (and their variance) for absent paths to be zero by setting `avg_method = "full"`.
 
-```{r, fig.width = 7}
+```{r, fig.width = 7, fig.alt = "The fully averaged causal model. It has the same arrows as the conditionally averaged model, but the coefficients for paths present in only some models are shrunk towards zero."}
 average_model_full <- average(result, avg_method = "full")
 plot(average_model_full, algorithm = 'mds', curvature = 0.1)
 ```
@@ -190,13 +190,13 @@ In this case in particular, the average model is actually not a DAG since it is 
 
 If one is interested in the confidence in the regression coefficients, `coef_plot` can visualize the estimates and their approximate confidence intervals (you need to use the `boot` parameter when fitting the DAG if you are not model averaging, see above). The order of the paths from left to right attempts to follow the paths downstream, in this case indicated by the `order` argument we gave the `phylo_path` function at the start.
 
-```{r}
+```{r, fig.alt = "A point and error bar plot of the averaged path coefficients, one path per position along the horizontal axis, with a dashed horizontal line at zero."}
 coef_plot(average_model)
 ```
 
 This plot, and others in the package, can be manipulated using `ggplot2` functions, for example, to create a horizontal black-and-white version. We can see that for full average model, shrinkage has caused several paths to become uncertain.
 
-```{r, fig.height=3.5}
+```{r, fig.height=3.5, fig.alt = "The same coefficient plot for the fully averaged model, drawn horizontally in black and white. Several intervals now overlap zero, reflecting the shrinkage of weakly supported paths."}
 coef_plot(average_model_full, reverse_order = TRUE) +
   ggplot2::coord_flip() +
   ggplot2::theme_bw()
