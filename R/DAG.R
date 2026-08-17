@@ -129,6 +129,9 @@ est_DAG <- function(DAG, data, tree, model = 'lambda', method = 'logistic_MPLE',
                     boot = 0, ...) {
   stopifnot(inherits(DAG, 'DAG'))
   dots <- check_dots(list(...))
+  # check and convert binary variables
+  vars <- rownames(DAG)
+  data[vars] <- as_binary_factors(data[vars])
   # scale the continous variables
   r <- rownames(data)
   data[sapply(data, is.numeric)] <- lapply(data[sapply(data, is.numeric)], scale)

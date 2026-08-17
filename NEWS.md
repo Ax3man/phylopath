@@ -78,6 +78,13 @@ reporting, and adds unit tests, all from a review by Claude.
   `average()` refuses to average models that disagree on which variables are
   binary.
 
+* Bug fix: `est_DAG()` did not recognize binary variables supplied as character
+  vectors, although those are documented as acceptable, and `phylo_path()` accepts
+  them. Such a variable failed with an error from `phylolm` when it was the
+  outcome of a path, and was silently treated as continuous when it was the
+  predictor. Character variables are now converted to factors, as they already
+  were in `phylo_path()`.
+
 * Bug fix: `plot_model_set()` located the edges of a causal model incorrectly
   when a model was not topologically sorted, which could silently draw edges
   that were not in the model and omit ones that were.

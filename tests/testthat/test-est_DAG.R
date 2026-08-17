@@ -155,3 +155,41 @@ test_that("est_DAG records which variables were modelled as binary", {
   cont <- est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(), model = "BM")
   expect_false(any(cont$binary))
 })
+
+test_that("character columns are treated as binary, like phylo_path does", {
+  # `data` is documented as accepting binary variables "either as character values
+  # or factors", but only factors were recognized: phylo_path() converts them via
+  # check_models_data_tree(), while est_DAG() did not. A character response then
+  # failed inside phylolm, and a character predictor was silently labelled
+  # continuous even though it was fitted as a contrast between its two levels.
+  data <- test_data()
+  data$chr <- rep(c("no", "yes"), 20)
+  data$fac <- factor(data$chr)
+
+  # As a response: fits, rather than failing inside phylolm.
+  resp <- suppressWarnings(est_DAG(DAG(chr ~ A), data, test_tree(), model = "BM"))
+  expect_true(resp$binary[["chr"]])
+
+  # As a predictor: identical to the factor version, and labelled the same way.
+  chr <- suppressWarnings(est_DAG(DAG(B ~ chr), data, test_tree(), model = "BM"))
+  fac <- suppressWarnings(est_DAG(DAG(B ~ fac), data, test_tree(), model = "BM"))
+  expect_true(chr$binary[["chr"]])
+  expect_equal(unname(chr$coef["chr", "B"]), unname(fac$coef["fac", "B"]))
+  # Which means such a model is now recognized as mixed, and so gets labelled.
+  expect_true(is_mixed(chr))
+})
+
+test_that("est_DAG rejects variables that are not binary", {
+  data <- test_data()
+  data$three <- rep(c("a", "b", "c"), length.out = 40)
+  expect_error(est_DAG(DAG(B ~ three), data, test_tree(), model = "BM"),
+               "'three' is expected to be binary, but has 3 levels")
+})
+
+test_that("est_DAG ignores columns that are not in the DAG", {
+  # `data` may hold other columns, which are none of est_DAG's business, so a
+  # many-levelled column elsewhere in the data must not be an error.
+  data <- test_data()
+  data$unused <- rep(c("a", "b", "c"), length.out = 40)
+  expect_no_error(est_DAG(DAG(B ~ A), data, test_tree(), model = "BM"))
+})

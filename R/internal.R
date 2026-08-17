@@ -18,18 +18,7 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
   }
   # Drop all data columns that are not used in the models
   data <- data[, used_vars, drop = FALSE]
-  # We force all character columns to factors
-  char_cols <- sapply(data, is.character)
-  data[char_cols] <- lapply(data[char_cols], as.factor)
-  # Check whether all factors have exactly two levels:
-  f_cols <- which(sapply(data, is.factor))
-  for (i in f_cols) {
-    n_levels <- length(levels(data[[i]]))
-    if (n_levels != 2) {
-      stop("Variable '", names(data)[i], "' is expected to be binary, but has ", n_levels,
-           " levels.", call. = FALSE)
-    }
-  }
+  data <- as_binary_factors(data)
   # Check for data columns that are numeric, but only have 0-1. These might be user error, attempting
   # to pass a binary variable as numeric
   binary_numerics <- sapply(data, function(x) all(x %in% 0:1))
@@ -65,6 +54,24 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
   # Add names to any models that don't have them
   names(model_set) <- name_model_set(names(model_set), length(model_set))
   return(list(model_set = model_set, data = data, tree = tree))
+}
+
+# Binary variables can be passed as either characters or factors, but only
+# factors are used internally. Characters are therefore converted here,
+# with some input checks.
+as_binary_factors <- function(data) {
+  char_cols <- sapply(data, is.character)
+  data[char_cols] <- lapply(data[char_cols], as.factor)
+  # Check whether all factors have exactly two levels:
+  f_cols <- which(sapply(data, is.factor))
+  for (i in f_cols) {
+    n_levels <- length(levels(data[[i]]))
+    if (n_levels != 2) {
+      stop("Variable '", names(data)[i], "' is expected to be binary, but has ", n_levels,
+           " levels.", call. = FALSE)
+    }
+  }
+  data
 }
 
 # Labels for automatically named models: A, B, ... Z, then AA, AB, ... ZZ.
