@@ -3,6 +3,7 @@
 S3method(plot,DAG)
 S3method(plot,fitted_DAG)
 S3method(plot,phylopath_summary)
+S3method(print,fitted_DAG)
 S3method(print,phylopath)
 S3method(print,phylopath_summary)
 S3method(summary,phylopath)

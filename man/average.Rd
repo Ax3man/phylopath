@@ -65,3 +65,6 @@ analysis.
   }
 
 }
+\seealso{
+\code{\link[=est_DAG]{est_DAG()}} for what the coefficients mean.
+}

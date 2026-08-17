@@ -73,13 +73,50 @@ define_model_set <- function(..., .common = NULL) {
   lapply(model_list, function(x) do.call(DAG, x))
 }
 
-#' Add standardized path coefficients to a DAG.
+#' Estimate path coefficients for a DAG.
+#'
+#' This function will estimate the path coefficients for a DAG, and return them
+#' with uncertainty.
+#'
+#' @details
+#' Continuous variables are standardized before fitting, that is, centered and
+#' divided by their standard deviation, while binary variables are left as they
+#' are. In the two usual cases this means the coefficients can be compared with
+#' each other directly:
+#'
+#' * When every variable is continuous, each coefficient is the change in the
+#'   outcome, in standard deviations, for an increase of one standard deviation in
+#'   the predictor. These are standardized regression coefficients, as reported by
+#'   von Hardenberg & Gonzalez-Voyer.
+#' * When every variable is binary, each coefficient is the log odds ratio for the
+#'   outcome between the two levels of the predictor. A level to level contrast is
+#'   a natural unit that every binary variable has, so these are comparable too.
+#'
+#' When a model contains binary *and* continuous variables, its coefficients can no
+#' longer be compared with one another, for two separate reasons. Paths into a
+#' binary variable are log odds ratios while paths into a continuous variable are
+#' standardized regression coefficients, which are different units entirely. And a
+#' binary predictor contributes a contrast between its two levels, which for a
+#' variable where a proportion `p` of species has one of the levels amounts to
+#' `1 / sqrt(p * (1 - p))` standard deviations. That is always more than two, so
+#' the coefficients of binary predictors are inflated relative to those of
+#' continuous predictors in the same model.
 #'
 #' @param DAG A directed acyclic graph, typically created with \code{DAG}.
 #' @param boot The number of bootstrap replicates used to estimate confidence intervals.
 #' @inheritParams phylo_path
 #'
-#' @return An object of class \code{fitted_DAG}.
+#' @return An object of class \code{fitted_DAG}, which is a list with the
+#'   following components:
+#'   \describe{
+#'    \item{coef}{a matrix of path coefficients, with predictors in the rows and
+#'      responses in the columns. Absent paths are 0.}
+#'    \item{se}{a matrix of standard errors of the coefficients.}
+#'    \item{lower, upper}{matrices with the bounds of the bootstrapped
+#'      confidence intervals, only present if `boot` was larger than 0.}
+#'    \item{binary}{a named logical vector marking which variables were modelled
+#'      as binary.}
+#'   }
 #'
 #' @export
 #'
@@ -126,7 +163,11 @@ est_DAG <- function(DAG, data, tree, model = 'lambda', method = 'logistic_MPLE',
   } else {
     res <- list(coef = coefs, se = ses)
   }
+  # Record which variables were modelled as binary, since that determines what
+  # the coefficients of paths into them mean.
+  res$binary <- vapply(data[rownames(DAG)], is.factor, logical(1))
   class(res) <- 'fitted_DAG'
+  warn_if_mixed(res)
   return(res)
 }
 
@@ -149,6 +190,7 @@ est_DAG <- function(DAG, data, tree, model = 'lambda', method = 'logistic_MPLE',
 #'
 #' @return An object of class `fitted_DAG`, including standard errors and
 #'   confidence intervals.
+#' @seealso [est_DAG()] for what the coefficients mean.
 #' @export
 #'
 #' @examples
@@ -170,8 +212,13 @@ average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
   if (length(list(...)) != 0) stop('Use of ... is deprecated.')
   avg_method <- match.arg(avg_method, choices = c("full", "conditional"))
   ord <- rownames(fitted_DAGs[[1]]$coef)
+  binary <- combine_binary(fitted_DAGs, ord)
+
   fitted_DAGs <- lapply(fitted_DAGs, function(l) {
-    lapply(l, function(m) m[ord, ord]) } )
+    mats <- intersect(c('coef', 'se', 'lower', 'upper'), names(l))
+    l[mats] <- lapply(l[mats], function(m) m[ord, ord])
+    l
+  } )
 
   coef      <- lapply(fitted_DAGs, `[[`, 'coef')
   std_error <- lapply(fitted_DAGs, `[[`, 'se')
@@ -205,6 +252,8 @@ average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
   } else {
     res <- list(coef = a_coef)
   }
+  res$binary <- binary
   class(res) <- 'fitted_DAG'
+  warn_if_mixed(res)
   return(res)
 }

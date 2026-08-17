@@ -36,3 +36,6 @@ Extract and estimate an arbitrary model from a phylogenetic path analysis.
   plot(my_model)
 
 }
+\seealso{
+\code{\link[=est_DAG]{est_DAG()}} for what the coefficients mean.
+}

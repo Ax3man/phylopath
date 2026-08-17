@@ -366,6 +366,100 @@ combine_dots <- function(old_dots, ...) {
   c(new_dots, old_dots[!(names(old_dots) %in% names(new_dots))])
 }
 
+# Warning thrown whenever a function has no information on compatiable scales.
+warn_unknown_scale <- function() {
+  warning('Cannot determine which variables of this model are binary, so the scale of ',
+          'its coefficients is unknown: paths into a binary variable are log odds ',
+          'ratios, while paths into a continuous variable are standardized regression ',
+          'coefficients. This model was fitted by a version of phylopath older than ',
+          '1.4.0, which did not record it. Refit the model to label the coefficients, ',
+          'and stop receiving these warnings.',
+          call. = FALSE)
+}
+
+# Get the variables that take part in at least one path.
+used_vars <- function(coef) {
+  present <- abs(coef) > .Machine$double.eps
+  union(rownames(coef)[rowSums(present) > 0], colnames(coef)[colSums(present) > 0])
+}
+
+# Is this a model whose coefficients cannot be compared with each other? That is
+# the case when the variables it connects are not all binary or all continuous.
+# NA when the variable types are not recorded.
+is_mixed <- function(fitted_DAG) {
+  binary <- fitted_DAG$binary
+  coef <- fitted_DAG$coef
+  if (is.null(binary) || !all(colnames(coef) %in% names(binary))) return(NA)
+
+  return(length(unique(binary[used_vars(coef)])) > 1)
+}
+
+# The scale that every coefficient of this model is on, or NULL when the model
+# mixes types and there is no single answer. Warns when the variable types were
+# not recorded, in which case nothing can be said about them at all. Warning here
+# rather than at each call site means every function that reports coefficients
+# does so consistently.
+coef_scale_name <- function(fitted_DAG) {
+  mixed <- is_mixed(fitted_DAG)
+  if (is.na(mixed)) {
+    warn_unknown_scale()
+    return(NULL)
+  }
+  if (mixed) return(NULL)
+  if (any(fitted_DAG$binary[used_vars(fitted_DAG$coef)])) {
+    return('log odds ratio')
+  } else {
+    return('standardized regression coefficient')
+  }
+}
+
+# Warn against the interpretation of coefficients in mixed DAGs, one per session.
+warn_if_mixed <- function(fitted_DAG) {
+  if (!isTRUE(is_mixed(fitted_DAG))) return(invisible(FALSE))
+    rlang::warn(
+      c('This causal model contains both binary and continuous variables, so its path coefficients cannot be compared with one another.',
+        ' ' = 'Paths into a binary variable are log odds ratios, while paths into a continuous variable are standardized regression coefficients. On top of that, a binary predictor contributes a contrast between its two levels, which is always more than two standard deviations, so its coefficients are inflated relative to those of continuous predictors.',
+        ' ' = 'Comparison of the causal models themselves is not affected: CICc, the model weights and the ranking of models do not depend on the scale of the coefficients.',
+        i = 'See `?est_DAG` for what each coefficient means.'),
+      .frequency = 'once', .frequency_id = 'phylopath_mixed_type'
+    )
+  invisible(TRUE)
+}
+
+# The `binary` flags shared by a list of fitted_DAGs. Averaging coefficients of
+# different types would be meaningless, so disagreement generates an error.
+# Returns NULL if the flags are unavailable, which happens for fitted_DAG objects
+# made before v1.4.0.
+combine_binary <- function(fitted_DAGs, ord) {
+  binary <- lapply(fitted_DAGs, function(l) l$binary[ord])
+  if (
+    any(vapply(binary, function(b) is.null(b) || anyNA(b), logical(1)))
+  ) {
+    warn_unknown_scale()
+    return(NULL)
+  }
+  if (length(unique(binary)) > 1) {
+    disagree <- names(which(apply(simplify2array(binary), 1, function(x) {
+      length(unique(x)) > 1
+    })))
+    stop(
+      'The fitted models disagree about which variables are binary: ',
+      paste(disagree, collapse = ', '),
+      '.\n',
+      '  Coefficients of paths into binary and continuous variables are not on ',
+      'the same scale, so they cannot be averaged together.',
+      call. = FALSE
+    )
+  }
+  binary[[1]]
+}
+
+# The polite restatement, for a plot caption or a note below a printed table.
+mixed_note <- function() {
+  paste('This model mixes binary and continuous variables, so its coefficients',
+        'cannot be compared\nwith one another. See ?est_DAG for what each one means.')
+}
+
 par_avg <- function(x, se, weight) {
   # Derived from original MuMIn::par.avg function, written by Kamil Bartoń.
 

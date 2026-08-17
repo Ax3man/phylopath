@@ -293,6 +293,23 @@ test_that("print.phylopath reports the variables and models", {
   for (v in c("A", "B", "C", "D")) expect_match(paste(out, collapse = " "), v)
   expect_match(paste(out, collapse = " "), "these models: a b")
   expect_match(paste(out, collapse = " "), "phylogenetic regressions")
+  # These variables are all continuous, so an empty `Binary:` line would be noise.
+  expect_false(any(grepl("Binary:", out)))
+})
+
+test_that("print.phylopath lists both categories when both are present", {
+  data <- test_data()
+  data$bin <- factor(rep(c("no", "yes"), 20))
+  p <- suppressWarnings(phylo_path(
+    define_model_set(a = c(B ~ A, bin ~ B), .common = c(C ~ C, D ~ D)),
+    data, test_tree(), model = "BM"))
+  out <- capture.output(print(p))
+  cont_line <- grep("Continuous:", out, value = TRUE)
+  expect_length(cont_line, 1)
+  # The order follows the columns of the data, so only the membership is asserted.
+  expect_setequal(strsplit(trimws(sub(".*Continuous:", "", cont_line)), "\\s+")[[1]],
+                  c("A", "B", "C", "D"))
+  expect_match(out, "Binary:\\s+bin", all = FALSE)
 })
 
 test_that("a single model warning is still announced", {

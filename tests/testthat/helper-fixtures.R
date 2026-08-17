@@ -92,7 +92,10 @@ make_fitted_DAG <- function(vars, coefs, ses) {
     cm[from, to] <- coefs[[path]]
     sm[from, to] <- ses[[path]]
   }
-  structure(list(coef = cm, se = sm), class = "fitted_DAG")
+  # These are synthetic continuous coefficients, so record that: without `binary`
+  # every function that reports them warns that their scale is unknown.
+  structure(list(coef = cm, se = sm, binary = stats::setNames(rep(FALSE, length(vars)), vars)),
+            class = "fitted_DAG")
 }
 
 # A deliberately under-powered subset: few enough species that CICc is undefined

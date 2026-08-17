@@ -8,7 +8,7 @@ test_that("est_DAG returns matrices shaped like the DAG", {
   fit <- est_DAG(d, test_data(), test_tree(), model = "BM", method = "logistic_MPLE")
 
   expect_s3_class(fit, "fitted_DAG")
-  expect_named(fit, c("coef", "se"))
+  expect_named(fit, c("coef", "se", "binary"))
   expect_equal(dim(fit$coef), dim(d))
   expect_equal(dimnames(fit$coef), dimnames(d))
   expect_equal(dimnames(fit$se), dimnames(d))
@@ -79,7 +79,7 @@ test_that("a node with no parents contributes only zeros", {
 test_that("boot adds bootstrap confidence intervals that bracket the estimate", {
   fit <- suppressWarnings(est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(),
                                   model = "BM", method = "logistic_MPLE", boot = 30))
-  expect_named(fit, c("coef", "se", "lower", "upper"))
+  expect_named(fit, c("coef", "se", "lower", "upper", "binary"))
   for (path in list(c("A", "B"), c("B", "C"))) {
     expect_lt(fit$lower[path[1], path[2]], fit$coef[path[1], path[2]])
     expect_gt(fit$upper[path[1], path[2]], fit$coef[path[1], path[2]])
@@ -138,4 +138,20 @@ test_that("est_DAG defaults work for binary variables too", {
   data$bin <- factor(rep(c("no", "yes"), 20))
   expect_s3_class(suppressWarnings(est_DAG(DAG(bin ~ A), data, test_tree())),
                   "fitted_DAG")
+})
+
+test_that("est_DAG records which variables were modelled as binary", {
+  data <- test_data()
+  data$bin <- factor(rep(c("no", "yes"), 20))
+  fit <- suppressWarnings(est_DAG(DAG(bin ~ A, B ~ A), data, test_tree(), model = "BM"))
+
+  # One entry per variable in the DAG, named, and matching how phylo_g_lm()
+  # decides between phylolm and phyloglm.
+  expect_named(fit$binary, rownames(fit$coef))
+  expect_true(fit$binary[["bin"]])
+  expect_false(any(fit$binary[c("A", "B")]))
+
+  # Continuous-only models say so, rather than leaving it unknown.
+  cont <- est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(), model = "BM")
+  expect_false(any(cont$binary))
 })

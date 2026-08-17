@@ -230,6 +230,8 @@ summary.phylopath <- function(object, ...) {
 #'   specified other options in the original [phylo_path] call you don't need to specify them again.
 #'
 #' @return An object of class \code{fitted_DAG}.
+#' @seealso [est_DAG()] for what the coefficients mean.
+#'
 #' @export
 #'
 #' @examples
@@ -269,6 +271,8 @@ best <- function(phylopath, ...) {
 #'   specified other options in the original [phylo_path] call you don't need to specify them again.
 #'
 #' @return An object of class \code{fitted_DAG}.
+#' @seealso [est_DAG()] for what the coefficients mean.
+#'
 #' @export
 #'
 #' @examples
@@ -313,6 +317,8 @@ choice <- function(phylopath, choice, ...) {
 #' @inheritParams average_DAGs
 #'
 #' @return An object of class `fitted_DAG`.
+#' @seealso [est_DAG()] for what the coefficients mean.
+#'
 #' @export
 #'
 #' @examples

@@ -93,7 +93,7 @@ test_that("settings from the original call are reused by the extractors", {
 test_that("boot can be supplied to the extractors and yields intervals", {
   p <- pp()
   b <- suppressWarnings(best(p, boot = 20))
-  expect_named(b, c("coef", "se", "lower", "upper"))
+  expect_named(b, c("coef", "se", "lower", "upper", "binary"))
   expect_lt(b$lower["A", "B"], b$coef["A", "B"])
   expect_gt(b$upper["A", "B"], b$coef["A", "B"])
 })

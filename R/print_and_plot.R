@@ -7,6 +7,59 @@ print.phylopath_summary <- function(x, ...) {
   return(invisible(x))
 }
 
+# The realised paths of a fitted_DAG, as a data.frame ready to be printed.
+path_table <- function(x, digits) {
+  coef <- x$coef
+  ind <- which(abs(coef) > .Machine$double.eps, arr.ind = TRUE)
+  ind <- ind[order(ind[, 'row'], ind[, 'col']), , drop = FALSE]
+  if (nrow(ind) == 0) return(NULL)
+  fmt <- function(m) formatC(m[ind], format = 'f', digits = digits)
+  out <- data.frame(
+    path = paste(rownames(coef)[ind[, 'row']], '\U2192', colnames(coef)[ind[, 'col']]),
+    coefficient = fmt(coef)
+  )
+  if (!is.null(x$lower)) {
+    lower <- formatC(x$lower[ind], format = 'f', digits = digits)
+    upper <- formatC(x$upper[ind], format = 'f', digits = digits)
+    # Right aligning the bounds keeps the decimal points lined up, so a space
+    # appears after the bracket only where another row needs room for a minus.
+    out$`95% CI` <- paste0('[', format(lower, justify = 'right'), ', ',
+                           format(upper, justify = 'right'), ']')
+  } else {
+    out$se <- fmt(x$se)
+  }
+  out
+}
+
+#' @export
+print.fitted_DAG <- function(x, digits = 3, ...) {
+  n_paths <- sum(abs(x$coef) > .Machine$double.eps)
+  cat('A fitted causal model:', ncol(x$coef), 'variables,', n_paths,
+      if (n_paths == 1) 'path.\n' else 'paths.\n')
+  if (n_paths == 0) return(invisible(x))
+
+  # Which variables are of which type, in the same terms print.phylopath() uses,
+  # so that any single path can be interpreted. Empty categories are left out.
+  if (!is.null(x$binary)) {
+    used <- x$binary[used_vars(x$coef)]
+    if (any(!used)) cat('\tContinuous:\t', names(used)[!used], '\n')
+    if (any(used))  cat('\tBinary:\t\t', names(used)[used], '\n')
+  }
+
+  # Naming the scale is only possible when every coefficient is on the same one.
+  # Otherwise the note below the table, and the warning, explain why not.
+  scale <- coef_scale_name(x)
+  cat('\n', if (is.null(scale)) 'Paths' else paste0('Paths \U2014 ', scale, 's'), '\n',
+      sep = '')
+  print.data.frame(path_table(x, digits), row.names = FALSE, right = TRUE)
+
+  if (isTRUE(is_mixed(x))) {
+    cat('\n', mixed_note(), '\n', sep = '')
+    warn_if_mixed(x)
+  }
+  return(invisible(x))
+}
+
 #' @export
 plot.phylopath_summary <- function(x, cut_off = 2, ...) {
   x$model <- factor(x$model, rev(x$model))
@@ -33,8 +86,9 @@ print.phylopath <- function(x, ...) {
   bin_vars <- setdiff(names(x$data), num_vars)
 
   cat('A phylogenetic path analysis, on the variables:\n')
-  cat('\tContinuous:\t', num_vars, '\n')
-  cat('\tBinary:\t\t', bin_vars, '\n')
+  # A category with no variables in it is left out, rather than printed empty.
+  if (length(num_vars) > 0) cat('\tContinuous:\t', num_vars, '\n')
+  if (length(bin_vars) > 0) cat('\tBinary:\t\t', bin_vars, '\n')
   cat('\n')
   cat(' Evaluated for these models:', names(x$model_set), '\n')
   cat('\n')
@@ -146,6 +200,13 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
   }
   type <- match.arg(type, c('width', 'color', 'colour'), FALSE)
   if (type == 'colour') type <- 'color'
+  warn_if_mixed(x)
+
+  # Name the scale rather than assuming it is standardized, and wrap it so that it
+  # fits a legend key.
+  scale <- coef_scale_name(x)
+  scale_lab <- paste(strwrap(if (is.null(scale)) 'path coefficient' else scale,
+                             width = 22), collapse = '\n')
 
   g <- igraph::graph_from_adjacency_matrix(x$coef, weighted = TRUE)
   l <- ggraph::create_layout(g, 'igraph', algorithm = algorithm)
@@ -191,13 +252,16 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
       ) +
       ggraph::geom_node_text(ggplot2::aes(label = .data$name), size = text_size) +
       ggraph::scale_edge_color_gradient2(
-        'standardized\npath coefficient',
+        scale_lab,
         low = colors[1], high = colors[2],
         limits = c(-max(abs(igraph::E(g)$weight)),
                    max(abs(igraph::E(g)$weight))),
         guide = ggraph::guide_edge_colorbar()
       ) +
       ggraph::theme_graph(base_family = 'sans')
+  }
+  if (isTRUE(is_mixed(x))) {
+    p <- p + ggplot2::labs(caption = mixed_note())
   }
   return(p)
 }
@@ -234,6 +298,14 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
   stopifnot(inherits(fitted_DAG, 'fitted_DAG'))
   error_bar <- match.arg(error_bar, c('ci', 'se'), several.ok = FALSE)
   order_by <- match.arg(order_by, c('default', 'causal', 'strength'), FALSE)
+  if (order_by == 'strength' && isTRUE(is_mixed(fitted_DAG))) {
+    stop('`order_by = "strength"` sorts the paths by the size of their coefficients, ',
+         'which is not meaningful for a model that contains both binary and continuous ',
+         'variables, because those coefficients are not on comparable scales. See ',
+         '`?est_DAG`.\n  Use `order_by = "causal"` or `"default"` instead, or select a ',
+         'single scale with the `to` argument.', call. = FALSE)
+  }
+  warn_if_mixed(fitted_DAG)
   if (error_bar == 'ci' & is.null(fitted_DAG$lower)) {
     message(
     'The fitted model does not contain confidence intervals, so showing standard errors instead. ',
@@ -286,15 +358,24 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
     df$path <- factor(df$path, levels = df$path)
   }
   df <- df[abs(df$coef) > .Machine$double.eps, ]
-  ggplot2::ggplot(df,
+
+  # Name the scale on the axis when every coefficient is on the same one, which is
+  # the case unless the model mixes binary and continuous variables.
+  scale <- coef_scale_name(fitted_DAG)
+  y_lab <- paste(if (is.null(scale)) 'path coefficient' else scale,
+                 if (error_bar == 'ci') '\U00B1 CI' else '\U00B1 SE')
+
+  p <- ggplot2::ggplot(df,
                   ggplot2::aes(x = .data$path, y = .data$coef,
                                ymin = .data$lower, ymax = .data$upper)) +
     ggplot2::geom_hline(yintercept = 0, linewidth = 1, lty = 2) +
     ggplot2::geom_pointrange(size = 0.75) +
     ggplot2::xlab('') +
-    ggplot2::ylab(ifelse(error_bar == 'ci',
-                         'standardized regression coefficient \U00B1 CI',
-                         'standardized regression coefficient \U00B1 SE'))
+    ggplot2::ylab(y_lab)
+  if (isTRUE(is_mixed(fitted_DAG))) {
+    p <- p + ggplot2::labs(caption = mixed_note())
+  }
+  p
 }
 
 
