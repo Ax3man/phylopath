@@ -68,6 +68,10 @@ imprecise reporting or very unlikely edge cases:
   contain exactly the variables used in the models, and when two causal models
   are given the same name.
 
+* All errors, warning and messages have been reviewed for clarity, and many
+  now have more consistent language, more information, and give tips on how
+  to resolve the issue. They also use `rlang` now, for nicer formatting.
+
 * `est_DAG()` now defaults to `model = "lambda"` and `method = "logistic_MPLE"`,
   matching `phylo_path()`. Previously these arguments had no defaults, so calling
   `est_DAG()` without them failed.

@@ -103,9 +103,13 @@ print.phylopath <- function(x, ...) {
 #' @export
 show_warnings <- function(phylopath = NULL) {
   if (is.null(phylopath)) phylopath <- .Last.value
-  if (!inherits(phylopath, 'phylopath'))
-    stop('This function expects a phylopath object.', call. = FALSE)
-  sink <- lapply(phylopath$warnings, warning, call. = FALSE)
+  if (!inherits(phylopath, 'phylopath')) {
+    rlang::abort(
+      c('`phylopath` must be a phylopath object, as returned by `phylo_path()`.',
+        x = paste0('It is of class ', paste(class(phylopath), collapse = '/'), '.'))
+    )
+  }
+  sink <- lapply(phylopath$warnings, rlang::warn)
   return(invisible(NULL))
 }
 
@@ -137,7 +141,7 @@ plot.DAG <- function(x, labels = NULL, algorithm = 'sugiyama', manual_layout = N
                      flip_x = FALSE, flip_y = FALSE,
                      arrow = grid::arrow(type = 'closed', 18, grid::unit(15, 'points')), ...) {
   if (sum(x) == 0) {
-    stop('This DAG has no paths to plot.')
+    rlang::abort('This causal model has no paths, so there is nothing to plot.')
   }
 
   g <- igraph::graph_from_adjacency_matrix(x, weighted = TRUE)
@@ -188,10 +192,10 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
                             colors = c('firebrick', 'navy'), show.legend = TRUE,
                             width_const = NULL, ...) {
   if (!is.null(width_const)) {
-    warning('width_const has been deprecated and is ignored.', call. = FALSE)
+    rlang::warn('The `width_const` argument is deprecated and is ignored.')
   }
   if (sum(x$coef) == 0) {
-    stop('This DAG has no paths to plot.')
+    rlang::abort('This causal model has no paths, so there is nothing to plot.')
   }
   type <- match.arg(type, c('width', 'color', 'colour'), FALSE)
   if (type == 'colour') type <- 'color'
@@ -295,10 +299,9 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
   order_by <- match.arg(order_by, c('default', 'causal', 'strength'), FALSE)
   warn_if_mixed(fitted_DAG)
   if (error_bar == 'ci' & is.null(fitted_DAG$lower)) {
-    message(
-    'The fitted model does not contain confidence intervals, so showing standard errors instead. ',
-    'Fit the model with `boot` larger than 0 to get confidence intervals, or set `error_bar = "se"` ',
-    'to avoid this warning.'
+    rlang::inform(
+      c('This model has no confidence intervals, so standard errors are shown instead.',
+        i = 'Fit the model with `boot` larger than 0 for intervals, or set `error_bar = "se"` to silence this message.')
     )
     error_bar <- 'se'
   }
@@ -393,18 +396,13 @@ plot_model_set <- function(model_set, labels = NULL, algorithm = 'kk', manual_la
                            arrow = grid::arrow(type = 'closed', 15, grid::unit(10, 'points'))) {
   # Input checks
   if (!is.list(model_set) | !all(purrr::map_lgl(model_set, ~inherits(., 'DAG')))) {
-    stop('model_set should be a list of DAG objects.')
+    rlang::abort(
+      c('`model_set` must be a list of DAG objects.',
+        i = 'Create one with `define_model_set()`.')
+    )
   }
   names(model_set) <- name_model_set(names(model_set), length(model_set))
-  var_names <- lapply(model_set, colnames)
-  if (length(model_set) > 1 &
-      (stats::var(lengths(model_set)) != 0 |
-       any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0))) {
-    stop('All causal models need to include the same variables. Combined, your
-         models include the following variables:\n',
-         paste(sort(unique(unlist(var_names))), collapse = '\n'),
-         call. = FALSE)
-  }
+  stop_if_variables_differ(model_set)
 
   # Build  single complete graph
   result <- igraph::make_empty_graph() + igraph::vertices(row.names(model_set[[1]]))

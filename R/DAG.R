@@ -143,9 +143,11 @@ est_DAG <- function(DAG, data, tree, model = 'lambda', method = 'logistic_MPLE',
     f <- stats::formula(paste(x, paste(n[y == 1], collapse = '+'), sep = '~'))
     m <- phylo_g_lm(f, data, tree, model, method, boot, dots)
     if (!is.null(m$error)) {
-      stop(paste('Fitting the following model:\n   ', Reduce(paste, deparse(f)),
-                 '\nproduced this error:\n   ', m$error),
-           call. = FALSE)
+      rlang::abort(c(
+        'A phylogenetic regression could not be fitted.',
+        x = paste('Model:', Reduce(paste, deparse(f))),
+        x = paste('Error:', m$error)
+      ))
     }
     m <- m$result
     Coef <- se <- lower <- upper <- y
@@ -212,7 +214,12 @@ est_DAG <- function(DAG, data, tree, model = 'lambda', method = 'logistic_MPLE',
 #'   coef_plot(ave_cand)
 average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
                          avg_method = 'conditional', ...) {
-  if (length(list(...)) != 0) stop('Use of ... is deprecated.')
+  if (length(list(...)) != 0) {
+    rlang::abort(
+      c('The `...` argument of `average_DAGs()` is deprecated.',
+        x = paste0('Given: ', paste(names(list(...)), collapse = ', '), '.'))
+    )
+  }
   avg_method <- match.arg(avg_method, choices = c("full", "conditional"))
   ord <- rownames(fitted_DAGs[[1]]$coef)
   binary <- combine_binary(fitted_DAGs, ord)
@@ -291,11 +298,11 @@ as.data.frame.fitted_DAG <- function(x, row.names = NULL, optional = FALSE, ...,
                                      order_by = 'default') {
   order_by <- match.arg(order_by, c('default', 'causal', 'strength'), FALSE)
   if (order_by == 'strength' && isTRUE(is_mixed(x))) {
-    stop('`order_by = "strength"` orders the paths by the size of their coefficients, ',
-         'which is not meaningful for a causal model that contains both binary and ',
-         'continuous variables, because those coefficients are not on comparable ',
-         'scales. See `?est_DAG`.\n  Use `order_by = "causal"` or `"default"` instead.',
-         call. = FALSE)
+    rlang::abort(
+      c('`order_by = "strength"` orders the paths by the size of their coefficients, which is not meaningful for a causal model that contains both binary and continuous variables.',
+        x = 'Those coefficients are not on comparable scales, see `?est_DAG`.',
+        i = 'Use `order_by = "causal"` or `"default"` instead.')
+    )
   }
   coef <- x$coef
 

@@ -9,10 +9,11 @@ test_that("all models must contain the same variables", {
     check_models_data_tree(ms, d, tiny_tree(), na.rm = FALSE),
     "All causal models need to include the same variables"
   )
-  # The message lists the offending variables, to help the user spot the typo.
+  # Only the variables that are not shared are named, which is what points at the
+  # typo: A appears in both models, B and C in only one each.
   expect_error(
     check_models_data_tree(ms, d, tiny_tree(), na.rm = FALSE),
-    "A\nB\nC"
+    "Not in every model: B, C"
   )
 })
 
@@ -45,7 +46,7 @@ test_that("binary factors are accepted and other factors are rejected", {
   three <- tiny_data(A = 1:4, B = factor(c("x", "y", "z", "x")))
   expect_error(
     check_models_data_tree(list(DAG(B ~ A)), three, tiny_tree(), na.rm = FALSE),
-    "Variable 'B' is expected to b.*inary, but has 3 levels"
+    "`B` is expected to be binary, but has 3 levels"
   )
   one <- tiny_data(A = 1:4, B = factor(rep("x", 4)))
   expect_error(
@@ -60,7 +61,7 @@ test_that("numeric 0/1 columns are flagged as probable user error", {
   d <- tiny_data(A = c(0, 1, 0, 1), B = c(2.5, 3.5, 4.5, 5.5))
   expect_warning(
     check_models_data_tree(list(DAG(B ~ A)), d, tiny_tree(), na.rm = FALSE),
-    "Column A appears to have binary data"
+    "contain only 0 and 1, but are numeric"
   )
   # Genuinely continuous data draws no warning.
   expect_no_warning(
@@ -74,15 +75,15 @@ test_that("the tree must be a single phylo object", {
   multi <- structure(list(tiny_tree(), tiny_tree()), class = "multiPhylo")
   expect_error(
     check_models_data_tree(list(DAG(B ~ A)), d, multi, na.rm = FALSE),
-    "You are passing several trees"
+    "must be a single phylogeny"
   )
   expect_error(
     check_models_data_tree(list(DAG(B ~ A)), d, "not a tree", na.rm = FALSE),
-    "tree needs to be of class `phylo`"
+    "must be a phylogeny of class `phylo`"
   )
   expect_error(
     check_models_data_tree(list(DAG(B ~ A)), d, NULL, na.rm = FALSE),
-    "tree needs to be of class `phylo`"
+    "must be a phylogeny of class `phylo`"
   )
 })
 
@@ -103,7 +104,7 @@ test_that("na.rm controls whether incomplete rows are dropped or refused", {
 
   expect_error(
     check_models_data_tree(list(DAG(B ~ A)), d, tiny_tree(), na.rm = FALSE),
-    "NA values were found"
+    "contain NA values"
   )
 })
 
@@ -119,13 +120,13 @@ test_that("data rownames must be matched by tip labels", {
   d <- data.frame(A = 1:4, B = 5:8, row.names = c("w", "x", "y", "z"))
   expect_error(
     check_models_data_tree(list(DAG(B ~ A)), d, tiny_tree(), na.rm = FALSE),
-    "rownames that are exactly matched by name with tips in the tree"
+    "must be a tip of `tree`, matched exactly by name"
   )
   # A species missing from the tree is an error, not a silent drop.
   d2 <- data.frame(A = 1:5, B = 5:9, row.names = c("a", "b", "c", "d", "e"))
   expect_error(
     check_models_data_tree(list(DAG(B ~ A)), d2, tiny_tree(), na.rm = FALSE),
-    "rownames that are exactly matched"
+    "must be a tip of `tree`, matched exactly by name"
   )
 })
 
@@ -159,7 +160,7 @@ test_that("a variable used in the models but absent from the data is named", {
   d <- tiny_data(A = 1:4, B = 5:8)
   expect_error(
     check_models_data_tree(list(DAG(B ~ A, C ~ A)), d, tiny_tree(), na.rm = FALSE),
-    "are used in the causal models, but are not columns in `data`: C"
+    "Missing from `data`: C"
   )
   # Several missing variables are all listed (in the DAG's own node order).
   msg <- tryCatch(
@@ -205,7 +206,9 @@ test_that("the binary level error message is well formed", {
     check_models_data_tree(list(DAG(B ~ A)), three, tiny_tree(), na.rm = FALSE),
     error = conditionMessage
   )
-  expect_equal(msg, "Variable 'B' is expected to be binary, but has 3 levels.")
+  expect_match(msg, "^`B` is expected to be binary, but has 3 levels\\.")
+  # The levels themselves are listed, so it is clear which ones were found.
+  expect_match(msg, "Levels: x, y, z\\.")
   # `.call = FALSE` used to leak into the text, and "to binary" was missing a word.
   expect_no_match(msg, "FALSE")
   expect_no_match(msg, "expected to binary")

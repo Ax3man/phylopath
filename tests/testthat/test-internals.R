@@ -163,13 +163,13 @@ test_that("combine_with_labels relabels nodes and validates the input", {
   expect_s3_class(out, "layout_ggraph")
 
   expect_equal(combine_with_labels(l, NULL), l)
-  expect_error(combine_with_labels(l, c("Alpha", "Beta")), "must be a named vector")
-  expect_error(combine_with_labels(l, c(a = "Alpha")), "missing from labels")
+  expect_error(combine_with_labels(l, c("Alpha", "Beta")), "`labels` must be a named vector")
+  expect_error(combine_with_labels(l, c(a = "Alpha")), "Missing from `labels`: b")
 })
 
 test_that("show_warnings requires a phylopath object", {
   expect_error(show_warnings(structure(list(), class = "nope")),
-               "expects a phylopath object")
+               "`phylopath` must be a phylopath object")
 })
 
 test_that("show_warnings re-emits the collected warnings", {

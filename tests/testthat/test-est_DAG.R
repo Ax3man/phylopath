@@ -99,7 +99,7 @@ test_that("est_DAG requires a DAG", {
 test_that("errors in a path model are reported with the offending formula", {
   expect_error(
     est_DAG(DAG(B ~ A), test_data(), test_tree(), model = "not_a_model"),
-    "Fitting the following model"
+    "A phylogenetic regression could not be fitted"
   )
 })
 
@@ -183,7 +183,7 @@ test_that("est_DAG rejects variables that are not binary", {
   data <- test_data()
   data$three <- rep(c("a", "b", "c"), length.out = 40)
   expect_error(est_DAG(DAG(B ~ three), data, test_tree(), model = "BM"),
-               "'three' is expected to be binary, but has 3 levels")
+               "`three` is expected to be binary, but has 3 levels")
 })
 
 test_that("est_DAG ignores columns that are not in the DAG", {

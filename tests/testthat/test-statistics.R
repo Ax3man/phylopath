@@ -100,8 +100,8 @@ test_that("par_avg ignores NA coefficients and renormalises the weights", {
 
 test_that("par_avg validates its inputs", {
   expect_error(par_avg("a", 1, 1), "must be numeric vectors")
-  expect_error(par_avg(c(1, 2), 1, c(1, 1)), "not of the same length")
-  expect_error(par_avg(c(1, 2), c(1, 1), 1), "not of the same length")
+  expect_error(par_avg(c(1, 2), 1, c(1, 1)), "must all be the same length")
+  expect_error(par_avg(c(1, 2), c(1, 1), 1), "must all be the same length")
 })
 
 test_that("C_p keeps its precision far into the upper tail", {

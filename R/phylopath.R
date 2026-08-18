@@ -89,7 +89,10 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
 
   # check for users passing boot as an optional parameter, which has been deprecated
   if ('boot' %in% names(dots)) {
-    warning('Using `boot` has been deprecated here, pass to choice(), best(), average() or est_DAG() instead.')
+    rlang::warn(
+      c('The `boot` argument of `phylo_path()` is deprecated and is ignored.',
+        i = 'Pass it to `best()`, `choice()`, `average()` or `est_DAG()` instead, where the coefficients are estimated.')
+    )
     dots <- dots[names(dots) != 'boot']
   }
   dots <- check_dots(dots)
@@ -102,20 +105,24 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
   if (!is.null(order)) {
     # check for duplications in the order vector, when manually supplied
     if (length(order) > length(unique(order))) {
-      stop('The supplied `order` argument must contain each variable exactly once.')
+      rlang::abort(
+        c('`order` must contain each variable exactly once.',
+          x = paste0('Repeated: ',
+                     paste(unique(order[duplicated(order)]), collapse = ', '), '.'))
+      )
     }
     if (!setequal(order, colnames(data))) {
       missing_from_order <- setdiff(colnames(data), order)
       unknown_in_order <- setdiff(order, colnames(data))
-      stop('The supplied `order` must contain exactly the variables used in the causal ',
-           'models.',
-           if (length(missing_from_order) > 0)
-             paste0('\n  Missing from `order`: ',
-                    paste(missing_from_order, collapse = ', ')),
-           if (length(unknown_in_order) > 0)
-             paste0('\n  Not a variable in the models: ',
-                    paste(unknown_in_order, collapse = ', ')),
-           call. = FALSE)
+      rlang::abort(c(
+        '`order` must contain exactly the variables used in the causal models.',
+        if (length(missing_from_order) > 0)
+          c(x = paste0('Missing from `order`: ',
+                       paste(missing_from_order, collapse = ', '), '.')),
+        if (length(unknown_in_order) > 0)
+          c(x = paste0('Not a variable in the models: ',
+                       paste(unknown_in_order, collapse = ', '), '.'))
+      ))
     }
   } else {
     order <- find_consensus_order(model_set)
@@ -128,7 +135,10 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
   )
   f_list <- unique(unlist(formulas))
   if (!is.null(parallel)) {
-    warning('Use of the `parallel` argument has been superseded by the use of `future`. See documentation for details.')
+    rlang::warn(
+      c('The `parallel` argument is superseded and is ignored.',
+        i = 'Set a parallel plan instead, with `future::plan("multisession", workers = n)`. See `?phylo_path`.')
+    )
   }
   dsep_models_runs <- future.apply::future_lapply(
     f_list, phylo_g_lm,
@@ -140,28 +150,25 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
   purrr::map2(
     errors, f_list,
     ~if(!is.null(.x))
-      stop(paste(
-        'Fitting the following model:\n   ',
-        Reduce(paste, deparse(.y)),
-        '\nproduced this error:\n   ',
-        .x
-      ), call. = FALSE)
+      rlang::abort(c(
+        'A phylogenetic regression could not be fitted.',
+        x = paste('Model:', Reduce(paste, deparse(.y))),
+        x = paste('Error:', .x)
+      ))
   )
   # Collect warnings as well, but save those for later.
   warnings <- purrr::map(dsep_models_runs, 'warning')
   warnings <- purrr::map2(
     warnings, f_list,
     ~if(!is.null(.x))
-      paste(
-        'Fitting the following model:\n   ',
-        Reduce(paste, deparse(.y)),
-        '\nproduced this/these warning(s):\n   ',
-        .x, '\n'
-      )
+      paste0('Fitting `', Reduce(paste, deparse(.y)), '` produced:\n  ', .x)
   )
   warnings <- warnings[!sapply(warnings, is.null)]
   if (length(warnings) > 0) {
-    warning('Some models produced warnings. Use `show_warnings()` to view them.\n')
+    rlang::warn(
+      c(paste(length(warnings), 'of the phylogenetic regressions produced warnings.'),
+        i = 'Use `show_warnings()` to read them.')
+    )
   }
 
   # Collect models.
@@ -203,10 +210,12 @@ summary.phylopath <- function(object, ...) {
   if (any(n <= q + 1)) {
     undefined <- n <= q + 1
     IC[undefined] <- NA
-    warning('CICc requires more species than parameters (n > q + 1), so it could not be ',
-            'calculated for the following causal model(s): ',
-            paste(names(phylopath$model_set)[undefined], collapse = ', '), '.',
-            call. = FALSE)
+    rlang::warn(
+      c('CICc requires more species than parameters (n > q + 1), so it could not be calculated for every causal model.',
+        x = paste0('Not calculated for: ',
+                   paste(names(phylopath$model_set)[undefined], collapse = ', '), '.'),
+        i = 'Those models are reported as NA, and the model weights of the whole set become NA with them.')
+    )
   }
 
   d <- data.frame(

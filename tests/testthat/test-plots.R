@@ -28,15 +28,15 @@ test_that("plot.DAG accepts a manual layout and node labels", {
 
 test_that("labels must be a complete named vector", {
   d <- DAG(a ~ b)
-  expect_error(plot(d, labels = c("Alpha", "Beta")), "labels must be a named vector")
-  expect_error(plot(d, labels = c(a = "Alpha")), "Some nodes are missing from labels")
+  expect_error(plot(d, labels = c("Alpha", "Beta")), "`labels` must be a named vector")
+  expect_error(plot(d, labels = c(a = "Alpha")), "Missing from `labels`: b")
 })
 
 test_that("a graph with no paths cannot be plotted", {
-  expect_error(plot(DAG(A ~ A)), "no paths to plot")
+  expect_error(plot(DAG(A ~ A)), "no paths, so there is nothing to plot")
   empty <- fitted()
   empty$coef[] <- 0
-  expect_error(plot(empty), "no paths to plot")
+  expect_error(plot(empty), "no paths, so there is nothing to plot")
 })
 
 test_that("rotation and flipping transform the layout", {
@@ -90,7 +90,7 @@ test_that("coef_plot shows one row per estimated path", {
 })
 
 test_that("coef_plot falls back to standard errors when there are no intervals", {
-  expect_message(coef_plot(fitted()), "does not contain confidence intervals")
+  expect_message(coef_plot(fitted()), "no confidence intervals")
 })
 
 test_that("coef_plot uses bootstrap intervals when available", {
@@ -173,7 +173,7 @@ test_that("an unknown coefficient scale warns wherever it is reported", {
   expect_warning(capture.output(print(fit)), "Cannot determine which variables")
   # The warning explains what the two possible scales are, and how to fix it.
   expect_warning(coef_plot(fit, error_bar = "se"), "log odds ratios")
-  expect_warning(coef_plot(fit, error_bar = "se"), "Refit the model")
+  expect_warning(coef_plot(fit, error_bar = "se"), "Refit it")
 
   p <- suppressWarnings(coef_plot(fit, error_bar = "se"))
   expect_equal(p$labels$y, "path coefficient \U00B1 SE")
@@ -283,7 +283,7 @@ test_that("plot_model_set draws exactly the edges the models contain", {
 test_that("plot_model_set names unnamed model sets and validates input", {
   expect_s3_class(plot_model_set(list(DAG(B ~ A), DAG(A ~ B))), "ggplot")
   expect_error(plot_model_set(list(DAG(B ~ A), "not a DAG")),
-               "model_set should be a list of DAG objects")
+               "`model_set` must be a list of DAG objects")
   expect_error(plot_model_set(DAG(B ~ A)), "list of DAG objects")
   expect_error(plot_model_set(list(DAG(B ~ A), DAG(C ~ A))),
                "All causal models need to include the same variables")

@@ -1,55 +1,95 @@
+# The d-separation claims of two models are only comparable when the models
+# describe the same set of variables, so a model set has to agree on them.
+stop_if_variables_differ <- function(model_set, call = rlang::caller_env()) {
+  var_names <- lapply(model_set, colnames)
+  if (length(model_set) < 2) return(invisible(model_set))
+  if (stats::var(lengths(model_set)) == 0 &&
+      all(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) == 0)) {
+    return(invisible(model_set))
+  }
+  shared <- Reduce(intersect, var_names)
+  rlang::abort(
+    c('All causal models need to include the same variables.',
+      x = paste0('Not in every model: ',
+                 paste(setdiff(sort(unique(unlist(var_names))), shared), collapse = ', '), '.'),
+      i = 'Use the `.common` argument of `define_model_set()` for paths that every model shares.'),
+    call = call
+  )
+}
+
 check_models_data_tree <- function(model_set, data, tree, na.rm) {
   var_names <- lapply(model_set, colnames)
-  # Check whether all causal models have the same variables.
-  if (length(model_set) > 1 &
-      (stats::var(lengths(model_set)) != 0 |
-       any(lengths(sapply(var_names[-1], setdiff, var_names[[1]])) != 0))) {
-    stop('All causal models need to include the same variables. Your
-       model set includes the following variables:\n',
-         paste(sort(unique(unlist(var_names))), collapse = '\n'),
-         call. = FALSE)
-  }
+  stop_if_variables_differ(model_set)
   # Check that all variables used in the models are actually present
   used_vars <- unique(unlist(var_names))
   missing_vars <- setdiff(used_vars, colnames(data))
   if (length(missing_vars) > 0) {
-    stop('These variables are used in the causal models, but are not columns in `data`: ',
-         paste(missing_vars, collapse = ', '), '.', call. = FALSE)
+    rlang::abort(
+      c('Every variable in the causal models has to be a column of `data`.',
+        x = paste0('Missing from `data`: ', paste(missing_vars, collapse = ', '), '.')),
+      call = rlang::caller_env()
+    )
   }
   # Drop all data columns that are not used in the models
   data <- data[, used_vars, drop = FALSE]
   data <- as_binary_factors(data)
   # Check for data columns that are numeric, but only have 0-1. These might be user error, attempting
   # to pass a binary variable as numeric
-  binary_numerics <- sapply(data, function(x) all(x %in% 0:1))
-  for (n in colnames(data)[binary_numerics]) {
-    warning('Column ', n, ' appears to have binary data, but was not recognized as binary. If it should be treated as binary, convert it to a factor first.')
+  binary_numerics <- colnames(data)[sapply(data, function(x) all(x %in% 0:1))]
+  if (length(binary_numerics) > 0) {
+    rlang::warn(
+      c('Some columns contain only 0 and 1, but are numeric, so they are modelled as continuous.',
+        '*' = paste0('Columns: ', paste(binary_numerics, collapse = ', '), '.'),
+        i = 'Convert them to a factor if they are meant to be binary.')
+    )
   }
   # Check tree
   if (inherits(tree, 'multiPhylo')) {
-    stop('You are passing several trees (in a `multiPhylo` object). Please only pass one `phylo` object.')
+    rlang::abort(
+      c('`tree` must be a single phylogeny, but is a `multiPhylo` of several.',
+        i = 'Consider using the maximum clade credibility tree, see `?phangorn::mcc`.'),
+      call = rlang::caller_env()
+    )
   }
   if (!inherits(tree, 'phylo')) {
-    stop('The tree needs to be of class `phylo`.')
+    rlang::abort(
+      c('`tree` must be a phylogeny of class `phylo`.',
+        x = paste0('It is of class ', paste(class(tree), collapse = '/'), '.')),
+      call = rlang::caller_env()
+    )
   }
   # Check NAs and if models and tree line up
   if (anyNA(data)) {
     if (na.rm) {
       NAs <- which(apply(data, 1, anyNA))
-      message(length(NAs), ' rows were dropped because they contained NA values.')
+      rlang::inform(paste(length(NAs), 'rows were dropped because they contained NA values.'))
       data <- data[-NAs, ]
     } else {
-      stop('NA values were found in the variables of interest.', call. = FALSE)
+      rlang::abort(
+        c('The variables used in the causal models contain NA values.',
+          i = 'Set `na.rm = TRUE` to drop the species with missing data, or supply complete data.'),
+        call = rlang::caller_env()
+      )
     }
   }
   # Match the tree
-  if (length(setdiff(rownames(data), tree$tip.label)) > 0) {
-    stop('Make sure that species in your data have rownames that are exactly matched by name with tips in the tree.')
+  unmatched <- setdiff(rownames(data), tree$tip.label)
+  if (length(unmatched) > 0) {
+    shown <- utils::head(unmatched, 5)
+    rlang::abort(
+      c('Every species in `data` must be a tip of `tree`, matched exactly by name.',
+        x = paste0(length(unmatched), ' of the ', nrow(data),
+                   ' rownames of `data` have no matching tip: ',
+                   paste(shown, collapse = ', '),
+                   if (length(unmatched) > length(shown)) ', ...' else '', '.'),
+        i = 'Species names are taken from the rownames of `data`. Tip labels often separate genus and species with an underscore where data uses a space.'),
+      call = rlang::caller_env()
+    )
   }
   # Prune the tree
   if (length(tree$tip.label) > nrow(data)) {
     tree <- ape::drop.tip(tree, setdiff(tree$tip.label, rownames(data)))
-    message('Pruned tree to drop species not included in `data`.')
+    rlang::inform('Pruned tree to drop species not included in `data`.')
   }
   # Add names to any models that don't have them
   names(model_set) <- name_model_set(names(model_set), length(model_set))
@@ -67,8 +107,12 @@ as_binary_factors <- function(data) {
   for (i in f_cols) {
     n_levels <- length(levels(data[[i]]))
     if (n_levels != 2) {
-      stop("Variable '", names(data)[i], "' is expected to be binary, but has ", n_levels,
-           " levels.", call. = FALSE)
+      rlang::abort(
+        c(paste0('`', names(data)[i], '` is expected to be binary, but has ', n_levels,
+                 ' levels.'),
+          x = paste0('Levels: ', paste(levels(data[[i]]), collapse = ', '), '.')),
+        call = rlang::caller_env()
+      )
     }
   }
   data
@@ -81,8 +125,12 @@ model_set_labels <- function(n) {
     labels <- c(labels, paste0(rep(LETTERS, each = length(LETTERS)), LETTERS))
   }
   if (n > length(labels)) {
-    stop('Cannot automatically name more than ', length(labels),
-         ' causal models. Please name your models explicitly.', call. = FALSE)
+    rlang::abort(
+      c(paste0('Cannot automatically name more than ', length(labels), ' causal models.'),
+        x = paste0('The model set has ', n, ' models.'),
+        i = 'Name them explicitly, as in `define_model_set(my_name = ...)`.'),
+      call = rlang::caller_env()
+    )
   }
   labels[seq_len(n)]
 }
@@ -97,8 +145,12 @@ name_model_set <- function(nms, n) {
     nms[blank] <- model_set_labels(n)[blank]
   }
   if (anyDuplicated(nms)) {
-    stop('Each causal model needs a unique name, but the following are duplicated: ',
-         paste(unique(nms[duplicated(nms)]), collapse = ', '), '.', call. = FALSE)
+    rlang::abort(
+      c('Each causal model needs a unique name.',
+        x = paste0('Duplicated: ', paste(unique(nms[duplicated(nms)]), collapse = ', '), '.'),
+        i = 'Models are selected by name with `best()` and `choice()`, so names cannot repeat.'),
+      call = rlang::caller_env()
+    )
   }
   nms
 }
@@ -107,11 +159,13 @@ name_model_set <- function(nms, n) {
 # could not be calculated for some of them.
 stop_if_no_CICc <- function(d, fun) {
   if (anyNA(d$CICc)) {
-    stop('CICc could not be calculated for the following causal model(s): ',
-         paste(d$model[is.na(d$CICc)], collapse = ', '), '.\n',
-         '  `', fun, '()` compares models by CICc, so it needs a value for every ',
-         'model in the set. Either use a smaller set of models, or collect data ',
-         'for more species (CICc requires n > q + 1).', call. = FALSE)
+    rlang::abort(
+      c(paste0('`', fun, '()` compares the causal models by CICc, so it needs a value for ',
+               'every model in the set.'),
+        x = paste0('CICc could not be calculated for: ',
+                   paste(d$model[is.na(d$CICc)], collapse = ', '), '.')),
+      call = rlang::caller_env()
+    )
   }
   invisible(d)
 }
@@ -161,7 +215,8 @@ find_consensus_order <- function(model_set) {
   }
   # we should never have more than 1 missing var, but check for this just in case:
   if (length(missing_vars) > 1) {
-    stop('If you get this error, please contact the maintainer. (code 2)')
+    rlang::abort('More than one variable was left out of the consensus ordering. (code 2)',
+                 .internal = TRUE)
   }
 
   names(res) <- NULL
@@ -179,7 +234,11 @@ set_to_formula <- function(x) {
 find_formulas <- function(d, order) {
   s <- ggm::basiSet(d)
   if (is.null(s)) {
-    stop('One or some of your models are fully connected, and cannot be tested.')
+    rlang::abort(
+      c('A causal model is fully connected, so it has no independence claims to test.',
+        i = 'Phylogenetic path analysis compares models by the independencies they imply, so a model with a path between every pair of variables cannot be evaluated.'),
+      call = rlang::caller_env()
+    )
   }
   s <- lapply(s, function(x) {
     # define whether there are existing paths between the two nodes in both directions.
@@ -192,7 +251,8 @@ find_formulas <- function(d, order) {
     if ((path2 & !path1) | (path1 & path2)) {
       # these conditions should not occur, the first means basiSet is returning the wrong order,
       # the second should only occur if there are cycles.
-      stop('If you get this error, please contact the maintainer. (code 1)')
+      rlang::abort('The independence claims came back in an unexpected orientation. (code 1)',
+                   .internal = TRUE)
     }
     if (!path1 & !path2) {
       # check whether the order is according to `order`
@@ -224,9 +284,10 @@ check_dots <- function(dots) {
   known <- union(names(formals(phylolm::phyloglm)), names(formals(phylolm::phylolm)))
   unknown <- setdiff(names(dots), known)
   if (length(unknown) > 0) {
-    warning('The following arguments are not recognized by `phylolm::phylolm()` or ',
-            '`phylolm::phyloglm()`, and are ignored: ', paste(unknown, collapse = ', '),
-            call. = FALSE)
+    rlang::warn(
+      c('Some arguments are not recognized by `phylolm::phylolm()` or `phylolm::phyloglm()`, and are ignored.',
+        x = paste0('Ignored: ', paste(unknown, collapse = ', '), '.'))
+    )
   }
   dots[!(names(dots) %in% unknown)]
 }
@@ -338,10 +399,19 @@ combine_with_labels <- function(l, labels) {
     return(l)
   }
   if (is.null(names(labels))) {
-    stop('labels must be a named vector.', call. = FALSE)
+    rlang::abort(
+      c('`labels` must be a named vector.',
+        i = 'Give it the form `c(old_name = "new label", ...)`.'),
+      call = rlang::caller_env()
+    )
   }
   if (length(setdiff(l$name, names(labels))) > 0) {
-    stop('Some nodes are missing from labels.', call. = FALSE)
+    rlang::abort(
+      c('`labels` must name every variable in the causal model.',
+        x = paste0('Missing from `labels`: ',
+                   paste(setdiff(l$name, names(labels)), collapse = ', '), '.')),
+      call = rlang::caller_env()
+    )
   }
   l$name <- factor(l$name, names(labels), labels)
   class(l) <- incoming_class
@@ -375,13 +445,11 @@ combine_dots <- function(old_dots, ...) {
 
 # Warning thrown whenever a function has no information on compatiable scales.
 warn_unknown_scale <- function() {
-  warning('Cannot determine which variables of this model are binary, so the scale of ',
-          'its coefficients is unknown: paths into a binary variable are log odds ',
-          'ratios, while paths into a continuous variable are standardized regression ',
-          'coefficients. This model was fitted by a version of phylopath older than ',
-          '1.4.0, which did not record it. Refit the model to label the coefficients, ',
-          'and stop receiving these warnings.',
-          call. = FALSE)
+  rlang::warn(
+    c('Cannot determine which variables of this model are binary, so the scale of its coefficients is unknown.',
+      ' ' = 'Paths into a binary variable are log odds ratios, while paths into a continuous variable are standardized regression coefficients.',
+      i = 'This model was fitted by a version of phylopath older than 1.4.0, which did not record it. Refit it to label the coefficients, and to stop receiving this warning.')
+  )
 }
 
 # The variables of a fitted model, ordered from upstream to downstream.
@@ -394,12 +462,13 @@ causal_order <- function(coef) {
     comp <- igraph::components(igraph::graph_from_adjacency_matrix(adjacency),
                                mode = 'strong')
     in_cycle <- names(comp$membership)[comp$membership %in% which(comp$csize > 1)]
-    stop('`order_by = "causal"` follows the paths of a causal model from upstream to ',
-         'downstream, which is only possible when the model is acyclic. This model is ',
-         'not: the paths between ', paste(in_cycle, collapse = ', '), ' form a cycle. ',
-         'Averaging can produce a cyclical model, when the direction of a path is not ',
-         'resolved and different models in the set point it different ways.',
-         '\n  Use `order_by = "default"` or `"strength"` instead.', call. = FALSE)
+    rlang::abort(
+      c('`order_by = "causal"` follows the paths of a causal model from upstream to downstream, which is only possible when the model is acyclic.',
+        x = paste0('The paths between ', paste(in_cycle, collapse = ', '), ' form a cycle.'),
+        ' ' = 'Averaging can produce a cyclical model, when the direction of a path is not resolved and different models in the set point it different ways.',
+        i = 'Use `order_by = "default"` or `"strength"` instead.'),
+      call = rlang::caller_env()
+    )
   }
   colnames(ggm::topSort(adjacency))
 }
@@ -469,13 +538,11 @@ combine_binary <- function(fitted_DAGs, ord) {
     disagree <- names(which(apply(simplify2array(binary), 1, function(x) {
       length(unique(x)) > 1
     })))
-    stop(
-      'The fitted models disagree about which variables are binary: ',
-      paste(disagree, collapse = ', '),
-      '.\n',
-      '  Coefficients of paths into binary and continuous variables are not on ',
-      'the same scale, so they cannot be averaged together.',
-      call. = FALSE
+    rlang::abort(
+      c('The fitted models disagree about which variables are binary.',
+        x = paste0('Modelled both ways: ', paste(disagree, collapse = ', '), '.'),
+        i = 'Coefficients of paths into binary and continuous variables are not on the same scale, so they cannot be averaged together.'),
+      call = rlang::caller_env()
     )
   }
   binary[[1]]
@@ -491,10 +558,16 @@ par_avg <- function(x, se, weight) {
   # Derived from original MuMIn::par.avg function, written by Kamil Bartoń.
 
   if (!(is.numeric(x) && is.numeric(se) && is.numeric(weight)))
-    stop("'x', 'se' and 'weight' must be numeric vectors")
+    rlang::abort('`x`, `se` and `weight` must be numeric vectors.',
+                 call = rlang::caller_env())
   n <- length(x)
   if (length(weight) != n || length(se) != n) {
-    stop("'x', 'se' and 'weight' are not of the same length")
+    rlang::abort(
+      c('`x`, `se` and `weight` must all be the same length.',
+        x = paste0('They are ', length(x), ', ', length(se), ' and ', length(weight),
+                   ' long.')),
+      call = rlang::caller_env()
+    )
   }
   weight[is.na(weight)] <- 0
   wx <- stats::weighted.mean(x, weight, na.rm = TRUE)

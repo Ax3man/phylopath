@@ -113,9 +113,10 @@ test_that("best and average refuse to rank models when CICc is missing", {
 
   expect_error(suppressWarnings(best(p)), "CICc could not be calculated")
   expect_error(suppressWarnings(average(p)), "CICc could not be calculated")
-  # The message names the model at fault and says what to do about it.
+  # The message names the model at fault, and the function that needs the value.
   expect_error(suppressWarnings(best(p)), "dense")
-  expect_error(suppressWarnings(best(p)), "n > q \\+ 1")
+  expect_error(suppressWarnings(best(p)), "`best\\(\\)` compares")
+  expect_error(suppressWarnings(average(p)), "`average\\(\\)` compares")
 
   # choice() does not rank models, so it still works.
   expect_s3_class(suppressWarnings(choice(p, "sparse")), "fitted_DAG")

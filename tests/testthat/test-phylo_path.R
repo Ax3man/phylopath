@@ -158,7 +158,7 @@ test_that("na.rm = FALSE refuses incomplete data", {
   expect_error(
     phylo_path(define_model_set(a = c(B ~ A, C ~ B), .common = c(D ~ D)),
                data, test_tree(), model = "BM", na.rm = FALSE),
-    "NA values were found"
+    "contain NA values"
   )
 })
 
@@ -199,11 +199,11 @@ test_that("superseded and deprecated arguments warn", {
   ms <- define_model_set(a = c(B ~ A, C ~ B), .common = c(D ~ D))
   expect_warning(
     phylo_path(ms, test_data(), test_tree(), model = "BM", boot = 10),
-    "`boot` has been deprecated here"
+    "`boot` argument of `phylo_path\\(\\)` is deprecated"
   )
   expect_warning(
     phylo_path(ms, test_data(), test_tree(), model = "BM", parallel = 2),
-    "superseded by the use of `future`"
+    "`parallel` argument is superseded"
   )
   # Passing boot must not leak it into the fitted models.
   p <- suppressWarnings(phylo_path(ms, test_data(), test_tree(), model = "BM", boot = 10))
@@ -270,7 +270,7 @@ test_that("errors from the underlying model are reported with the formula", {
   expect_error(
     phylo_path(define_model_set(a = c(B ~ A, C ~ B), .common = c(D ~ D)),
                test_data(), test_tree(), model = "not_a_model"),
-    "Fitting the following model"
+    "A phylogenetic regression could not be fitted"
   )
 })
 
@@ -323,6 +323,6 @@ test_that("a single model warning is still announced", {
   p <- suppressWarnings(phylo_path(ms, data, test_tree(), model = "BM"))
   expect_length(p$warnings, 1)
   expect_warning(phylo_path(ms, data, test_tree(), model = "BM"),
-                 "Use `show_warnings\\(\\)` to view them")
+                 "Use `show_warnings\\(\\)` to read them")
 })
 
