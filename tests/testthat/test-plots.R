@@ -239,7 +239,7 @@ test_that("coef_plot refuses to sort a mixed model by strength", {
   # Binary predictors are inflated by at least a factor of two, so sorting by
   # size would order the paths partly by arithmetic rather than by biology.
   expect_error(coef_plot(mixed_scales(), error_bar = "se", order_by = "strength"),
-               "not meaningful for a model that contains both binary and continuous")
+               "not meaningful for a causal model that contains both binary and continuous")
   # The other orderings remain available, and are suggested by the error.
   expect_no_error(suppressWarnings(
     coef_plot(mixed_scales(), error_bar = "se", order_by = "causal")))

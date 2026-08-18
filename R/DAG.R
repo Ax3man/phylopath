@@ -260,3 +260,64 @@ average_DAGs <- function(fitted_DAGs, weights = rep(1, length(coef)),
   warn_if_mixed(res)
   return(res)
 }
+
+#' Extract the paths of a fitted causal model.
+#'
+#' Returns the estimated paths of a `fitted_DAG` as a long `data.frame`, one row
+#' per path, which is a convenient starting point for custom tables and figures.
+#' Paths that are absent from the causal model are not included.
+#'
+#' @param x An object of class `fitted_DAG`.
+#' @param row.names,optional,... Ignored, present for consistency with the
+#'   generic.
+#' @param order_by Either `"default"`, to order the paths by their position in
+#'   the causal model, `"causal"`, to follow the paths downstream, or
+#'   `"strength"`, to order them by the size of their coefficients. Ordering by
+#'   strength is not available for models that contain both binary and continuous
+#'   variables, since their coefficients are not comparable, see [est_DAG()].
+#'   Ordering by cause is not available for cyclical models, which [average()] can
+#'   produce when the direction of a path is not resolved.
+#'
+#' @return A `data.frame` with columns `from`, `to`, `coef` and `se`, as well as
+#'   `lower` and `upper` if the model was fitted with `boot` larger than 0.
+#' @export
+#'
+#' @examples
+#'   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
+#'   d_fitted <- est_DAG(d, rhino, rhino_tree, 'lambda')
+#'   as.data.frame(d_fitted)
+#'   as.data.frame(d_fitted, order_by = 'strength')
+as.data.frame.fitted_DAG <- function(x, row.names = NULL, optional = FALSE, ...,
+                                     order_by = 'default') {
+  order_by <- match.arg(order_by, c('default', 'causal', 'strength'), FALSE)
+  if (order_by == 'strength' && isTRUE(is_mixed(x))) {
+    stop('`order_by = "strength"` orders the paths by the size of their coefficients, ',
+         'which is not meaningful for a causal model that contains both binary and ',
+         'continuous variables, because those coefficients are not on comparable ',
+         'scales. See `?est_DAG`.\n  Use `order_by = "causal"` or `"default"` instead.',
+         call. = FALSE)
+  }
+  coef <- x$coef
+
+  ind <- which(coef != 0, arr.ind = TRUE)
+  out <- data.frame(
+    from = rownames(coef)[ind[, 'row']],
+    to   = colnames(coef)[ind[, 'col']],
+    coef = coef[ind],
+    se   = x$se[ind]
+  )
+  if (!is.null(x$lower)) {
+    out$lower <- x$lower[ind]
+    out$upper <- x$upper[ind]
+  }
+  vars <- switch(
+    order_by,
+    default  = rownames(coef),
+    causal   = causal_order(coef),
+    strength = NULL
+  )
+  out <- if (is.null(vars)) out[order(out$coef), ]
+         else out[order(match(out$from, vars), match(out$to, vars)), ]
+  rownames(out) <- NULL
+  out
+}

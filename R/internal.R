@@ -384,9 +384,29 @@ warn_unknown_scale <- function() {
           call. = FALSE)
 }
 
+# The variables of a fitted model, ordered from upstream to downstream.
+causal_order <- function(coef) {
+  adjacency <- (coef != 0) * 1
+  if (!ggm::isAcyclic(adjacency)) {
+    # The variables caught in a cycle are those in a strongly connected component
+    # of more than one variable. That covers a pair of paths pointing both ways at
+    # each other as well as a longer loop, both of which averaging can produce.
+    comp <- igraph::components(igraph::graph_from_adjacency_matrix(adjacency),
+                               mode = 'strong')
+    in_cycle <- names(comp$membership)[comp$membership %in% which(comp$csize > 1)]
+    stop('`order_by = "causal"` follows the paths of a causal model from upstream to ',
+         'downstream, which is only possible when the model is acyclic. This model is ',
+         'not: the paths between ', paste(in_cycle, collapse = ', '), ' form a cycle. ',
+         'Averaging can produce a cyclical model, when the direction of a path is not ',
+         'resolved and different models in the set point it different ways.',
+         '\n  Use `order_by = "default"` or `"strength"` instead.', call. = FALSE)
+  }
+  colnames(ggm::topSort(adjacency))
+}
+
 # Get the variables that take part in at least one path.
 used_vars <- function(coef) {
-  present <- abs(coef) > .Machine$double.eps
+  present <- coef != 0
   union(rownames(coef)[rowSums(present) > 0], colnames(coef)[colSums(present) > 0])
 }
 

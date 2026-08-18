@@ -7,33 +7,28 @@ print.phylopath_summary <- function(x, ...) {
   return(invisible(x))
 }
 
-# The realised paths of a fitted_DAG, as a data.frame ready to be printed.
+# The paths of a fitted_DAG, formatted for printing.
 path_table <- function(x, digits) {
-  coef <- x$coef
-  ind <- which(abs(coef) > .Machine$double.eps, arr.ind = TRUE)
-  ind <- ind[order(ind[, 'row'], ind[, 'col']), , drop = FALSE]
-  if (nrow(ind) == 0) return(NULL)
-  fmt <- function(m) formatC(m[ind], format = 'f', digits = digits)
+  paths <- as.data.frame(x)
+  fmt <- function(v) formatC(v, format = 'f', digits = digits)
   out <- data.frame(
-    path = paste(rownames(coef)[ind[, 'row']], '\U2192', colnames(coef)[ind[, 'col']]),
-    coefficient = fmt(coef)
+    path = paste(paths$from, '\U2192', paths$to),
+    coefficient = fmt(paths$coef)
   )
-  if (!is.null(x$lower)) {
-    lower <- formatC(x$lower[ind], format = 'f', digits = digits)
-    upper <- formatC(x$upper[ind], format = 'f', digits = digits)
+  if (!is.null(paths$lower)) {
     # Right aligning the bounds keeps the decimal points lined up, so a space
     # appears after the bracket only where another row needs room for a minus.
-    out$`95% CI` <- paste0('[', format(lower, justify = 'right'), ', ',
-                           format(upper, justify = 'right'), ']')
+    out$`95% CI` <- paste0('[', format(fmt(paths$lower), justify = 'right'), ', ',
+                           format(fmt(paths$upper), justify = 'right'), ']')
   } else {
-    out$se <- fmt(x$se)
+    out$se <- fmt(paths$se)
   }
   out
 }
 
 #' @export
 print.fitted_DAG <- function(x, digits = 3, ...) {
-  n_paths <- sum(abs(x$coef) > .Machine$double.eps)
+  n_paths <- sum(x$coef != 0)
   cat('A fitted causal model:', ncol(x$coef), 'variables,', n_paths,
       if (n_paths == 1) 'path.\n' else 'paths.\n')
   if (n_paths == 0) return(invisible(x))
@@ -298,13 +293,6 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
   stopifnot(inherits(fitted_DAG, 'fitted_DAG'))
   error_bar <- match.arg(error_bar, c('ci', 'se'), several.ok = FALSE)
   order_by <- match.arg(order_by, c('default', 'causal', 'strength'), FALSE)
-  if (order_by == 'strength' && isTRUE(is_mixed(fitted_DAG))) {
-    stop('`order_by = "strength"` sorts the paths by the size of their coefficients, ',
-         'which is not meaningful for a model that contains both binary and continuous ',
-         'variables, because those coefficients are not on comparable scales. See ',
-         '`?est_DAG`.\n  Use `order_by = "causal"` or `"default"` instead, or select a ',
-         'single scale with the `to` argument.', call. = FALSE)
-  }
   warn_if_mixed(fitted_DAG)
   if (error_bar == 'ci' & is.null(fitted_DAG$lower)) {
     message(
@@ -314,35 +302,14 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
     )
     error_bar <- 'se'
   }
-  v <- colnames(fitted_DAG$coef)
-  df <- as.data.frame(fitted_DAG$coef)
-  df$from <- rownames(df)
-  df <- stats::reshape(df, varying = v, 'coef', direction = 'long')
-  df$to <- v[df$time]
 
-  if (error_bar == 'ci') {
-    df$lower <- c(fitted_DAG$lower)
-    df$upper <- c(fitted_DAG$upper)
-  } else {
-    df$lower <- c(fitted_DAG$coef - fitted_DAG$se)
-    df$upper <- c(fitted_DAG$coef + fitted_DAG$se)
+  df <- as.data.frame(fitted_DAG, order_by = order_by)
+  if (error_bar == 'se') {
+    df$lower <- df$coef - df$se
+    df$upper <- df$coef + df$se
   }
-
   df$path <- paste(df$from, df$to, sep = ' \U2192 ')
 
-  # Do the ordering of paths:
-  if (order_by == 'default') {
-    df <- df[order(match(df$from, v), match(df$to, v)), ]
-  }
-  if (order_by == 'causal') {
-    ordered_DAG <- fitted_DAG$coef > 0
-    ordered_DAG[, ] <- as.numeric(ordered_DAG)
-    order <- colnames(ggm::topSort(ordered_DAG))
-    df <- df[order(match(df$from, order), match(df$to, order)), ]
-  }
-  if (order_by == 'strength') {
-    df <- df[order(df$coef), ]
-  }
   # Do the filtering of paths:
   if (!is.null(from)) {
     df <- df[df$from %in% from, ]
@@ -357,7 +324,6 @@ coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from =
   } else {
     df$path <- factor(df$path, levels = df$path)
   }
-  df <- df[abs(df$coef) > .Machine$double.eps, ]
 
   # Name the scale on the axis when every coefficient is on the same one, which is
   # the case unless the model mixes binary and continuous variables.
