@@ -31,8 +31,10 @@ included. For a data frame with the standard errors alongside the coefficients, 
 \code{\link[=as.data.frame.fitted_DAG]{as.data.frame.fitted_DAG()}}.
 }
 \details{
-Note that these intervals are bootstrap percentile intervals, collected while fitting, and not
-the parametric intervals that \code{confint()} returns for most model objects.
+Note that these are not the parametric intervals that \code{confint()} returns for most model
+objects, but the ones that were stored when the model was made: bootstrap intervals after
+fitting with \code{boot}, and normal intervals around the averaged estimate for a model from
+\code{\link[=average]{average()}}.
 }
 \examples{
   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)

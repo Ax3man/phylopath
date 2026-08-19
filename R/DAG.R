@@ -337,8 +337,10 @@ as.data.frame.fitted_DAG <- function(x, row.names = NULL, optional = FALSE, ...,
 #' included. For a data frame with the standard errors alongside the coefficients, see
 #' [as.data.frame.fitted_DAG()].
 #'
-#' Note that these intervals are bootstrap percentile intervals, collected while fitting, and not
-#' the parametric intervals that `confint()` returns for most model objects.
+#' Note that these are not the parametric intervals that `confint()` returns for most model
+#' objects, but the ones that were stored when the model was made: bootstrap intervals after
+#' fitting with `boot`, and normal intervals around the averaged estimate for a model from
+#' [average()].
 #'
 #' @param object An object of class `fitted_DAG`.
 #' @param parm The paths for which to return intervals, given as names or indices. Defaults to all

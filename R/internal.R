@@ -88,8 +88,10 @@ check_models_data_tree <- function(model_set, data, tree, na.rm) {
   }
   # Prune the tree
   if (length(tree$tip.label) > nrow(data)) {
-    tree <- ape::drop.tip(tree, setdiff(tree$tip.label, rownames(data)))
-    rlang::inform('Pruned tree to drop species not included in `data`.')
+    dropped <- setdiff(tree$tip.label, rownames(data))
+    tree <- ape::drop.tip(tree, dropped)
+    rlang::inform(paste('Pruned tree to drop', length(dropped),
+                        'species not included in `data`.'))
   }
   # Add names to any models that don't have them
   names(model_set) <- name_model_set(names(model_set), length(model_set))

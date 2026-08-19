@@ -130,7 +130,8 @@ show_warnings <- function(phylopath = NULL) {
   if (!inherits(phylopath, 'phylopath')) {
     rlang::abort(
       c('`phylopath` must be a phylopath object, as returned by `phylo_path()`.',
-        x = paste0('It is of class ', paste(class(phylopath), collapse = '/'), '.'))
+        x = paste0('It is of class ', paste(class(phylopath), collapse = '/'), '.'),
+        i = 'Called without arguments it reads `.Last.value`, which only holds the analysis if you run it on the line straight after. Otherwise pass the object itself.')
     )
   }
   sink <- lapply(phylopath$warnings, rlang::warn)
