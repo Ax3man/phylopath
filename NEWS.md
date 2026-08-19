@@ -31,6 +31,10 @@ New features in this release:
   as a `data.frame` with one row per path. This function supports a `order_by`
   argument just like `coef_plot()` to order the paths.
 
+* New `coef()` and `confint()` methods for fitted DAGs, returning the path
+  coefficients as a named vector and the bounds of their bootstrapped confidence
+  intervals.
+
 * `phylo_path` now supports more than 26 models.
 
 There are also a lot of bug fixes and minor improvements in reporting. It is

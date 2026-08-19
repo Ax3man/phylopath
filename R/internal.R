@@ -580,3 +580,8 @@ par_avg <- function(x, se, weight) {
 
   return(c(Coefficient = wx, SE = se, `Lower CI` = wx - ci, `Upper CI` = wx + ci))
 }
+
+# Paths named as "from -> to", so that coef() and confint() line up.
+path_names <- function(paths) {
+  paste(paths$from, '->', paths$to)
+}

@@ -328,3 +328,63 @@ as.data.frame.fitted_DAG <- function(x, row.names = NULL, optional = FALSE, ...,
   rownames(out) <- NULL
   out
 }
+
+#' Extract the coefficients and confidence intervals of a fitted causal model.
+#'
+#' `coef()` returns the path coefficients as a named vector, and `confint()` the bounds of their
+#' confidence intervals. Both name each path as `"from -> to"` and return them in the same order, so
+#' they can be combined with `cbind()`. Paths that are absent from the causal model are not
+#' included. For a data frame with the standard errors alongside the coefficients, see
+#' [as.data.frame.fitted_DAG()].
+#'
+#' Note that these intervals are bootstrap percentile intervals, collected while fitting, and not
+#' the parametric intervals that `confint()` returns for most model objects.
+#'
+#' @param object An object of class `fitted_DAG`.
+#' @param parm The paths for which to return intervals, given as names or indices. Defaults to all
+#'   of them.
+#' @param level The confidence level, which has to be 0.95 for now.
+#' @param ... Ignored, present for consistency with the generic.
+#'
+#' @return For `coef()`, a named numeric vector with one element per path. For `confint()`, a
+#'   matrix with a row per path and the lower and upper bound in its two columns.
+#' @export
+#'
+#' @examples
+#'   d <- DAG(LS ~ BM, NL ~ BM, DD ~ NL + LS)
+#'   d_fitted <- est_DAG(d, rhino, rhino_tree, 'lambda')
+#'   coef(d_fitted)
+#'
+#'   # Confidence intervals require the model to be fitted with bootstrapping.
+#'   \donttest{
+#'     d_boot <- est_DAG(d, rhino, rhino_tree, 'lambda', boot = 100)
+#'     confint(d_boot)
+#'     cbind(coef = coef(d_boot), confint(d_boot))
+#'   }
+coef.fitted_DAG <- function(object, ...) {
+  paths <- as.data.frame(object)
+  stats::setNames(paths$coef, path_names(paths))
+}
+
+#' @rdname coef.fitted_DAG
+#' @export
+confint.fitted_DAG <- function(object, parm, level = 0.95, ...) {
+  if (is.null(object$lower)) {
+    rlang::abort(c(
+      'This causal model was fitted without bootstrapping, so it has no confidence intervals.',
+      i = 'Refit it with a `boot` argument, such as `best(p, boot = 500)` or `est_DAG(..., boot = 500)`.'
+    ))
+  }
+  if (!isTRUE(all.equal(level, 0.95))) {
+    rlang::abort(c(
+      'Only the 95% interval is supported for now. Open an issue if you need other levels.',
+      x = paste0('You asked for `level = ', level, '`.'),
+      i = 'Drop the argument, or set `level = 0.95`.'
+    ))
+  }
+  paths <- as.data.frame(object)
+  out <- cbind(`2.5 %` = paths$lower, `97.5 %` = paths$upper)
+  rownames(out) <- path_names(paths)
+  if (!missing(parm)) out <- out[parm, , drop = FALSE]
+  out
+}
