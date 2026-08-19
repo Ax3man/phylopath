@@ -55,7 +55,31 @@ print.fitted_DAG <- function(x, digits = 3, ...) {
   return(invisible(x))
 }
 
+#' Plot the comparison of a set of causal models.
+#'
+#' Shows the relative support for each causal model as a bar chart of model weights, ordered from
+#' best to worst. Models within `cut_off` CICc of the best model are highlighted, since those are
+#' usually considered to have comparable support. Each bar is labelled with the p-value of the
+#' d-separation test, where a significant value means the model is rejected by the data.
+#'
+#' @param x A `phylopath_summary` object, obtained by calling `summary()` on the result of
+#'   [phylo_path()].
+#' @param cut_off The CICc difference within which models are highlighted as having support
+#'   comparable to the best model.
+#' @param ... Not used.
+#'
+#' @return A `ggplot` object.
+#'
 #' @export
+#'
+#' @examples
+#'   candidates <- define_model_set(
+#'     A = NL ~ BM,
+#'     B = NL ~ LS,
+#'     .common = c(LS ~ BM, DD ~ NL)
+#'   )
+#'   p <- phylo_path(candidates, rhino, rhino_tree)
+#'   plot(summary(p))
 plot.phylopath_summary <- function(x, cut_off = 2, ...) {
   x$model <- factor(x$model, rev(x$model))
   ggplot2::ggplot(x, ggplot2::aes(x = .data$w, y = .data$model,
@@ -71,7 +95,7 @@ plot.phylopath_summary <- function(x, cut_off = 2, ...) {
     ggplot2::scale_x_continuous(position = 'top') +
     ggplot2::coord_cartesian(expand = FALSE) +
     ggplot2::guides(fill = ggplot2::guide_legend(title = NULL)) +
-    ggplot2::labs(y = "model weight", caption = "bar labels are p-values, signficance indicates rejection") +
+    ggplot2::labs(y = "model weight", caption = "bar labels are p-values, significance indicates rejection") +
     ggplot2::theme(legend.position = 'bottom')
 }
 
