@@ -1,10 +1,20 @@
 # summary.phylopath() turns the d-sep tables into the model comparison table:
 # k, q, C, p, CICc, delta CICc, likelihood and weight.
 
+# These analyses are read but never modified, so each is built once for the whole
+# file rather than refitted per test.
+pp_two <- phylo_path(define_model_set(a = c(B ~ A, C ~ B), b = c(B ~ A, C ~ A),
+                                      .common = c(D ~ D)),
+                     test_data(), test_tree(), model = "BM")
+pp_three <- phylo_path(define_model_set(a = c(B ~ A, C ~ B), b = c(B ~ A, C ~ A),
+                                        c = c(C ~ A, B ~ C), .common = c(D ~ D)),
+                       test_data(), test_tree(), model = "BM")
+# Deliberately under-powered, so that CICc is undefined for the denser model.
+ms_small <- define_model_set(sparse = c(B ~ A, C ~ B), dense = c(B ~ A, C ~ B, D ~ C))
+pp_small <- suppressWarnings(phylo_path(ms_small, small_data(), small_tree(), model = "BM"))
+
 test_that("summary reports the documented columns and class", {
-  p <- phylo_path(define_model_set(a = c(B ~ A, C ~ B), b = c(B ~ A, C ~ A),
-                                   .common = c(D ~ D)),
-                  test_data(), test_tree(), model = "BM")
+  p <- pp_two
   s <- summary(p)
 
   expect_s3_class(s, "phylopath_summary")
@@ -16,9 +26,7 @@ test_that("summary reports the documented columns and class", {
 })
 
 test_that("k, q and C are computed from the right quantities", {
-  p <- phylo_path(define_model_set(a = c(B ~ A, C ~ B), b = c(B ~ A, C ~ A),
-                                   .common = c(D ~ D)),
-                  test_data(), test_tree(), model = "BM")
+  p <- pp_two
   s <- summary(p)
 
   for (mod in names(p$d_sep)) {
@@ -49,9 +57,7 @@ test_that("isolates count as variables but not as edges", {
 })
 
 test_that("models are ranked by CICc and deltas are relative to the best", {
-  p <- phylo_path(define_model_set(a = c(B ~ A, C ~ B), b = c(B ~ A, C ~ A),
-                                   c = c(C ~ A, B ~ C), .common = c(D ~ D)),
-                  test_data(), test_tree(), model = "BM")
+  p <- pp_three
   s <- summary(p)
 
   expect_false(is.unsorted(s$CICc))
@@ -61,9 +67,7 @@ test_that("models are ranked by CICc and deltas are relative to the best", {
 })
 
 test_that("likelihoods and weights are consistent and normalised", {
-  p <- phylo_path(define_model_set(a = c(B ~ A, C ~ B), b = c(B ~ A, C ~ A),
-                                   c = c(C ~ A, B ~ C), .common = c(D ~ D)),
-                  test_data(), test_tree(), model = "BM")
+  p <- pp_three
   s <- summary(p)
 
   expect_equal(s$l, exp(-0.5 * s$delta_CICc))
@@ -99,8 +103,8 @@ test_that("print.phylopath_summary returns its input invisibly", {
 test_that("CICc is NA, with a warning, when there are too few species", {
   # CICc = C + 2q(n / (n - q - 1)) is undefined at n == q + 1 and meaningless
   # below it, so it must not be reported as a number there.
-  ms <- define_model_set(sparse = c(B ~ A, C ~ B), dense = c(B ~ A, C ~ B, D ~ C))
-  p <- suppressWarnings(phylo_path(ms, small_data(), small_tree(), model = "BM"))
+  ms <- ms_small
+  p <- pp_small
 
   expect_equal(nrow(p$data), 8)
   q <- vapply(p$model_set, function(m) nrow(m) + sum(m), numeric(1))
@@ -120,15 +124,15 @@ test_that("an unscoreable model makes the whole weight column NA", {
   # Deliberate: a model weight is relative to its model set, so if one member
   # could not be scored, the remaining weights would answer a different question
   # than the user asked. All-NA weights say "this set is not comparable".
-  ms <- define_model_set(sparse = c(B ~ A, C ~ B), dense = c(B ~ A, C ~ B, D ~ C))
-  p <- suppressWarnings(phylo_path(ms, small_data(), small_tree(), model = "BM"))
+  ms <- ms_small
+  p <- pp_small
   s <- suppressWarnings(summary(p))
   expect_true(all(is.na(s$w)))
 })
 
 test_that("models that cannot be scored sort last", {
-  ms <- define_model_set(sparse = c(B ~ A, C ~ B), dense = c(B ~ A, C ~ B, D ~ C))
-  p <- suppressWarnings(phylo_path(ms, small_data(), small_tree(), model = "BM"))
+  ms <- ms_small
+  p <- pp_small
   s <- suppressWarnings(summary(p))
   expect_equal(s$model[1], "sparse")
   expect_true(is.na(s$CICc[nrow(s)]))

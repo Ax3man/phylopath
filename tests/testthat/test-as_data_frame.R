@@ -188,8 +188,37 @@ test_that("confint explains that bootstrapping is needed", {
 test_that("confint refuses a level it cannot deliver", {
   fit <- suppressWarnings(est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(),
                                   model = "BM", boot = 20))
-  expect_error(confint(fit, level = 0.9), "only the 0.95 bounds are stored")
+  expect_error(confint(fit, level = 0.9), "95% interval is supported")
   expect_error(confint(fit, level = 0.9), "level = 0.9")
   # The default is accepted, whether given or not.
   expect_no_error(confint(fit, level = 0.95))
+})
+
+test_that("coef and confint work on an averaged model", {
+  # An averaged model always carries intervals, since par_avg() computes them,
+  # so confint() must not ask for bootstrapping here.
+  f1 <- est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(), model = "BM")
+  f2 <- est_DAG(DAG(B ~ A, C ~ A), test_data(), test_tree(), model = "BM")
+  avg <- average_DAGs(list(f1, f2))
+
+  cf <- coef(avg)
+  expect_setequal(names(cf), c("A -> B", "A -> C", "B -> C"))
+  ci <- expect_no_error(confint(avg))
+  expect_equal(rownames(ci), names(cf))
+
+  # These are the normal intervals around the averaged estimate, not bootstrap
+  # ones, which is what the documentation promises for an averaged model.
+  paths <- as.data.frame(avg)
+  expect_equal(unname(ci[, "2.5 %"]), paths$coef - stats::qnorm(0.975) * paths$se)
+  expect_equal(unname(ci[, "97.5 %"]), paths$coef + stats::qnorm(0.975) * paths$se)
+})
+
+test_that("coef and confint carry the mixed-scale restrictions of as.data.frame", {
+  # Both delegate, so a model whose coefficients are on two scales is reported
+  # without complaint but cannot be reordered by size.
+  data <- test_data()
+  data$bin <- factor(rep(c("no", "yes"), 20))
+  fit <- suppressWarnings(est_DAG(DAG(bin ~ A, C ~ bin), data, test_tree(), model = "BM"))
+  expect_length(coef(fit), 2)
+  expect_named(coef(fit), c("A -> bin", "bin -> C"))
 })

@@ -3,17 +3,6 @@
 # p-values are not symmetric in the two variables, this choice affects results,
 # so the order has to be a genuine topological order whenever one exists.
 
-# Does every edge of `m` point forwards in `order`?
-edges_go_forward <- function(m, order) {
-  idx <- stats::setNames(seq_along(order), order)
-  for (from in rownames(m)) {
-    for (to in colnames(m)) {
-      if (m[from, to] == 1 && from != to && idx[[from]] >= idx[[to]]) return(FALSE)
-    }
-  }
-  TRUE
-}
-
 test_that("the union of the models is used when it is acyclic", {
   # A -> B -> C and A -> C combine into an acyclic graph, whose unique
   # topological order is A, B, C.

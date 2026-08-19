@@ -2,16 +2,15 @@
 # estimate them. They must select the right model and carry the original
 # analysis settings through to the refit.
 
-pp <- function() {
-  phylo_path(
-    define_model_set(a = c(B ~ A, C ~ B), b = c(B ~ A, C ~ A), c = c(C ~ A, B ~ C),
-                     .common = c(D ~ D)),
-    test_data(), test_tree(), model = "BM"
-  )
-}
+# Read but never modified, so it is fitted once for the whole file.
+pp <- phylo_path(
+  define_model_set(a = c(B ~ A, C ~ B), b = c(B ~ A, C ~ A), c = c(C ~ A, B ~ C),
+                   .common = c(D ~ D)),
+  test_data(), test_tree(), model = "BM"
+)
 
 test_that("best returns the model with the lowest CICc, fitted", {
-  p <- pp()
+  p <- pp
   s <- summary(p)
   b <- best(p)
 
@@ -22,7 +21,7 @@ test_that("best returns the model with the lowest CICc, fitted", {
 })
 
 test_that("choice selects by name and by index", {
-  p <- pp()
+  p <- pp
   by_name <- choice(p, "b")
   by_index <- choice(p, 2)
 
@@ -34,8 +33,8 @@ test_that("choice selects by name and by index", {
 })
 
 test_that("choice rejects a model that does not exist", {
-  expect_error(choice(pp(), "does_not_exist"))
-  expect_error(choice(pp(), 99))
+  expect_error(choice(pp, "does_not_exist"))
+  expect_error(choice(pp, 99))
 })
 
 test_that("the extractors require a phylopath object", {
@@ -45,7 +44,7 @@ test_that("the extractors require a phylopath object", {
 })
 
 test_that("average averages the models within the cut off", {
-  p <- pp()
+  p <- pp
   s <- summary(p)
   # With this fixture one model is far better than the rest, so the default
   # cut off keeps a single model and averaging is a no-op.
@@ -60,7 +59,7 @@ test_that("average averages the models within the cut off", {
 })
 
 test_that("average passes avg_method through", {
-  p <- pp()
+  p <- pp
   s <- summary(p)
   cond <- average(p, cut_off = Inf, avg_method = "conditional")
   full <- average(p, cut_off = Inf, avg_method = "full")
@@ -73,7 +72,7 @@ test_that("average passes avg_method through", {
 test_that("an averaged model need not be a DAG", {
   # Averaging models that disagree about direction can produce a matrix with
   # paths both ways, which is expected and documented.
-  p <- pp()
+  p <- pp
   avg <- average(p, cut_off = Inf)
   expect_s3_class(avg$coef, "DAG")
   expect_true(sum(avg$coef != 0) > 0)
@@ -91,7 +90,7 @@ test_that("settings from the original call are reused by the extractors", {
 })
 
 test_that("boot can be supplied to the extractors and yields intervals", {
-  p <- pp()
+  p <- pp
   b <- suppressWarnings(best(p, boot = 20))
   expect_named(b, c("coef", "se", "lower", "upper", "binary"))
   expect_lt(b$lower["A", "B"], b$coef["A", "B"])
@@ -123,7 +122,7 @@ test_that("best and average refuse to rank models when CICc is missing", {
 })
 
 test_that("the averaged coefficient matrix keeps the modern matrix class", {
-  avg <- average(pp(), cut_off = Inf)
+  avg <- average(pp, cut_off = Inf)
   expect_equal(class(avg$coef), c("matrix", "array", "DAG"))
   expect_true(is.matrix(avg$coef))
   expect_true(is.array(avg$coef))

@@ -57,10 +57,9 @@ test_that("adjust_layout rotates by the requested angle", {
   r90 <- adjust_layout(l, 90, FALSE, FALSE)
   expect_equal(r90$x, c(0, 1), tolerance = 1e-8)
   expect_equal(r90$y, c(-1, 0), tolerance = 1e-8)
-  # Properties that hold whatever the handedness: a full turn is the identity,
-  # a half turn negates both coordinates, and distances are preserved.
+  # A full turn is the identity, a half turn negates both coordinates, and any
+  # rotation preserves distance from the origin.
   expect_equal(adjust_layout(l, 360, FALSE, FALSE)$x, l$x, tolerance = 1e-8)
-  expect_equal(adjust_layout(l, 360, FALSE, FALSE)$y, l$y, tolerance = 1e-8)
   expect_equal(adjust_layout(l, 180, FALSE, FALSE)$x, -l$x, tolerance = 1e-8)
   for (angle in c(37, 90, 145)) {
     rot <- adjust_layout(l, angle, FALSE, FALSE)

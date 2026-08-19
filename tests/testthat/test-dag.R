@@ -32,12 +32,7 @@ test_that("nodes are in topological order by default", {
   expect_equal(rownames(DAG(A ~ B, C ~ D, B ~ C, order = FALSE)),
                c("A", "B", "C", "D"))
   # Topological order means every edge points forward.
-  d <- DAG(A ~ B, B ~ C, C ~ D)
-  for (i in seq_len(nrow(d))) {
-    for (j in seq_len(ncol(d))) {
-      if (d[i, j] == 1) expect_lt(i, j)
-    }
-  }
+  expect_true(edges_go_forward(DAG(A ~ B, B ~ C, C ~ D)))
 })
 
 test_that("a variable declared as its own parent is an isolate, not a self loop", {

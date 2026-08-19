@@ -103,3 +103,15 @@ make_fitted_DAG <- function(vars, coefs, ses) {
 small_tree <- function() ape::keep.tip(test_tree(), paste0("t", 1:8))
 
 small_data <- function() test_data()[paste0("t", 1:8), ]
+
+# Does every edge of the adjacency matrix `m` point forwards in `order`? This is
+# what it means for `order` to be a topological sort of `m`.
+edges_go_forward <- function(m, order = rownames(m)) {
+  idx <- stats::setNames(seq_along(order), order)
+  for (from in rownames(m)) {
+    for (to in colnames(m)) {
+      if (m[from, to] == 1 && from != to && idx[[from]] >= idx[[to]]) return(FALSE)
+    }
+  }
+  TRUE
+}

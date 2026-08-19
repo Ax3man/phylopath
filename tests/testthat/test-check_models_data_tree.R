@@ -95,7 +95,7 @@ test_that("na.rm controls whether incomplete rows are dropped or refused", {
       res <- check_models_data_tree(list(DAG(B ~ A)), d, tiny_tree(), na.rm = TRUE),
       "1 rows were dropped"
     ),
-    "Pruned tree"
+    "Pruned tree to drop 1 species"
   )
   expect_equal(nrow(res$data), 3)
   expect_equal(rownames(res$data), c("a", "c", "d"))
@@ -134,7 +134,7 @@ test_that("tips absent from the data are pruned with a message", {
   d <- data.frame(A = 1:2, B = 3:4, row.names = c("a", "c"))
   expect_message(
     res <- check_models_data_tree(list(DAG(B ~ A)), d, tiny_tree(), na.rm = FALSE),
-    "Pruned tree"
+    "Pruned tree to drop 2 species"
   )
   expect_setequal(res$tree$tip.label, c("a", "c"))
   # A tree that already matches is left alone and stays quiet.
