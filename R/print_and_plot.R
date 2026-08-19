@@ -127,13 +127,10 @@ print.phylopath <- function(x, ...) {
 #' @export
 show_warnings <- function(phylopath = NULL) {
   if (is.null(phylopath)) phylopath <- .Last.value
-  if (!inherits(phylopath, 'phylopath')) {
-    rlang::abort(
-      c('`phylopath` must be a phylopath object, as returned by `phylo_path()`.',
-        x = paste0('It is of class ', paste(class(phylopath), collapse = '/'), '.'),
-        i = 'Called without arguments it reads `.Last.value`, which only holds the analysis if you run it on the line straight after. Otherwise pass the object itself.')
-    )
-  }
+  stop_if_not_class(
+    phylopath, 'phylopath', 'phylopath', 'as returned by `phylo_path()`',
+    hint = 'Called without arguments it reads `.Last.value`, which only holds the analysis if you run it on the line straight after. Otherwise pass the object itself.'
+  )
   sink <- lapply(phylopath$warnings, rlang::warn)
   return(invisible(NULL))
 }
@@ -319,7 +316,7 @@ plot.fitted_DAG <- function(x, type = 'width', labels = NULL, algorithm = 'sugiy
 #'   coef_plot(d_fitted, error_bar = "se", reverse_order = TRUE) + ggplot2::coord_flip()
 coef_plot <- function(fitted_DAG, error_bar = 'ci', order_by = "default", from = NULL, to = NULL,
                       reverse_order = FALSE) {
-  stopifnot(inherits(fitted_DAG, 'fitted_DAG'))
+  stop_if_not_class(fitted_DAG, 'fitted_DAG', 'fitted_DAG', 'as returned by `est_DAG()`, `best()` or `average()`')
   error_bar <- match.arg(error_bar, c('ci', 'se'), several.ok = FALSE)
   order_by <- match.arg(order_by, c('default', 'causal', 'strength'), FALSE)
   warn_if_mixed(fitted_DAG)

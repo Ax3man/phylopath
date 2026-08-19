@@ -38,9 +38,11 @@ test_that("choice rejects a model that does not exist", {
 })
 
 test_that("the extractors require a phylopath object", {
-  expect_error(best(1), "inherits")
-  expect_error(choice(1, "a"), "inherits")
-  expect_error(average(1), "inherits")
+  for (call in list(function() best(1), function() choice(1, "a"), function() average(1))) {
+    expect_error(call(), "`phylopath` must be a phylopath object")
+    # The class actually supplied is named, which is what identifies the mistake.
+    expect_error(call(), "It is of class numeric")
+  }
 })
 
 test_that("average averages the models within the cut off", {

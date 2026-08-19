@@ -197,7 +197,7 @@ phylo_path <- function(model_set, data, tree, model = 'lambda', method = 'logist
 #' @export
 summary.phylopath <- function(object, ...) {
   phylopath <- object
-  stopifnot(inherits(phylopath, 'phylopath'))
+  stop_if_not_class(phylopath, 'phylopath', 'phylopath', 'as returned by `phylo_path()`')
   n <- nrow(phylopath$data)
   k <- sapply(phylopath$d_sep, nrow)
   q <- sapply(phylopath$model_set, function(m) nrow(m) + sum(m))
@@ -257,7 +257,7 @@ summary.phylopath <- function(object, ...) {
 #'   plot(best_model)
 #'
 best <- function(phylopath, ...) {
-  stopifnot(inherits(phylopath, 'phylopath'))
+  stop_if_not_class(phylopath, 'phylopath', 'phylopath', 'as returned by `phylo_path()`')
   dots <- check_dots(combine_dots(phylopath$dots, ...))
 
   d <- summary(phylopath)
@@ -298,7 +298,7 @@ best <- function(phylopath, ...) {
 #'   plot(my_model)
 #'
 choice <- function(phylopath, choice, ...) {
-  stopifnot(inherits(phylopath, 'phylopath'))
+  stop_if_not_class(phylopath, 'phylopath', 'phylopath', 'as returned by `phylo_path()`')
   dots <- check_dots(combine_dots(phylopath$dots, ...))
 
   do.call(
@@ -361,7 +361,7 @@ choice <- function(phylopath, choice, ...) {
 #'   }
 #'
 average <- function(phylopath, cut_off = 2, avg_method = 'conditional', ...) {
-  stopifnot(inherits(phylopath, 'phylopath'))
+  stop_if_not_class(phylopath, 'phylopath', 'phylopath', 'as returned by `phylo_path()`')
   dots <- check_dots(combine_dots(phylopath$dots, ...))
 
   d <- summary(phylopath)

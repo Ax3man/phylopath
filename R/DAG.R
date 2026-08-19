@@ -127,7 +127,7 @@ define_model_set <- function(..., .common = NULL) {
 #'   plot(d_fitted)
 est_DAG <- function(DAG, data, tree, model = 'lambda', method = 'logistic_MPLE',
                     boot = 0, ...) {
-  stopifnot(inherits(DAG, 'DAG'))
+  stop_if_not_class(DAG, 'DAG', 'DAG', 'as created by `DAG()` or `define_model_set()`')
   dots <- check_dots(list(...))
   # check and convert binary variables
   vars <- rownames(DAG)

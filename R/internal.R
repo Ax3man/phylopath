@@ -17,6 +17,17 @@ stop_if_variables_differ <- function(model_set, call = rlang::caller_env()) {
   )
 }
 
+# The user facing functions each take an object of one of the package's classes,
+# and say so by name when they are handed something else.
+stop_if_not_class <- function(x, expected, arg, made_by, hint = NULL,
+                              call = rlang::caller_env()) {
+  if (inherits(x, expected)) return(invisible(x))
+  msg <- c(paste0('`', arg, '` must be a ', expected, ' object, ', made_by, '.'),
+           x = paste0('It is of class ', paste(class(x), collapse = '/'), '.'))
+  if (!is.null(hint)) msg <- c(msg, i = hint)
+  rlang::abort(msg, call = call)
+}
+
 check_models_data_tree <- function(model_set, data, tree, na.rm) {
   var_names <- lapply(model_set, colnames)
   stop_if_variables_differ(model_set)

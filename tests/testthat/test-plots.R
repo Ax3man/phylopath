@@ -117,7 +117,7 @@ test_that("coef_plot can filter and reorder paths", {
 
   expect_error(coef_plot(f, order_by = "nonsense"), "should be one of")
   expect_error(coef_plot(f, error_bar = "nonsense"), "should be one of")
-  expect_error(coef_plot(DAG(B ~ A)), "inherits")
+  expect_error(coef_plot(DAG(B ~ A)), "`fitted_DAG` must be a fitted_DAG object")
 })
 
 # A fitted_DAG whose responses are of both types, so its coefficients are on two

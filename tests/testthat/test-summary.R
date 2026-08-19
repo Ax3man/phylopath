@@ -22,7 +22,8 @@ test_that("summary reports the documented columns and class", {
   expect_named(s, c("model", "k", "q", "C", "p", "CICc", "delta_CICc", "l", "w"))
   expect_setequal(s$model, c("a", "b"))
   # The method itself guards its input.
-  expect_error(summary.phylopath(structure(list(), class = "notaphylopath")))
+  expect_error(summary.phylopath(structure(list(), class = "notaphylopath")),
+               "`phylopath` must be a phylopath object")
 })
 
 test_that("k, q and C are computed from the right quantities", {

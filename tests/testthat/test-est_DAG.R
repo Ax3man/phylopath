@@ -92,7 +92,12 @@ test_that("boot adds bootstrap confidence intervals that bracket the estimate", 
 test_that("est_DAG requires a DAG", {
   expect_error(
     est_DAG(matrix(0, 2, 2), test_data(), test_tree(), model = "BM"),
-    'inherits\\(DAG, "DAG"\\)'
+    "`DAG` must be a DAG object"
+  )
+  # And says where one comes from, rather than quoting the failed check.
+  expect_error(
+    est_DAG(matrix(0, 2, 2), test_data(), test_tree(), model = "BM"),
+    "define_model_set"
   )
 })
 
