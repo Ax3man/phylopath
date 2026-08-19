@@ -134,3 +134,62 @@ test_that("causal ordering gives an informative error for a cyclical model", {
   expect_error(coef_plot(avg, error_bar = "se", order_by = "causal"),
                "only possible when the model is acyclic")
 })
+
+# coef() and confint() are thin wrappers on as.data.frame(), so what matters is
+# that they name the paths identically and stay in the same order, since users
+# are invited to cbind() them.
+
+test_that("coef returns the path coefficients as a named vector", {
+  fit <- est_DAG(DAG(C ~ A + B, B ~ A), test_data(), test_tree(), model = "BM")
+  cf <- coef(fit)
+
+  expect_type(cf, "double")
+  expect_null(dim(cf))
+  expect_setequal(names(cf), c("A -> B", "A -> C", "B -> C"))
+  for (nm in names(cf)) {
+    ends <- strsplit(nm, " -> ", fixed = TRUE)[[1]]
+    expect_equal(cf[[nm]], fit$coef[ends[1], ends[2]])
+  }
+  # Absent paths are omitted, as in as.data.frame().
+  expect_length(cf, sum(fit$coef != 0))
+})
+
+test_that("confint returns the bootstrap bounds, aligned with coef", {
+  fit <- suppressWarnings(est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(),
+                                  model = "BM", boot = 20))
+  ci <- confint(fit)
+
+  expect_true(is.matrix(ci))
+  expect_equal(colnames(ci), c("2.5 %", "97.5 %"))
+  expect_equal(rownames(ci), names(coef(fit)))
+  expect_true(all(ci[, 1] < coef(fit)))
+  expect_true(all(ci[, 2] > coef(fit)))
+  # The pairing that the documentation suggests must line up.
+  combined <- cbind(coef = coef(fit), confint(fit))
+  expect_equal(colnames(combined), c("coef", "2.5 %", "97.5 %"))
+})
+
+test_that("confint selects paths with parm", {
+  fit <- suppressWarnings(est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(),
+                                  model = "BM", boot = 20))
+  one <- confint(fit, parm = "A -> B")
+  expect_equal(dim(one), c(1L, 2L))
+  expect_equal(rownames(one), "A -> B")
+  # A single path still comes back as a matrix, not a bare vector.
+  expect_true(is.matrix(confint(fit, parm = 1)))
+})
+
+test_that("confint explains that bootstrapping is needed", {
+  fit <- est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(), model = "BM")
+  expect_error(confint(fit), "fitted without bootstrapping")
+  expect_error(confint(fit), "`boot`")
+})
+
+test_that("confint refuses a level it cannot deliver", {
+  fit <- suppressWarnings(est_DAG(DAG(B ~ A, C ~ B), test_data(), test_tree(),
+                                  model = "BM", boot = 20))
+  expect_error(confint(fit, level = 0.9), "only the 0.95 bounds are stored")
+  expect_error(confint(fit, level = 0.9), "level = 0.9")
+  # The default is accepted, whether given or not.
+  expect_no_error(confint(fit, level = 0.95))
+})

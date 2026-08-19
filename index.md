@@ -28,6 +28,6 @@ This method was developed by Von Hardenberg and Gonzalez-Voyer. See
 
 <img src="man/figures/unnamed-chunk-3-1.png" alt="The fitted best supported causal model, with arrows labelled by their standardized path coefficients and drawn with a width proportional to the strength of the effect." width="600px" style="display: block; margin: auto;" />
 
-`phylopath` has been used by [&gt;100
+`phylopath` has been used by [&gt;200
 publications](https://scholar.google.ca/scholar?oi=bibs&hl=en&cites=5933615079034924484)
 so far!

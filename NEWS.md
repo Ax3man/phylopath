@@ -41,6 +41,8 @@ There are also a lot of bug fixes and minor improvements in reporting. It is
 unlikely any of these have affected real analyses, as they deal with either
 imprecise reporting or very unlikely edge cases:
 
+* `plot.phylopath_summary` now has a help page.
+
 * Bug fix: `coef_plot(order_by = "causal")` derived the causal ordering from the
   positive coefficients only, so the ordering was incorrect in the presence of
   negative paths.

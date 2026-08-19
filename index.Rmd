@@ -57,4 +57,4 @@ result <- phylo_path(models, data = rhino, tree = rhino_tree,
 plot(choice(result, 'five'), rotation = 10, curvature = -0.05, flip_x = TRUE)
 ```
 
-`phylopath` has been used by [>100 publications](https://scholar.google.ca/scholar?oi=bibs&hl=en&cites=5933615079034924484) so far!
+`phylopath` has been used by [>200 publications](https://scholar.google.ca/scholar?oi=bibs&hl=en&cites=5933615079034924484) so far!
