@@ -31,6 +31,8 @@ New features in this release:
   as a `data.frame` with one row per path. This function supports a `order_by`
   argument just like `coef_plot()` to order the paths.
 
+* `phylo_path` now supports more than 26 models.
+
 There are also a lot of bug fixes and minor improvements in reporting. It is
 unlikely any of these have affected real analyses, as they deal with either
 imprecise reporting or very unlikely edge cases:
@@ -50,8 +52,6 @@ imprecise reporting or very unlikely edge cases:
   names for the others, which made those models impossible to select with
   `best()` and `choice()`. Unnamed models in a partially named set are now
   labelled in the same way as those in a fully unnamed set.
-
-* `phylo_path` now supports more than 26 models.
 
 * Bug fix: the notice pointing to `show_warnings()` was only shown when more
   than one model produced a warning, so a single warning went unmentioned.
@@ -83,9 +83,9 @@ imprecise reporting or very unlikely edge cases:
 
 * Fixed several inaccuracies in the vignettes, including a reference to a
   function that does not exist, and restored two `coef_plot()` examples in the
-  introduction that had been commented out.
+  introduction.
 
-* Fitted models now report what their coefficients actually are. Paths into a
+* Fitted models now report clearly what their coefficients are. Paths into a
   binary variable are log odds ratios, while paths into a continuous variable are
   standardized regression coefficients, and previously both were presented as
   though they were the same quantity.
