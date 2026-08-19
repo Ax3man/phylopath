@@ -153,7 +153,7 @@ using `phylo_path`
 ```
 
     ## 15 rows were dropped because they contained NA values.
-    ## Pruned tree to drop species not included in `data`.
+    ## Pruned tree to drop 15 species not included in `data`.
 
     ## Warning: 4 of the phylogenetic regressions produced warnings.
     ## ℹ Use `show_warnings()` to read them.

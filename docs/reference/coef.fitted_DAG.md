@@ -37,9 +37,7 @@ confint(object, parm, level = 0.95, ...)
 
 - level:
 
-  The confidence level, which has to be 0.95. Only the bounds of the
-  bootstrap interval are stored, not the replicates they were taken
-  from, so another level cannot be produced after fitting.
+  The confidence level, which has to be 0.95 for now.
 
 ## Value
 
@@ -50,10 +48,12 @@ per path and the lower and upper bound in its two columns.
 
 ## Details
 
-Note that these intervals are bootstrap percentile intervals, collected
-while fitting, and not the parametric intervals that
+Note that these are not the parametric intervals that
 [`confint()`](https://rdrr.io/r/stats/confint.html) returns for most
-model objects.
+model objects, but the ones that were stored when the model was made:
+bootstrap intervals after fitting with `boot`, and normal intervals
+around the averaged estimate for a model from
+[`average()`](https://ax3man.github.io/phylopath/reference/average.md).
 
 ## Examples
 

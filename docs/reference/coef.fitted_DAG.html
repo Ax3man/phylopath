@@ -77,9 +77,7 @@ of them.</p></dd>
 
 
 <dt id="arg-level">level<a class="anchor" aria-label="anchor" href="#arg-level"></a></dt>
-<dd><p>The confidence level, which has to be 0.95. Only the bounds of the bootstrap
-interval are stored, not the replicates they were taken from, so another level cannot be
-produced after fitting.</p></dd>
+<dd><p>The confidence level, which has to be 0.95 for now.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -89,8 +87,10 @@ matrix with a row per path and the lower and upper bound in its two columns.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Note that these intervals are bootstrap percentile intervals, collected while fitting, and not
-the parametric intervals that <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint()</a></code> returns for most model objects.</p>
+    <p>Note that these are not the parametric intervals that <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint()</a></code> returns for most model
+objects, but the ones that were stored when the model was made: bootstrap intervals after
+fitting with <code>boot</code>, and normal intervals around the averaged estimate for a model from
+<code><a href="average.html">average()</a></code>.</p>
     </div>
 
     <div class="section level2">
