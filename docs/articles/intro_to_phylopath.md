@@ -239,7 +239,6 @@ result
 
     ## A phylogenetic path analysis, on the variables:
     ##  Continuous:  BM NL DD RS LS 
-    ##  Binary:       
     ## 
     ##  Evaluated for these models: one two three four five six seven eight nine 
     ## 
@@ -296,24 +295,15 @@ intervals can be plotted with `coef_plot` (see below).
 (best_model <- best(result))
 ```
 
-    ## $coef
-    ##    BM        LS RS        NL        DD
-    ## BM  0 0.4973937  0 0.4613623 0.0000000
-    ## LS  0 0.0000000  0 0.0000000 0.0000000
-    ## RS  0 0.0000000  0 0.5280685 0.0000000
-    ## NL  0 0.0000000  0 0.0000000 0.6285344
-    ## DD  0 0.0000000  0 0.0000000 0.0000000
+    ## A fitted causal model: 5 variables, 4 paths.
+    ##  Continuous:  BM RS NL LS DD 
     ## 
-    ## $se
-    ##    BM         LS RS         NL         DD
-    ## BM  0 0.08934185  0 0.06500775 0.00000000
-    ## LS  0 0.00000000  0 0.00000000 0.00000000
-    ## RS  0 0.00000000  0 0.05726520 0.00000000
-    ## NL  0 0.00000000  0 0.00000000 0.08006703
-    ## DD  0 0.00000000  0 0.00000000 0.00000000
-    ## 
-    ## attr(,"class")
-    ## [1] "fitted_DAG"
+    ## Paths — standardized regression coefficients
+    ##     path coefficient    se
+    ##  BM → LS       0.497 0.089
+    ##  BM → NL       0.461 0.065
+    ##  RS → NL       0.528 0.057
+    ##  NL → DD       0.629 0.080
 
 This object can also be plotted, now the numbers and width of the arrow
 represent path coefficients. In this case, all paths are green since all

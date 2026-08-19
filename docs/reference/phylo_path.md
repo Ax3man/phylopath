@@ -160,7 +160,6 @@ processing using `future::plan("sequential")`
   p
 #> A phylogenetic path analysis, on the variables:
 #>  Continuous:  BM LS NL DD 
-#>  Binary:       
 #> 
 #>  Evaluated for these models: A B 
 #> 

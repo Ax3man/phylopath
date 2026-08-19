@@ -7,12 +7,14 @@
 <url><loc>https://ax3man.github.io/phylopath/index.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/news/index.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/DAG.html</loc></url>
+<url><loc>https://ax3man.github.io/phylopath/reference/as.data.frame.fitted_DAG.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/average.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/average_DAGs.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/best.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/choice.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/cichlids.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/cichlids_tree.html</loc></url>
+<url><loc>https://ax3man.github.io/phylopath/reference/coef.fitted_DAG.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/coef_plot.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/define_model_set.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/est_DAG.html</loc></url>
@@ -20,6 +22,7 @@
 <url><loc>https://ax3man.github.io/phylopath/reference/phylo_path.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/plot.DAG.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/plot.fitted_DAG.html</loc></url>
+<url><loc>https://ax3man.github.io/phylopath/reference/plot.phylopath_summary.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/plot_model_set.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/red_list.html</loc></url>
 <url><loc>https://ax3man.github.io/phylopath/reference/red_list_tree.html</loc></url>

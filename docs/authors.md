@@ -27,7 +27,7 @@ analysis.” *Evolution*, **67 - 2**, 378-387.
 van der Bijl W (2018). “phylopath: Easy phylogenetic path analysis in
 R.” *PeerJ*, **6**, e4718.
 [doi:10.7717/peerj.4718](https://doi.org/10.7717/peerj.4718). R package
-version 1.3.2.
+version 1.4.0.
 
     @Article{phylopath-package,
       title = {phylopath: Easy phylogenetic path analysis in R.},
@@ -36,6 +36,6 @@ version 1.3.2.
       volume = {6},
       pages = {e4718},
       year = {2018},
-      note = {R package version 1.3.2},
+      note = {R package version 1.4.0},
       doi = {10.7717/peerj.4718},
     }

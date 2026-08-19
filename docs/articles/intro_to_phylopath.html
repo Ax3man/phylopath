@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">phylopath</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@
                         <h4 data-toc-skip class="author">Wouter van der
 Bijl</h4>
             
-            <h4 data-toc-skip class="date">2026-08-17</h4>
+            <h4 data-toc-skip class="date">2026-08-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Ax3man/phylopath/blob/HEAD/vignettes/intro_to_phylopath.Rmd" class="external-link"><code>vignettes/intro_to_phylopath.Rmd</code></a></small>
       <div class="d-none name"><code>intro_to_phylopath.Rmd</code></div>
@@ -270,7 +270,6 @@ unique regressions.</p>
 <code class="sourceCode R"><span><span class="va">result</span></span></code></pre></div>
 <pre><code><span><span class="co">## A phylogenetic path analysis, on the variables:</span></span>
 <span><span class="co">##  Continuous:  BM NL DD RS LS </span></span>
-<span><span class="co">##  Binary:       </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##  Evaluated for these models: one two three four five six seven eight nine </span></span>
 <span><span class="co">## </span></span>
@@ -312,24 +311,15 @@ standard errors or confidence intervals can be plotted with
 <code>coef_plot</code> (see below).</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">best_model</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/best.html">best</a></span><span class="op">(</span><span class="va">result</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## $coef</span></span>
-<span><span class="co">##    BM        LS RS        NL        DD</span></span>
-<span><span class="co">## BM  0 0.4973937  0 0.4613623 0.0000000</span></span>
-<span><span class="co">## LS  0 0.0000000  0 0.0000000 0.0000000</span></span>
-<span><span class="co">## RS  0 0.0000000  0 0.5280685 0.0000000</span></span>
-<span><span class="co">## NL  0 0.0000000  0 0.0000000 0.6285344</span></span>
-<span><span class="co">## DD  0 0.0000000  0 0.0000000 0.0000000</span></span>
+<pre><code><span><span class="co">## A fitted causal model: 5 variables, 4 paths.</span></span>
+<span><span class="co">##  Continuous:  BM RS NL LS DD </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## $se</span></span>
-<span><span class="co">##    BM         LS RS         NL         DD</span></span>
-<span><span class="co">## BM  0 0.08934185  0 0.06500775 0.00000000</span></span>
-<span><span class="co">## LS  0 0.00000000  0 0.00000000 0.00000000</span></span>
-<span><span class="co">## RS  0 0.00000000  0 0.05726520 0.00000000</span></span>
-<span><span class="co">## NL  0 0.00000000  0 0.00000000 0.08006703</span></span>
-<span><span class="co">## DD  0 0.00000000  0 0.00000000 0.00000000</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## attr(,"class")</span></span>
-<span><span class="co">## [1] "fitted_DAG"</span></span></code></pre>
+<span><span class="co">## Paths — standardized regression coefficients</span></span>
+<span><span class="co">##     path coefficient    se</span></span>
+<span><span class="co">##  BM → LS       0.497 0.089</span></span>
+<span><span class="co">##  BM → NL       0.461 0.065</span></span>
+<span><span class="co">##  RS → NL       0.528 0.057</span></span>
+<span><span class="co">##  NL → DD       0.629 0.080</span></span></code></pre>
 <p>This object can also be plotted, now the numbers and width of the
 arrow represent path coefficients. In this case, all paths are green
 since all relationships are positive.</p>

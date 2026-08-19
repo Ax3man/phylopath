@@ -28,11 +28,22 @@ Use these functions to describe, fit, select and average your models.
   : Plot a directed acyclic graph.
 - [`plot(`*`<fitted_DAG>`*`)`](https://ax3man.github.io/phylopath/reference/plot.fitted_DAG.md)
   : Plot a directed acyclic graph with path coefficients.
+- [`plot(`*`<phylopath_summary>`*`)`](https://ax3man.github.io/phylopath/reference/plot.phylopath_summary.md)
+  : Plot the comparison of a set of causal models.
 - [`plot_model_set()`](https://ax3man.github.io/phylopath/reference/plot_model_set.md)
   : Plot several causal hypothesis at once.
 - [`coef_plot()`](https://ax3man.github.io/phylopath/reference/coef_plot.md)
   : Plot path coefficients and their confidence intervals or standard
   errors.
+
+## Extracting coefficients
+
+- [`as.data.frame(`*`<fitted_DAG>`*`)`](https://ax3man.github.io/phylopath/reference/as.data.frame.fitted_DAG.md)
+  : Extract the paths of a fitted causal model.
+- [`coef(`*`<fitted_DAG>`*`)`](https://ax3man.github.io/phylopath/reference/coef.fitted_DAG.md)
+  [`confint(`*`<fitted_DAG>`*`)`](https://ax3man.github.io/phylopath/reference/coef.fitted_DAG.md)
+  : Extract the coefficients and confidence intervals of a fitted causal
+  model.
 
 ## Low level functions
 
@@ -40,7 +51,7 @@ Use these functions for finer control. These are mostly for internal
 use.
 
 - [`est_DAG()`](https://ax3man.github.io/phylopath/reference/est_DAG.md)
-  : Add standardized path coefficients to a DAG.
+  : Estimate path coefficients for a DAG.
 - [`average_DAGs()`](https://ax3man.github.io/phylopath/reference/average_DAGs.md)
   : Perform model averaging on a list of DAGs.
 

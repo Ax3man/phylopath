@@ -6,11 +6,10 @@ This vignette gives a short example of how PPA can be applied to binary
 data sets using `phylopath`. A longer example with more explanation of
 the code can be found in the other vignette, “intro to phylopath”.
 
-**Important notes**:
+#### On phylogenetic logistic regression
 
 There has been some discussion concerning how to best perform logistic
-regression with phylogenetic correction. I take no position on this
-matter. This package uses
+regression with phylogenetic correction. This package uses
 [`phylolm::phyloglm`](https://rdrr.io/pkg/phylolm/man/phyloglm.html),
 written by Lam Si Tung Ho, Robert Lachlan, Rachel Feldman and Cécile
 Ané. `phylopath`’s accuracy is directly dependent on the accuracy of
@@ -30,11 +29,47 @@ These parameters are then applied to all models. Another option is to
 use the `phylosem` package, which supports both Binomial and Poisson
 errors with a different implementation.
 
-*The example below currently generates such warnings, should not be
-trusted, and is only presented as an example.*
+*The example below currently generates such warnings, and is only
+presented as an example.*
 
 If you have useful opinions or information on these points, feel free to
 contact me.
+
+#### On the interpretation of coefficients
+
+Coefficients from binary models are not the same quantity as
+coefficients from continuous ones, and it is worth being clear about
+this before looking at any output.
+
+`phylopath` standardizes continuous variables before fitting, that is,
+it centers them and divides them by their standard deviation. So a path
+between two continuous variables is expressed in standard deviations: it
+is the familiar standardized regression coefficient. Binary variables
+are left as they are, so a path leading to a binary variable is a log
+odds ratio instead. In the example below every variable is binary, which
+means every coefficient is a log odds ratio between the two levels of a
+trait. Those are all the same kind of quantity, so they can be compared
+with each other directly, as we do below.
+
+Where this becomes genuinely confusing is when a single causal model
+contains both binary *and* continuous traits. Such a model has
+coefficients in two different units, which is bad enough. On top of
+that, a binary predictor contributes a contrast between its two levels
+rather than a change per standard deviation, and for a trait where a
+proportion `p` of species has one of the levels, that contrast amounts
+to `1 / sqrt(p * (1 - p))` standard deviations, which is always more
+than two. Coefficients of this kind of mixed-type DAG therefore cannot
+be meaningfully compared with one another at all, and each has to be
+read on its own terms. `phylopath` will try to warn you when you fit
+such a model, and notes it on any output that shows its coefficients.
+
+Importantly, this concerns the coefficients only. The comparison of the
+causal models themselves is unaffected, because the d-separation tests
+are performed on the unstandardized data: `CICc`, the model weights and
+the ranking of your models do not depend on the scale of the
+coefficients. See
+[`?est_DAG`](https://ax3man.github.io/phylopath/reference/est_DAG.md)
+for more detail.
 
 ## Example analysis
 
@@ -118,13 +153,12 @@ using `phylo_path`
 ```
 
     ## 15 rows were dropped because they contained NA values.
-
     ## Pruned tree to drop species not included in `data`.
 
-    ## Warning in phylo_path(models, cichlids, cichlids_tree): Some models produced warnings. Use `show_warnings()` to view them.
+    ## Warning: 4 of the phylogenetic regressions produced warnings.
+    ## ℹ Use `show_warnings()` to read them.
 
     ## A phylogenetic path analysis, on the variables:
-    ##  Continuous:   
     ##  Binary:      G P D M C 
     ## 
     ##  Evaluated for these models: A B C D E F G H I J K L 
@@ -203,24 +237,16 @@ print `best_cichlids`:
 best_cichlids
 ```
 
-    ## $coef
-    ##   G M        P D        C
-    ## G 0 0 2.244975 0 4.488997
-    ## M 0 0 2.879175 0 0.000000
-    ## P 0 0 0.000000 0 3.415208
-    ## D 0 0 0.000000 0 3.415140
-    ## C 0 0 0.000000 0 0.000000
+    ## A fitted causal model: 5 variables, 5 paths.
+    ##  Binary:      G M P D C 
     ## 
-    ## $se
-    ##   G M         P D        C
-    ## G 0 0 0.8132303 0 1.200057
-    ## M 0 0 0.8602750 0 0.000000
-    ## P 0 0 0.0000000 0 1.348669
-    ## D 0 0 0.0000000 0 1.376391
-    ## C 0 0 0.0000000 0 0.000000
-    ## 
-    ## attr(,"class")
-    ## [1] "fitted_DAG"
+    ## Paths — log odds ratios
+    ##   path coefficient    se
+    ##  G → P       2.245 0.813
+    ##  G → C       4.489 1.200
+    ##  M → P       2.879 0.860
+    ##  P → C       3.415 1.349
+    ##  D → C       3.415 1.376
 
 Or plot those:
 

@@ -46,6 +46,11 @@ average_DAGs(
 An object of class `fitted_DAG`, including standard errors and
 confidence intervals.
 
+## See also
+
+[`est_DAG()`](https://ax3man.github.io/phylopath/reference/est_DAG.md)
+for what the coefficients mean.
+
 ## Examples
 
 ``` r

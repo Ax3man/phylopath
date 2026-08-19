@@ -1,9 +1,61 @@
 # Changelog
 
-## phylopath 1.3.2
+## phylopath 1.4.0
 
-This release has some bug fixes for small edge cases, minor improvements
-in reporting, and adds unit tests, all from a review by Claude.
+This release is mainly aimed at avoiding a common confusion about
+`phylopath` output, that was long-standing and avoidable. When models
+would use both continuous and binary variables, the coefficients would
+be very confusing to interpret, since they mix scales and are not
+consistently standardized. The package now tries to be much more vocal
+about what path coefficients actually mean and warn the user about
+mixing coefficients with different types.
+
+Note that this concerns the coefficients only, comparison of the causal
+models is not an issue.
+
+New features in this release:
+
+- Models that contain both binary and continuous variables now warn,
+  once per session, that their coefficients cannot be compared with one
+  another. Every plot and printout of such a model repeats this more
+  briefly, and
+  [`coef_plot()`](https://ax3man.github.io/phylopath/reference/coef_plot.md)
+  refuses to sort the paths by `"strength"`, since that ordering would
+  be partly an artefact of the scales.
+
+- [`plot()`](https://rdrr.io/r/graphics/plot.default.html) on a fitted
+  model no longer labels its colour legend “standardized path
+  coefficient” regardless of what the coefficients are, but names the
+  scale that is actually shown.
+
+- `fitted_DAG` objects gain a `binary` element, recording which
+  variables were modelled as binary. Objects made by earlier versions do
+  not have it, and are reported without a scale rather than being
+  assumed to be standardized.
+
+- New [`as.data.frame()`](https://rdrr.io/r/base/as.data.frame.html)
+  method for fitted models, returning the estimated paths as a
+  `data.frame` with one row per path. This function supports a
+  `order_by` argument just like
+  [`coef_plot()`](https://ax3man.github.io/phylopath/reference/coef_plot.md)
+  to order the paths.
+
+- New [`coef()`](https://rdrr.io/r/stats/coef.html) and
+  [`confint()`](https://rdrr.io/r/stats/confint.html) methods for fitted
+  DAGs, returning the path coefficients as a named vector and the bounds
+  of their bootstrapped confidence intervals.
+
+- `phylo_path` now supports more than 26 models.
+
+There are also a lot of bug fixes and minor improvements in reporting.
+It is unlikely any of these have affected real analyses, as they deal
+with either imprecise reporting or very unlikely edge cases:
+
+- `plot.phylopath_summary` now has a help page.
+
+- Bug fix: `coef_plot(order_by = "causal")` derived the causal ordering
+  from the positive coefficients only, so the ordering was incorrect in
+  the presence of negative paths.
 
 - Bug fix: `CICc` could not be calculated when the number of parameters
   was exactly one less than the number of species, but silently returned
@@ -19,10 +71,6 @@ in reporting, and adds unit tests, all from a review by Claude.
   [`choice()`](https://ax3man.github.io/phylopath/reference/choice.md).
   Unnamed models in a partially named set are now labelled in the same
   way as those in a fully unnamed set.
-
-- Bug fix: automatic model labels ran out after `Z`, giving models
-  beyond the 26th a missing name. Labelling now continues as `AA`, `AB`,
-  and so on.
 
 - Bug fix: the notice pointing to
   [`show_warnings()`](https://ax3man.github.io/phylopath/reference/show_warnings.md)
@@ -45,6 +93,11 @@ in reporting, and adds unit tests, all from a review by Claude.
   does not contain exactly the variables used in the models, and when
   two causal models are given the same name.
 
+- All errors, warning and messages have been reviewed for clarity, and
+  many now have more consistent language, more information, and give
+  tips on how to resolve the issue. They also use `rlang` now, for nicer
+  formatting.
+
 - [`est_DAG()`](https://ax3man.github.io/phylopath/reference/est_DAG.md)
   now defaults to `model = "lambda"` and `method = "logistic_MPLE"`,
   matching
@@ -61,7 +114,46 @@ in reporting, and adds unit tests, all from a review by Claude.
 - Fixed several inaccuracies in the vignettes, including a reference to
   a function that does not exist, and restored two
   [`coef_plot()`](https://ax3man.github.io/phylopath/reference/coef_plot.md)
-  examples in the introduction that had been commented out.
+  examples in the introduction.
+
+- Fitted models now report clearly what their coefficients are. Paths
+  into a binary variable are log odds ratios, while paths into a
+  continuous variable are standardized regression coefficients, and
+  previously both were presented as though they were the same quantity.
+
+- New [`print()`](https://rdrr.io/r/base/print.html) method for fitted
+  models, which lists the estimated paths with their coefficients and
+  intervals, and states which variables are continuous and which are
+  binary, rather than printing the underlying matrices.
+
+- [`coef_plot()`](https://ax3man.github.io/phylopath/reference/coef_plot.md)
+  now names the scale of the coefficients on its axis, instead of always
+  describing them as standardized.
+
+- Bug fix:
+  [`est_DAG()`](https://ax3man.github.io/phylopath/reference/est_DAG.md)
+  did not recognize binary variables supplied as character vectors,
+  although those are documented as acceptable, and
+  [`phylo_path()`](https://ax3man.github.io/phylopath/reference/phylo_path.md)
+  accepts them. Such a variable failed with an error from `phylolm` when
+  it was the outcome of a path, and was silently treated as continuous
+  when it was the predictor. Character variables are now converted to
+  factors, as they already were in
+  [`phylo_path()`](https://ax3man.github.io/phylopath/reference/phylo_path.md).
+
+- Bug fix:
+  [`plot_model_set()`](https://ax3man.github.io/phylopath/reference/plot_model_set.md)
+  located the edges of a causal model incorrectly when a model was not
+  topologically sorted, which could silently draw edges that were not in
+  the model and omit ones that were.
+
+- Bug fix: passing an argument that neither `phylolm()` nor `phyloglm()`
+  accepts produced one warning per fitted regression, and did not say
+  which argument was at fault. Such arguments are now reported once per
+  call, by name.
+
+- The vignettes now have descriptive titles in the vignette index, and
+  all figures have alt-text.
 
 - Added a unit test suite covering the d-separation basis set, the model
   comparison statistics, model averaging, and the plotting functions.

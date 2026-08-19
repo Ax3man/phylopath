@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">phylopath</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -54,7 +54,7 @@
                         <h4 data-toc-skip class="author">Wouter van der
 Bijl</h4>
             
-            <h4 data-toc-skip class="date">2026-08-17</h4>
+            <h4 data-toc-skip class="date">2026-08-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/Ax3man/phylopath/blob/HEAD/vignettes/binary_models.Rmd" class="external-link"><code>vignettes/binary_models.Rmd</code></a></small>
       <div class="d-none name"><code>binary_models.Rmd</code></div>
@@ -69,14 +69,16 @@ Bijl</h4>
 binary data sets using <code>phylopath</code>. A longer example with
 more explanation of the code can be found in the other vignette, “intro
 to phylopath”.</p>
-<p><strong>Important notes</strong>:</p>
+<div class="section level4">
+<h4 id="on-phylogenetic-logistic-regression">On phylogenetic logistic regression<a class="anchor" aria-label="anchor" href="#on-phylogenetic-logistic-regression"></a>
+</h4>
 <p>There has been some discussion concerning how to best perform
-logistic regression with phylogenetic correction. I take no position on
-this matter. This package uses <code><a href="https://rdrr.io/pkg/phylolm/man/phyloglm.html" class="external-link">phylolm::phyloglm</a></code>, written
-by Lam Si Tung Ho, Robert Lachlan, Rachel Feldman and Cécile Ané.
-<code>phylopath</code>’s accuracy is directly dependent on the accuracy
-of that function, and if you don’t trust <code>phyloglm</code> you
-should not trust binary models used in <code>phylo_path</code>.</p>
+logistic regression with phylogenetic correction. This package uses
+<code><a href="https://rdrr.io/pkg/phylolm/man/phyloglm.html" class="external-link">phylolm::phyloglm</a></code>, written by Lam Si Tung Ho, Robert
+Lachlan, Rachel Feldman and Cécile Ané. <code>phylopath</code>’s
+accuracy is directly dependent on the accuracy of that function, and if
+you don’t trust <code>phyloglm</code> you should not trust binary models
+used in <code>phylo_path</code>.</p>
 <p><code><a href="https://rdrr.io/pkg/phylolm/man/phyloglm.html" class="external-link">phylolm::phyloglm</a></code> performs checks for model convergence.
 In practice, these often fail. Especially in <code>phylopath</code>,
 where we often fit many models, it is likely that at least one model
@@ -88,10 +90,45 @@ like <code>btol</code> and <code>log.alpha.bound</code> (see
 all models. Another option is to use the <code>phylosem</code> package,
 which supports both Binomial and Poisson errors with a different
 implementation.</p>
-<p><em>The example below currently generates such warnings, should not
-be trusted, and is only presented as an example.</em></p>
+<p><em>The example below currently generates such warnings, and is only
+presented as an example.</em></p>
 <p>If you have useful opinions or information on these points, feel free
 to contact me.</p>
+</div>
+<div class="section level4">
+<h4 id="on-the-interpretation-of-coefficients">On the interpretation of coefficients<a class="anchor" aria-label="anchor" href="#on-the-interpretation-of-coefficients"></a>
+</h4>
+<p>Coefficients from binary models are not the same quantity as
+coefficients from continuous ones, and it is worth being clear about
+this before looking at any output.</p>
+<p><code>phylopath</code> standardizes continuous variables before
+fitting, that is, it centers them and divides them by their standard
+deviation. So a path between two continuous variables is expressed in
+standard deviations: it is the familiar standardized regression
+coefficient. Binary variables are left as they are, so a path leading to
+a binary variable is a log odds ratio instead. In the example below
+every variable is binary, which means every coefficient is a log odds
+ratio between the two levels of a trait. Those are all the same kind of
+quantity, so they can be compared with each other directly, as we do
+below.</p>
+<p>Where this becomes genuinely confusing is when a single causal model
+contains both binary <em>and</em> continuous traits. Such a model has
+coefficients in two different units, which is bad enough. On top of
+that, a binary predictor contributes a contrast between its two levels
+rather than a change per standard deviation, and for a trait where a
+proportion <code>p</code> of species has one of the levels, that
+contrast amounts to <code>1 / sqrt(p * (1 - p))</code> standard
+deviations, which is always more than two. Coefficients of this kind of
+mixed-type DAG therefore cannot be meaningfully compared with one
+another at all, and each has to be read on its own terms.
+<code>phylopath</code> will try to warn you when you fit such a model,
+and notes it on any output that shows its coefficients.</p>
+<p>Importantly, this concerns the coefficients only. The comparison of
+the causal models themselves is unaffected, because the d-separation
+tests are performed on the unstandardized data: <code>CICc</code>, the
+model weights and the ranking of your models do not depend on the scale
+of the coefficients. See <code><a href="../reference/est_DAG.html">?est_DAG</a></code> for more detail.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="example-analysis">Example analysis<a class="anchor" aria-label="anchor" href="#example-analysis"></a>
@@ -166,11 +203,11 @@ models.</p>
 models using <code>phylo_path</code></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">cichlids_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/phylo_path.html">phylo_path</a></span><span class="op">(</span><span class="va">models</span>, <span class="va">cichlids</span>, <span class="va">cichlids_tree</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## 15 rows were dropped because they contained NA values.</span></span></code></pre>
-<pre><code><span><span class="co">## Pruned tree to drop species not included in `data`.</span></span></code></pre>
-<pre><code><span><span class="co">## Warning in phylo_path(models, cichlids, cichlids_tree): Some models produced warnings. Use `show_warnings()` to view them.</span></span></code></pre>
+<pre><code><span><span class="co">## 15 rows were dropped because they contained NA values.</span></span>
+<span><span class="co">## Pruned tree to drop species not included in `data`.</span></span></code></pre>
+<pre><code><span><span class="co">## Warning: 4 of the phylogenetic regressions produced warnings.</span></span>
+<span><span class="co">## <span style="color: #0000BB;">ℹ</span> Use `show_warnings()` to read them.</span></span></code></pre>
 <pre><code><span><span class="co">## A phylogenetic path analysis, on the variables:</span></span>
-<span><span class="co">##  Continuous:   </span></span>
 <span><span class="co">##  Binary:      G P D M C </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">##  Evaluated for these models: A B C D E F G H I J K L </span></span>
@@ -187,7 +224,7 @@ continue with these results here, but <em>models with warnings should
 not be trusted</em>.</p>
 <p><code>phylo_path</code> notes that indeed all variables are
 binary.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="op">(</span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">cichlids_results</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##   model k  q     C       p CICc delta_CICc        l        w</span></span>
 <span><span class="co">## F     F 5 10  7.95 0.63385 33.1       0.00 1.000000 0.511385</span></span>
@@ -202,7 +239,7 @@ binary.</p>
 <span><span class="co">## J     J 6  9 25.86 0.01124 47.9      14.88 0.000586 0.000300</span></span>
 <span><span class="co">## B     B 7  8 28.84 0.01099 48.0      14.97 0.000560 0.000287</span></span>
 <span><span class="co">## A     A 6  9 27.55 0.00643 49.6      16.58 0.000251 0.000129</span></span></code></pre>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">s</span><span class="op">)</span></span></code></pre></div>
 <p><img src="binary_models_files/figure-html/get_summary-1.png" class="r-plt" alt="A dot and line plot of CICc against model, with the twelve models ordered from best to worst supported and a dashed line marking the cut off two CICc units above the best model." width="700"></p>
 <p>We see that model F is the best supported model. This model notably
@@ -219,36 +256,28 @@ model and look at magnitude of the coefficients. In this case, since we
 want to use the best model we use the function <code><a href="../reference/best.html">best()</a></code>. One
 can use <code><a href="../reference/choice.html">choice()</a></code> to choose any arbitrary model, or
 <code><a href="../reference/average.html">average()</a></code> to average over several models.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_cichlids</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/best.html">best</a></span><span class="op">(</span><span class="va">cichlids_results</span><span class="op">)</span></span></code></pre></div>
 <p>To see the individual coefficients and their standard errors, simply
 print <code>best_cichlids</code>:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">best_cichlids</span></span></code></pre></div>
-<pre><code><span><span class="co">## $coef</span></span>
-<span><span class="co">##   G M        P D        C</span></span>
-<span><span class="co">## G 0 0 2.244975 0 4.488997</span></span>
-<span><span class="co">## M 0 0 2.879175 0 0.000000</span></span>
-<span><span class="co">## P 0 0 0.000000 0 3.415208</span></span>
-<span><span class="co">## D 0 0 0.000000 0 3.415140</span></span>
-<span><span class="co">## C 0 0 0.000000 0 0.000000</span></span>
+<pre><code><span><span class="co">## A fitted causal model: 5 variables, 5 paths.</span></span>
+<span><span class="co">##  Binary:      G M P D C </span></span>
 <span><span class="co">## </span></span>
-<span><span class="co">## $se</span></span>
-<span><span class="co">##   G M         P D        C</span></span>
-<span><span class="co">## G 0 0 0.8132303 0 1.200057</span></span>
-<span><span class="co">## M 0 0 0.8602750 0 0.000000</span></span>
-<span><span class="co">## P 0 0 0.0000000 0 1.348669</span></span>
-<span><span class="co">## D 0 0 0.0000000 0 1.376391</span></span>
-<span><span class="co">## C 0 0 0.0000000 0 0.000000</span></span>
-<span><span class="co">## </span></span>
-<span><span class="co">## attr(,"class")</span></span>
-<span><span class="co">## [1] "fitted_DAG"</span></span></code></pre>
+<span><span class="co">## Paths — log odds ratios</span></span>
+<span><span class="co">##   path coefficient    se</span></span>
+<span><span class="co">##  G → P       2.245 0.813</span></span>
+<span><span class="co">##  G → C       4.489 1.200</span></span>
+<span><span class="co">##  M → P       2.879 0.860</span></span>
+<span><span class="co">##  P → C       3.415 1.349</span></span>
+<span><span class="co">##  D → C       3.415 1.376</span></span></code></pre>
 <p>Or plot those:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/coef_plot.html">coef_plot</a></span><span class="op">(</span><span class="va">best_cichlids</span>, error_bar <span class="op">=</span> <span class="st">"se"</span>, reverse_order <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html" class="external-link">coord_flip</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="binary_models_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="A horizontal point and error bar plot of the path coefficients of the best supported model, with standard errors and a dashed line at zero." width="700"></p>
 <p>But we can also plot the final model:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">best_cichlids</span><span class="op">)</span></span></code></pre></div>
 <p><img src="binary_models_files/figure-html/unnamed-chunk-4-1.png" class="r-plt" alt="The fitted best supported model, with arrows labelled by their coefficients and drawn with a width proportional to the strength of the effect." width="600px" style="display: block; margin: auto;"></p>
 </div>

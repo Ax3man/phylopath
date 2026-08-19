@@ -50,6 +50,11 @@ average(phylopath, cut_off = 2, avg_method = "conditional", ...)
 
 An object of class `fitted_DAG`.
 
+## See also
+
+[`est_DAG()`](https://ax3man.github.io/phylopath/reference/est_DAG.md)
+for what the coefficients mean.
+
 ## Examples
 
 ``` r
@@ -70,42 +75,17 @@ An object of class `fitted_DAG`.
   avg_model <- average(p)
   # Print the average model to see coefficients, se and ci:
   avg_model
-#> $coef
-#>    BM        LS         RS        NL        DD
-#> BM  0 0.4973937 -0.4090362 0.4501512 0.0000000
-#> LS  0 0.0000000  0.0000000 0.0000000 0.0000000
-#> RS  0 0.0000000  0.0000000 0.5280685 0.0000000
-#> NL  0 0.0000000  0.8743998 0.0000000 0.6285344
-#> DD  0 0.0000000  0.0000000 0.0000000 0.0000000
-#> attr(,"class")
-#> [1] "matrix" "array"  "DAG"   
+#> A fitted causal model: 5 variables, 6 paths.
+#>  Continuous:  BM RS NL LS DD 
 #> 
-#> $se
-#>    BM         LS         RS         NL         DD
-#> BM  0 0.08934185 0.09167814 0.07591749 0.00000000
-#> LS  0 0.00000000 0.00000000 0.00000000 0.00000000
-#> RS  0 0.00000000 0.00000000 0.05726520 0.00000000
-#> NL  0 0.00000000 0.09436255 0.00000000 0.08006703
-#> DD  0 0.00000000 0.00000000 0.00000000 0.00000000
-#> 
-#> $lower
-#>    BM        LS         RS        NL        DD
-#> BM  0 0.3222869 -0.5887220 0.3013557 0.0000000
-#> LS  0 0.0000000  0.0000000 0.0000000 0.0000000
-#> RS  0 0.0000000  0.0000000 0.4158308 0.0000000
-#> NL  0 0.0000000  0.6894526 0.0000000 0.4716059
-#> DD  0 0.0000000  0.0000000 0.0000000 0.0000000
-#> 
-#> $upper
-#>    BM        LS         RS        NL        DD
-#> BM  0 0.6725005 -0.2293503 0.5989468 0.0000000
-#> LS  0 0.0000000  0.0000000 0.0000000 0.0000000
-#> RS  0 0.0000000  0.0000000 0.6403062 0.0000000
-#> NL  0 0.0000000  1.0593470 0.0000000 0.7854629
-#> DD  0 0.0000000  0.0000000 0.0000000 0.0000000
-#> 
-#> attr(,"class")
-#> [1] "fitted_DAG"
+#> Paths — standardized regression coefficients
+#>     path coefficient           95% CI
+#>  BM → LS       0.497 [ 0.322,  0.673]
+#>  BM → RS      -0.409 [-0.589, -0.229]
+#>  BM → NL       0.450 [ 0.301,  0.599]
+#>  RS → NL       0.528 [ 0.416,  0.640]
+#>  NL → RS       0.874 [ 0.689,  1.059]
+#>  NL → DD       0.629 [ 0.472,  0.785]
 
   if (FALSE) { # \dontrun{
   # Plot to show the weighted graph:

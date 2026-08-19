@@ -30,6 +30,11 @@ best(phylopath, ...)
 
 An object of class `fitted_DAG`.
 
+## See also
+
+[`est_DAG()`](https://ax3man.github.io/phylopath/reference/est_DAG.md)
+for what the coefficients mean.
+
 ## Examples
 
 ``` r
@@ -42,22 +47,14 @@ An object of class `fitted_DAG`.
   best_model <- best(p)
   # Print the best model to see coefficients, se and ci:
   best_model
-#> $coef
-#>    BM        LS        NL        DD
-#> BM  0 0.4973937 0.4303443 0.0000000
-#> LS  0 0.0000000 0.0000000 0.0000000
-#> NL  0 0.0000000 0.0000000 0.6285344
-#> DD  0 0.0000000 0.0000000 0.0000000
+#> A fitted causal model: 4 variables, 3 paths.
+#>  Continuous:  BM NL LS DD 
 #> 
-#> $se
-#>    BM         LS         NL         DD
-#> BM  0 0.08934185 0.08868688 0.00000000
-#> LS  0 0.00000000 0.00000000 0.00000000
-#> NL  0 0.00000000 0.00000000 0.08006703
-#> DD  0 0.00000000 0.00000000 0.00000000
-#> 
-#> attr(,"class")
-#> [1] "fitted_DAG"
+#> Paths — standardized regression coefficients
+#>     path coefficient    se
+#>  BM → LS       0.497 0.089
+#>  BM → NL       0.430 0.089
+#>  NL → DD       0.629 0.080
   # Plot to show the weighted graph:
   plot(best_model)
 

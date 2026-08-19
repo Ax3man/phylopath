@@ -19,8 +19,13 @@ reference:
     contents:
       - plot.DAG
       - plot.fitted_DAG
+      - plot.phylopath_summary
       - plot_model_set
       - coef_plot
+  - title: "Extracting coefficients"
+    contents:
+      - as.data.frame.fitted_DAG
+      - coef.fitted_DAG
   - title: "Low level functions"
     desc: "Use these functions for finer control. These are mostly for internal use."
     contents:

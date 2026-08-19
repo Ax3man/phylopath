@@ -17,9 +17,7 @@
 \item{parm}{The paths for which to return intervals, given as names or indices. Defaults to all
 of them.}
 
-\item{level}{The confidence level, which has to be 0.95. Only the bounds of the bootstrap
-interval are stored, not the replicates they were taken from, so another level cannot be
-produced after fitting.}
+\item{level}{The confidence level, which has to be 0.95 for now.}
 }
 \value{
 For \code{coef()}, a named numeric vector with one element per path. For \code{confint()}, a

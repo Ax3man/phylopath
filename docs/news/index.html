@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">phylopath</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -34,20 +34,38 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="1.3.2" id="phylopath-132">phylopath 1.3.2<a class="anchor" aria-label="anchor" href="#phylopath-132"></a></h2>
-<p>This release has some bug fixes for small edge cases, minor improvements in reporting, and adds unit tests, all from a review by Claude.</p>
-<ul><li><p>Bug fix: <code>CICc</code> could not be calculated when the number of parameters was exactly one less than the number of species, but silently returned <code>Inf</code> instead of <code>NA</code>. Affected models now return <code>NA</code>.</p></li>
+<h2 class="pkg-version" data-toc-text="1.4.0" id="phylopath-140">phylopath 1.4.0<a class="anchor" aria-label="anchor" href="#phylopath-140"></a></h2>
+<p>This release is mainly aimed at avoiding a common confusion about <code>phylopath</code> output, that was long-standing and avoidable. When models would use both continuous and binary variables, the coefficients would be very confusing to interpret, since they mix scales and are not consistently standardized. The package now tries to be much more vocal about what path coefficients actually mean and warn the user about mixing coefficients with different types.</p>
+<p>Note that this concerns the coefficients only, comparison of the causal models is not an issue.</p>
+<p>New features in this release:</p>
+<ul><li><p>Models that contain both binary and continuous variables now warn, once per session, that their coefficients cannot be compared with one another. Every plot and printout of such a model repeats this more briefly, and <code><a href="../reference/coef_plot.html">coef_plot()</a></code> refuses to sort the paths by <code>"strength"</code>, since that ordering would be partly an artefact of the scales.</p></li>
+<li><p><code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> on a fitted model no longer labels its colour legend “standardized path coefficient” regardless of what the coefficients are, but names the scale that is actually shown.</p></li>
+<li><p><code>fitted_DAG</code> objects gain a <code>binary</code> element, recording which variables were modelled as binary. Objects made by earlier versions do not have it, and are reported without a scale rather than being assumed to be standardized.</p></li>
+<li><p>New <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> method for fitted models, returning the estimated paths as a <code>data.frame</code> with one row per path. This function supports a <code>order_by</code> argument just like <code><a href="../reference/coef_plot.html">coef_plot()</a></code> to order the paths.</p></li>
+<li><p>New <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef()</a></code> and <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint()</a></code> methods for fitted DAGs, returning the path coefficients as a named vector and the bounds of their bootstrapped confidence intervals.</p></li>
+<li><p><code>phylo_path</code> now supports more than 26 models.</p></li>
+</ul><p>There are also a lot of bug fixes and minor improvements in reporting. It is unlikely any of these have affected real analyses, as they deal with either imprecise reporting or very unlikely edge cases:</p>
+<ul><li><p><code>plot.phylopath_summary</code> now has a help page.</p></li>
+<li><p>Bug fix: <code>coef_plot(order_by = "causal")</code> derived the causal ordering from the positive coefficients only, so the ordering was incorrect in the presence of negative paths.</p></li>
+<li><p>Bug fix: <code>CICc</code> could not be calculated when the number of parameters was exactly one less than the number of species, but silently returned <code>Inf</code> instead of <code>NA</code>. Affected models now return <code>NA</code>.</p></li>
 <li><p>Bug fix: the <code>phylo_par</code> column now correctly reports the alpha parameter in the case of GLMs.</p></li>
 <li><p>Bug fix: model sets in which only some of the models were named kept empty names for the others, which made those models impossible to select with <code><a href="../reference/best.html">best()</a></code> and <code><a href="../reference/choice.html">choice()</a></code>. Unnamed models in a partially named set are now labelled in the same way as those in a fully unnamed set.</p></li>
-<li><p>Bug fix: automatic model labels ran out after <code>Z</code>, giving models beyond the 26th a missing name. Labelling now continues as <code>AA</code>, <code>AB</code>, and so on.</p></li>
 <li><p>Bug fix: the notice pointing to <code><a href="../reference/show_warnings.html">show_warnings()</a></code> was only shown when more than one model produced a warning, so a single warning went unmentioned.</p></li>
 <li><p>Bug fix: <code><a href="../reference/show_warnings.html">show_warnings()</a></code> and the error for variables with more than two levels appended <code>FALSE</code> to their messages.</p></li>
 <li><p><code><a href="../reference/best.html">best()</a></code> and <code><a href="../reference/average.html">average()</a></code> now return an informative error when <code>CICc</code> could not be calculated for one or more of the models, rather than failing with an uninformative error.</p></li>
 <li><p>Informative errors are now returned when a variable is used in the causal models but is not a column of <code>data</code>, when the <code>order</code> argument does not contain exactly the variables used in the models, and when two causal models are given the same name.</p></li>
+<li><p>All errors, warning and messages have been reviewed for clarity, and many now have more consistent language, more information, and give tips on how to resolve the issue. They also use <code>rlang</code> now, for nicer formatting.</p></li>
 <li><p><code><a href="../reference/est_DAG.html">est_DAG()</a></code> now defaults to <code>model = "lambda"</code> and <code>method = "logistic_MPLE"</code>, matching <code><a href="../reference/phylo_path.html">phylo_path()</a></code>. Previously these arguments had no defaults, so calling <code><a href="../reference/est_DAG.html">est_DAG()</a></code> without them failed.</p></li>
 <li><p>Bug fix: implemented more consistent handling of very small p-values and avoidance of numerical underflow.</p></li>
 <li><p>Updated <code>ggplot2</code> code to remove deprecated functionality.</p></li>
-<li><p>Fixed several inaccuracies in the vignettes, including a reference to a function that does not exist, and restored two <code><a href="../reference/coef_plot.html">coef_plot()</a></code> examples in the introduction that had been commented out.</p></li>
+<li><p>Fixed several inaccuracies in the vignettes, including a reference to a function that does not exist, and restored two <code><a href="../reference/coef_plot.html">coef_plot()</a></code> examples in the introduction.</p></li>
+<li><p>Fitted models now report clearly what their coefficients are. Paths into a binary variable are log odds ratios, while paths into a continuous variable are standardized regression coefficients, and previously both were presented as though they were the same quantity.</p></li>
+<li><p>New <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> method for fitted models, which lists the estimated paths with their coefficients and intervals, and states which variables are continuous and which are binary, rather than printing the underlying matrices.</p></li>
+<li><p><code><a href="../reference/coef_plot.html">coef_plot()</a></code> now names the scale of the coefficients on its axis, instead of always describing them as standardized.</p></li>
+<li><p>Bug fix: <code><a href="../reference/est_DAG.html">est_DAG()</a></code> did not recognize binary variables supplied as character vectors, although those are documented as acceptable, and <code><a href="../reference/phylo_path.html">phylo_path()</a></code> accepts them. Such a variable failed with an error from <code>phylolm</code> when it was the outcome of a path, and was silently treated as continuous when it was the predictor. Character variables are now converted to factors, as they already were in <code><a href="../reference/phylo_path.html">phylo_path()</a></code>.</p></li>
+<li><p>Bug fix: <code><a href="../reference/plot_model_set.html">plot_model_set()</a></code> located the edges of a causal model incorrectly when a model was not topologically sorted, which could silently draw edges that were not in the model and omit ones that were.</p></li>
+<li><p>Bug fix: passing an argument that neither <code>phylolm()</code> nor <code>phyloglm()</code> accepts produced one warning per fitted regression, and did not say which argument was at fault. Such arguments are now reported once per call, by name.</p></li>
+<li><p>The vignettes now have descriptive titles in the vignette index, and all figures have alt-text.</p></li>
 <li><p>Added a unit test suite covering the d-separation basis set, the model comparison statistics, model averaging, and the plotting functions.</p></li>
 </ul></div>
     <div class="section level2">
