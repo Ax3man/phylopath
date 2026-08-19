@@ -7,14 +7,11 @@ This package implements phylogenetic path analysis in R.
 Install the package using:
 
 ```{r}
-install.packages("phylopath")
+install.packages("BiocManager")
+BiocManager::install("phylopath")
 ```
-You may need to install the downstream dependency `graph` from Bioconductor:
 
-```{r}
-if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-BiocManager::install("graph")
-```
+`phylopath` relies on `ggm`, which in turn needs `graph` from Bioconductor. `BiocManager::install()` installs from CRAN as well as Bioconductor, so this single command obtains all three. A plain `install.packages("phylopath")` works only if you already have `graph`.
 
 Or if you'd like to install the development version (here on github), use:
 
