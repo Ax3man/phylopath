@@ -23,7 +23,7 @@ For a complete worked example, click "Get Started" above, or see the [PeerJ pape
 
 ## Installation
 
-```{r, eval = FALSE}
+```{r install, eval = FALSE}
 install.packages("BiocManager")
 BiocManager::install("phylopath")
 ```

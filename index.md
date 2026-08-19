@@ -13,12 +13,13 @@ For a complete worked example, click “Get Started” above, or see the
 
 ## Installation
 
-``` r
-install.packages("BiocManager")
-BiocManager::install("phylopath")
-```
+    install.packages("BiocManager")
+    BiocManager::install("phylopath")
 
-`phylopath` relies on `ggm`, which in turn needs `graph` from Bioconductor. `BiocManager::install()` installs from CRAN as well as Bioconductor, so this single command obtains all three. A plain `install.packages("phylopath")` works only if you already have `graph`.
+`phylopath` relies on `ggm`, which in turn needs `graph` from
+Bioconductor. `BiocManager::install()` installs from CRAN as well as
+Bioconductor, so this single command obtains all three. A plain
+`install.packages("phylopath")` works only if you already have `graph`.
 
 This method was developed by Von Hardenberg and Gonzalez-Voyer. See
 `citation()` for info on correct citations.
